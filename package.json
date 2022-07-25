@@ -4,9 +4,7 @@
   "description": "a controller program to controll my led strip(s)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "startCompiler": "ts-node ./index.ts",
-    "start": "nodemon -x npm run startCompiler -e ts"
+    "start": "tsc && sudo node dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -31,7 +29,6 @@
     "@types/node": "^18.0.6",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
-    "tsc": "^2.0.4",
     "typescript": "^4.7.4"
   }
 }
