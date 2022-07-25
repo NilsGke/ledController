@@ -2,7 +2,7 @@
     {
         "name": "RGB",
         "id": 1,
-        "duration": 5,
+        "duration": 5000,
         "keyframes": [
             {
                 "step": 0,
