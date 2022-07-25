@@ -3,7 +3,7 @@ import fs from "fs";
 
 type keyframe = {
     step: number;
-    color: rgbStripType;
+    color: rgbStripType["color"];
 };
 
 export type effect = {
