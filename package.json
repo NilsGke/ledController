@@ -1,0 +1,37 @@
+{
+  "name": "ledcontroller",
+  "version": "1.0.0",
+  "description": "a controller program to controll my led strip(s)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "startCompiler": "ts-node ./index.ts",
+    "start": "nodemon -x npm run startCompiler -e ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NilsGke/ledController.git"
+  },
+  "author": "Nils Goeke",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NilsGke/ledController/issues"
+  },
+  "homepage": "https://github.com/NilsGke/ledController#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "pigpio": "^3.3.1",
+    "react-colorful": "^5.5.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/node": "^18.0.6",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "tsc": "^2.0.4",
+    "typescript": "^4.7.4"
+  }
+}
