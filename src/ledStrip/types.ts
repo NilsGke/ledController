@@ -277,4 +277,5 @@ export type rgbStripType = {
     name: name;
     id: id;
     effectName: effect["name"];
+    // gpioPorts: 
 };

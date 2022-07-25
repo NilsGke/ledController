@@ -3,9 +3,9 @@
         "name": "Schreibtisch",
         "id": 0,
         "ports": {
-            "red": 14,
-            "green": 15,
-            "blue": 16
+            "red": 17,
+            "green": 22,
+            "blue": 24
         }
     },
     {
