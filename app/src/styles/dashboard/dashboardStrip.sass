@@ -1,0 +1,47 @@
+#app.dashboard
+    .strip
+        $bg: #2d2d2d
+        background: $bg
+        padding: 2rem
+        border-radius: 20px
+        display: flex
+        align-items: center
+        justify-content: center
+        flex-direction: column
+        gap: 2rem
+        // transition: box-shadow .3s ease-in-out
+
+        .header 
+            display: flex
+            flex-direction: row
+            align-items: center
+            gap: 10px
+            .colorDot 
+                transition: background .3s ease-in-out
+                height: 10px
+                width: 10px
+                border-radius: 100%
+                @keyframes blink 
+                    from
+                        opacity: 0
+                    to
+                        opacity: 1
+                &.loading
+                    animation: blink .4s linear infinite alternate
+                        
+            h2
+                margin: 0
+                margin-right: 20px
+
+        .colorInput 
+            max-width: 100%
+            display: flex
+            align-items: center
+            justify-content: center
+            flex-direction: column
+            gap: 20px
+
+            > div
+                max-width: 100%
+                &.alpha-picker > div > div:first-child > div
+                    background: $bg!important
