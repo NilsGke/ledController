@@ -28,7 +28,7 @@ const DashboardStrip: React.FC<props> = ({ data: strip, effects, refresh }) => {
 
     const [newColor, setNewColor] = useState<null | ColorResult["rgb"]>(null);
 
-    const [effectName, setEffectName] = useState<effect["name"]>("");
+    const [effect, setEffect] = useState<effect | null>(null);
 
     useEffect(() => {
         setColor({
@@ -36,6 +36,8 @@ const DashboardStrip: React.FC<props> = ({ data: strip, effects, refresh }) => {
             g: strip.color.green,
             b: strip.color.blue,
         });
+        const newEffect = effects.find(eff => strip.effectName === eff.name);
+        setEffect(newEffect === undefined ? null : newEffect)
     }, [strip]);
 
     useEffect(() => {
@@ -68,28 +70,26 @@ const DashboardStrip: React.FC<props> = ({ data: strip, effects, refresh }) => {
 
     const changeEffect = (effectName: effect["name"]) => {
         const effect = effects.find((e) => e.name === effectName);
-        if (effect === undefined && effectName !== "") return;
-        setEffectName(effectName);
-        if (selectRef.current !== null) selectRef.current.blur();
+        if (effect === undefined) return;
+        setEffect(effect);
     };
 
-    const animationKeyframes = [
-        { transform: "rotate(0) scale(1)" },
-        { transform: "rotate(360deg) scale(0)" },
-    ];
 
-    const animationTiming = {
-        duration: 2000,
-        iterations: 1,
-    };
-
-    console.log(strip);
 
     useEffect(() => {
-        if (effectName === "") return;
         if (stripRef.current === null) return;
+        if (effect === null) {
+            stripRef.current.getAnimations().forEach(animation => animation.cancel())
+            return;
+        };
+
+        const animationKeyframes = effect.keyframes.map(frame => ({ boxShadow: `0px 0px 40px 0px rgb(${frame.color.red}, ${frame.color.green}, ${frame.color.blue})`, offset: (frame.step / 100) }))
+        const animationTiming = {
+            duration: effect.duration,
+            iterations: 99999,
+        };
         stripRef.current.animate(animationKeyframes, animationTiming);
-    }, []);
+    }, [effect]);
 
     return (
         <div className="stripContainer">
@@ -115,14 +115,19 @@ const DashboardStrip: React.FC<props> = ({ data: strip, effects, refresh }) => {
                 <div className="colorInput">
                     <HuePicker
                         color={color}
-                        onChange={({ rgb }) => setColor({ ...rgb, a: color.a })}
+                        onChange={({ rgb }) => {
+                            setColor({ ...rgb, a: color.a });
+                            setEffect(null);
+                        }}
                         onChangeComplete={({ rgb }) =>
                             setNewColor({ ...rgb, a: color.a })
                         }
                     />
                     <AlphaPicker
                         color={color}
-                        onChange={({ rgb }) => setColor({ ...color, a: rgb.a })}
+                        onChange={({ rgb }) => {
+                            setColor({ ...color, a: rgb.a })
+                        }}
                         onChangeComplete={({ rgb }) =>
                             setNewColor({ ...color, a: rgb.a })
                         }
@@ -143,14 +148,14 @@ const DashboardStrip: React.FC<props> = ({ data: strip, effects, refresh }) => {
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                value={effectName}
+                                value={effect === null ? "" : effect.name}
                                 label="Effect"
-                                onChange={(e) => changeEffect(e.target.value)}
+                                onChange={(e) => changeEffect(e.target.value as string)}
                                 ref={selectRef}
                             >
                                 <MenuItem value={""}>-</MenuItem>
                                 {effects.map((effect) => (
-                                    <MenuItem value={effect.name}>
+                                    <MenuItem key={effect.name + effect.id} value={effect.name}>
                                         {effect.name}
                                     </MenuItem>
                                 ))}
