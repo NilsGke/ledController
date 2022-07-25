@@ -1,0 +1,200 @@
+[
+    {
+        "name": "blue red",
+        "id": 0,
+        "strips": [
+            {
+                "id": 0,
+                "color": {
+                    "red": 255,
+                    "green": 0,
+                    "blue": 0
+                },
+                "effect": null
+            },
+            {
+                "id": 1,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 255
+                },
+                "effect": null
+            },
+            {
+                "id": 2,
+                "color": {
+                    "red": 255,
+                    "green": 0,
+                    "blue": 0
+                },
+                "effect": null
+            }
+        ]
+    },
+    {
+        "name": "rgb",
+        "id": 1,
+        "strips": [
+            {
+                "id": 0,
+                "color": {
+                    "red": 255,
+                    "green": 0,
+                    "blue": 0
+                },
+                "effect": null
+            },
+            {
+                "id": 1,
+                "color": {
+                    "red": 0,
+                    "green": 255,
+                    "blue": 0
+                },
+                "effect": null
+            },
+            {
+                "id": 2,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 255
+                },
+                "effect": null
+            }
+        ]
+    },
+    {
+        "name": "green pink",
+        "id": 2,
+        "strips": [
+            {
+                "id": 0,
+                "color": {
+                    "red": 0,
+                    "green": 255,
+                    "blue": 0
+                },
+                "effect": null
+            },
+            {
+                "id": 1,
+                "color": {
+                    "red": 0,
+                    "green": 255,
+                    "blue": 0
+                },
+                "effect": null
+            },
+            {
+                "id": 2,
+                "color": {
+                    "red": 255,
+                    "green": 0,
+                    "blue": 210
+                },
+                "effect": null
+            }
+        ]
+    },
+    {
+        "name": "light blue",
+        "id": 3,
+        "strips": [
+            {
+                "id": 0,
+                "color": {
+                    "red": 0,
+                    "green": 238,
+                    "blue": 255
+                },
+                "effect": null
+            },
+            {
+                "id": 1,
+                "color": {
+                    "red": 0,
+                    "green": 238,
+                    "blue": 255
+                },
+                "effect": null
+            },
+            {
+                "id": 2,
+                "color": {
+                    "red": 0,
+                    "green": 238,
+                    "blue": 255
+                },
+                "effect": null
+            }
+        ]
+    },
+    {
+        "name": "rgb",
+        "id": 4,
+        "strips": [
+            {
+                "id": 0,
+                "color": {
+                    "red": 255,
+                    "green": 0,
+                    "blue": 0
+                },
+                "effect": null
+            },
+            {
+                "id": 1,
+                "color": {
+                    "red": 0,
+                    "green": 255,
+                    "blue": 0
+                },
+                "effect": null
+            },
+            {
+                "id": 2,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 255
+                },
+                "effect": null
+            }
+        ]
+    },
+    {
+        "name": "green pink",
+        "id": 5,
+        "strips": [
+            {
+                "id": 0,
+                "color": {
+                    "red": 0,
+                    "green": 255,
+                    "blue": 0
+                },
+                "effect": null
+            },
+            {
+                "id": 1,
+                "color": {
+                    "red": 0,
+                    "green": 255,
+                    "blue": 0
+                },
+                "effect": null
+            },
+            {
+                "id": 2,
+                "color": {
+                    "red": 255,
+                    "green": 0,
+                    "blue": 210
+                },
+                "effect": null
+            }
+        ]
+    }
+]

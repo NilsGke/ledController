@@ -1,0 +1,29 @@
+[
+    {
+        "name": "Schreibtisch",
+        "id": 0,
+        "ports": {
+            "red": 14,
+            "green": 15,
+            "blue": 16
+        }
+    },
+    {
+        "name": "Bett",
+        "id": 1,
+        "ports": {
+            "red": 17,
+            "green": 18,
+            "blue": 19
+        }
+    },
+    {
+        "name": "Regal",
+        "id": 2,
+        "ports": {
+            "red": 20,
+            "green": 21,
+            "blue": 22
+        }
+    }
+]
