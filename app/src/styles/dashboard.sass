@@ -1,30 +1,45 @@
 #app.dashboard
     padding-top: 3rem
     .dashboard
-        #stripsContainer    
+        #stripsContainer
             display: flex
             align-items: center
             justify-content: center
             flex-direction: row
             flex-wrap: wrap
+            transition: filter .3s ease-in-out
+            &.off
+                filter: grayscale(1) brightness(.8)
 
             .stripContainer
                 $padding: 5vw
                 flex: calc(33% - ($padding * 2))
                 max-width: calc(33%)
-                padding: 2rem $padding 
+                padding: 2rem $padding
 
                 /* Responsive layout - makes a two column-layout instead of four columns */
-                @media screen and (max-width: 800px)             
+                @media screen and (max-width: 800px)
                     flex: calc(50% - ($padding * 2))
                     max-width: 50%
-                    
-                
 
                 /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
-                @media screen and (max-width: 600px) 
+                @media screen and (max-width: 600px)
                     flex: 100%
                     max-width: 100%
+        #controls
+            margin-top: 20px
+            display: flex
+            align-items: center
+            justify-content: center
+            flex-direction: row
+            gap: 20px
+            .control
+                label
+                    padding: 20px
+                    background: #2d2d2d
+                    border-radius: 20px
+                    height: 50px
+                    margin: 0
         #presetsContainer
             display: flex
             align-items: center
@@ -32,24 +47,18 @@
             flex-direction: row
             flex-wrap: wrap
 
-            .presetContainer 
+            .presetContainer
                 $padding: 2vw
                 flex: calc(10% - ($padding * 2))
                 max-width: calc(10%)
-                padding: 2rem $padding 
+                padding: 2rem $padding
 
                 /* Responsive layout - makes a two column-layout instead of four columns */
-                @media screen and (max-width: 800px)             
+                @media screen and (max-width: 800px)
                     flex: calc(25% - ($padding * 2))
                     max-width: 25%
-                    
-                
 
                 /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
-                @media screen and (max-width: 600px) 
+                @media screen and (max-width: 600px)
                     flex: 50%
                     max-width: 50%
-
-                    
-
-                    
