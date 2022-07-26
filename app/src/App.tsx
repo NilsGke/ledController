@@ -1,3 +1,6 @@
+import { green } from "@mui/material/colors";
+import createTheme from "@mui/material/styles/createTheme";
+import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import { useEffect, useRef } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Dashboard from "./Dashboard";
@@ -15,11 +18,19 @@ const Router = () => {
 
     return (
         <div id="app" ref={appRef}>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                </Routes>
-            </BrowserRouter>
+            <ThemeProvider
+                theme={createTheme({
+                    palette: {
+                        mode: "dark",
+                    },
+                })}
+            >
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<Dashboard />} />
+                    </Routes>
+                </BrowserRouter>
+            </ThemeProvider>
         </div>
     );
 };
