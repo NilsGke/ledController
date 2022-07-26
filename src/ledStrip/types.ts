@@ -5,7 +5,7 @@ type ports = {
     green: number;
     blue: number;
 };
-export type ledColorValue =
+export type ledValue =
     | 0
     | 1
     | 2
@@ -263,9 +263,9 @@ export type ledColorValue =
     | 254
     | 255;
 type color = {
-    red: ledColorValue;
-    green: ledColorValue;
-    blue: ledColorValue;
+    red: ledValue;
+    green: ledValue;
+    blue: ledValue;
 };
 type name = string;
 type id = number;
@@ -273,9 +273,9 @@ type id = number;
 export type rgbStripType = {
     setColors(colors: color): Promise<void>;
     color: color;
+    alpha: ledValue;
     ports: ports;
     name: name;
     id: id;
     effectName: effect["name"];
-    // gpioPorts: 
 };
