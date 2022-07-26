@@ -10,9 +10,10 @@ export default class rgbStrip {
     public ports: stripType["ports"];
     public gpioPorts: { red: gpio.Gpio; green: gpio.Gpio; blue: gpio.Gpio };
     public color: stripType["color"] = { red: 0, green: 0, blue: 0 };
+    public alpha: stripType["alpha"] = 255;
     public effect: effect | null = null;
     private effectRunning: boolean = false;
-    private effectTimer: number = 0;
+    private startingTime: number = 0;
 
     constructor(
         name: stripType["name"],
@@ -36,6 +37,14 @@ export default class rgbStrip {
             setTimeout(() => {
                 res();
             }, 50);
+        });
+    }
+
+    // IDEA: remove this
+    public setAlpha(alpha: stripType["alpha"]): Promise<void> {
+        return new Promise((res, rej) => {
+            this.alpha = alpha;
+            this.setColors(this.color).then(() => res());
         });
     }
 
