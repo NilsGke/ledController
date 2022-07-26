@@ -4,7 +4,8 @@
   "description": "a controller program to controll my led strip(s)",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && sudo node dist/index.js"
+    "start": "nodemon -x npm run run -e ts",
+    "run": "tsc && sudo node dist/index.js"
   },
   "repository": {
     "type": "git",
