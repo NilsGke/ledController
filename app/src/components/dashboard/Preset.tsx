@@ -1,5 +1,6 @@
 import { rgbStripType } from "../../../../src/ledStrip/types";
 import { preset } from "../../../../src/presets/types";
+import applyPreset from "../../connection/applyPreset";
 import "../../styles/dashboard/preset.sass";
 
 type props = {
@@ -8,16 +9,14 @@ type props = {
 };
 
 const Preset: React.FC<props> = ({ data: preset, refresh }) => {
-    const applyPreset = () => {
-        fetch("api/presets/apply/" + preset.name).then(() => refresh());
-    };
+
 
     return (
         <div className="presetContainer">
             <div
                 className="preset"
                 onClick={() => {
-                    applyPreset();
+                    applyPreset(preset.name)
                 }}
             >
                 <h2>{preset.name}</h2>
@@ -44,9 +43,8 @@ const generateGradient = (colors: rgbStripType["color"][]) => {
     const hexColors = colors.map((c) => rgbToHex(c));
 
     for (let i = 0; i < hexColors.length - 1; i++) {
-        background += `, ${hexColors[i]} ${
-            (100 / hexColors.length) * (i + 1)
-        }%, ${hexColors[i + 1]} ${(100 / colors.length) * i + 1}%`;
+        background += `, ${hexColors[i]} ${(100 / hexColors.length) * (i + 1)
+            }%, ${hexColors[i + 1]} ${(100 / colors.length) * i + 1}%`;
     }
 
     return background + ")";

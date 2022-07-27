@@ -7,13 +7,11 @@ import Switch from "@mui/material/Switch/Switch";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup/ToggleButtonGroup";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { effect } from "../../src/effects";
-import { rgbStripType } from "../../src/ledStrip/types";
-import { preset } from "../../src/presets/types";
 import Preset from "./components/dashboard/Preset";
 import DashboardStrip, { sliderTypes } from "./components/dashboard/Strip";
 import ws from "./connection/connection";
 import { infoData, newDataEvent, requestNewData } from "./connection/newData";
+import setOnOff from "./connection/onOff";
 import "./styles/dashboard.sass";
 
 
@@ -32,6 +30,16 @@ const Dashboard: React.FC = () => {
     const rootRef = useRef<HTMLInputElement | null>(null);
 
 
+
+
+
+
+    // request new data
+    useEffect(() => {
+        if (data === null || refresh) requestNewData();
+    }, [data, refresh]);
+
+
     // receive new data
     useEffect(() => {
         const newDataHandler = (e: Event) => setData((e as newDataEvent).detail.newData)
@@ -39,11 +47,12 @@ const Dashboard: React.FC = () => {
         return () => ws.removeEventListener("newData", newDataHandler)
     }, [])
 
-    // request new data
+    // handleNewData
     useEffect(() => {
-        if (data === null || refresh) requestNewData();
-    }, [data, refresh]);
+        console.log(data);
 
+        setOn(data?.onOff === "on")
+    }, [data])
 
     // keypress handler
     useEffect(() => {
@@ -65,6 +74,10 @@ const Dashboard: React.FC = () => {
         localStorage.setItem("ledControllerSliders", sliders)
     }, [sliders])
 
+    useEffect(() => {
+        if ((data?.onOff === "on") !== on)
+            setOnOff(on ? "on" : "off")
+    }, [on])
 
     // render loading if no data there
     if (data === null) return <div className="dashboard loading"><CircularProgress /></div>;

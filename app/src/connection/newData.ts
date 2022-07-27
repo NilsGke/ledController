@@ -2,11 +2,13 @@ import { effect } from "../../../src/effects";
 import { rgbStripType } from "../../../src/ledStrip/types";
 import { preset } from "../../../src/presets/types";
 import ws from "./connection";
+import { onOff } from "./onOff";
 
 export type infoData = {
     strips: rgbStripType[];
     presets: preset[];
     effects: effect[];
+    onOff: onOff;
 };
 
 export const requestNewData = (): void => ws.send(JSON.stringify({ get: "all" }))
