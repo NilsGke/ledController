@@ -1,9 +1,7 @@
-import { getInfoObject, setup, strips } from "./src/controller";
+import { getInfoObject, setup } from "./src/controller";
 import { port } from "./app/src/connectionConfig.json"
 import WebSocket from "ws";
 import messageHandler from "./src/messageHandler";
-import { presets } from "./src/presets";
-import { effects } from "./src/effects";
 import express from "express"
 
 const app = express();
