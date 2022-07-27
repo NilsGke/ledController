@@ -1,36 +1,38 @@
 import WebSocket from "ws";
 import { rgbStripType } from "./ledStrip/types";
-import { strips } from "./controller";
+import { applyPreset, getInfoObject, onOff, setAllOnOff, strips } from "./controller";
 import { presets } from "./presets";
 import { effect, effects } from "./effects";
+import { preset } from "./presets/types";
 
 
 type messageType = {
     get?: "strips" | "effects" | "presets" | "all"
     set?: "color" | "effect"
-    data?: dataTypes
     stripName?: rgbStripType["name"]
     color?: rgbStripType["color"]
     effectName?: effect["name"]
     all?: boolean
+    apply?: preset["name"]
+    on?: onOff
 }
 
-type dataTypes = onOff | color
-
-type onOff = "on" | "off"
 type color = rgbStripType["color"]
 
 
 
 const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
-    console.log(" " + (new Date()) + message);
+    console.log("\x1b[33mnew message: \x1b[0m" + message);
 
     const m: messageType = JSON.parse(message.toString());
+
+    if (m.on !== undefined)
+        setAllOnOff(m.on)
 
 
     if (m.get)
         if (m.get === "all")
-            return connection.send(JSON.stringify({ strips, presets, effects }))
+            return connection.send(JSON.stringify(getInfoObject()))
 
     if (m.set) {
         const setStrips = [];
@@ -59,12 +61,15 @@ const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
                     strip.setEffect(effect)
                 })
             } else return console.error("effect not provided!")
-        }
-
-    } else return console.error("not specify what to set")
-
+        } else return console.error("not specified what to set")
+    }
 
 
+    if (m.apply) {
+        const preset = presets.find(ps => ps.name === m.apply)
+        if (preset === undefined) return console.error(`preset: ${m.apply}`)
+        applyPreset(preset.id);
+    }
 
 
 }
