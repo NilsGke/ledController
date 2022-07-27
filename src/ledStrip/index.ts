@@ -8,7 +8,7 @@ export default class rgbStrip {
     public name: stripType["name"];
     public id: stripType["id"];
     public ports: stripType["ports"];
-    public gpioPorts: { red: gpio.Gpio; green: gpio.Gpio; blue: gpio.Gpio };
+    public gpioPorts: { red: gpio.Gpio; green: gpio.Gpio; blue: gpio.Gpio } | undefined;
     public color: stripType["color"] = { red: 0, green: 0, blue: 0 };
     public alpha: stripType["alpha"] = 255;
     public effect: effect | null = null;
@@ -23,11 +23,17 @@ export default class rgbStrip {
         this.name = name;
         this.id = id;
         this.ports = ports;
-        this.gpioPorts = {
-            red: new Gpio(ports.red, { mode: Gpio.OUTPUT }),
-            green: new Gpio(ports.green, { mode: Gpio.OUTPUT }),
-            blue: new Gpio(ports.blue, { mode: Gpio.OUTPUT }),
-        };
+
+        try {
+            this.gpioPorts = {
+                red: new Gpio(ports.red, { mode: Gpio.OUTPUT }),
+                green: new Gpio(ports.green, { mode: Gpio.OUTPUT }),
+                blue: new Gpio(ports.blue, { mode: Gpio.OUTPUT }),
+            };
+        } catch (error) {
+            console.log(error);
+            console.log("\x1b[31m error while initializing gpio ports. You are probably using a device where there are no gpio ports. Be careful, not everything is gonna work!\x1b[0m")
+        }
     }
 
     public setColors(color: stripType["color"]): Promise<void> {
@@ -70,5 +76,5 @@ export default class rgbStrip {
         }, CONFIG.ledRefreshRate);
     }
 
-    public stopEffect(): void {}
+    public stopEffect(): void { }
 }
