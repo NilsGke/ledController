@@ -4,7 +4,8 @@ import { rgbStripType } from "./ledStrip/types";
 import config from "./config.json";
 import { preset } from "./presets/types";
 import { loadPresets, presets } from "./presets/";
-import { loadEffects } from "./effects";
+import { effects, loadEffects } from "./effects";
+import { sendDataUpdate } from "..";
 
 export const strips: rgbStrip[] = [];
 
@@ -20,6 +21,20 @@ export const setup = async () => {
     await loadEffects();
     applyPreset(config.defaultPreset);
 };
+
+
+export type onOff = "on" | "off"
+export let onOff: onOff = "on";
+export const setAllOnOff = (state: onOff) => {
+    onOff = state;
+    strips.forEach(strip => strip.setOnOff(state));
+    updateColors()
+}
+
+const updateColors = () => {
+    strips.forEach(strip => strip.updateColors())
+    sendDataUpdate();
+}
 
 const generateStrips = (): Promise<void> => {
     return new Promise((resolve, reject) => {
@@ -57,6 +72,13 @@ export const applyPreset = (
             return strip.setColors(presetStrip.color);
         });
 
-        Promise.all(proms).then(() => resolve());
+        Promise.all(proms).then(() => {
+            sendDataUpdate();
+            resolve()
+        });
     });
 };
+
+export const getInfoObject = () =>
+    ({ strips, presets, effects, onOff })
+
