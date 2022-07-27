@@ -1,26 +1,52 @@
-import express from "express";
-import api from "./src/api";
-import { setup } from "./src/controller";
-
-const app = express();
-const port = process.env.PORT || 3030;
+import { setup, strips } from "./src/controller";
+import { port } from "./app/src/connectionConfig.json"
+import http from "http";
+import WebSocket from "ws";
+import messageHandler from "./src/messageHandler";
+import { presets } from "./src/presets";
+import { effects } from "./src/effects";
+import { fileResponse } from "./src/responseFile";
 
 export const CONFIG = {
     ledRefreshRate: 200,
 };
 
-// api route
-app.use("/api", api);
 
-// static directory to server react app
-app.use(express.static("app/build"));
-// server react app
-app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/app/build/index.html");
-});
 
-app.listen(port, () => {
-    console.log(`\x1b[42mServer is running on port: ${port}\x1b[0m`);
-});
+
+const server = http.createServer((request, response) => {
+    console.log((new Date()) + ' Received request for ' + request.url);
+
+
+    fileResponse(request.url || "", response)
+
+
+    response.end();
+
+})
+
+server.listen(port, () => {
+    console.log((new Date()) + " Server is listening on port 8080");
+})
+
+
+const wsServer = new WebSocket.Server({
+    server: server,
+})
+
+wsServer.on("connection", (connection) => {
+    console.log((new Date()) + " connection");
+
+
+    connection.on("message", (message) => messageHandler(message, connection))
+    connection.on("close", () => console.log((new Date()) + "closed\n"))
+})
+
+
+export const sendDataUpdate = () => {
+    wsServer.clients.forEach(client => {
+        client.send(JSON.stringify({ strips, presets, effects }))
+    })
+}
 
 setup();

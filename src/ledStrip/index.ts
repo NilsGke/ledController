@@ -1,6 +1,6 @@
 import gpio from "pigpio";
-import { CONFIG } from "../..";
-import { effect, effects } from "../effects/effect";
+import { CONFIG, sendDataUpdate } from "../..";
+import { effect, effects } from "../effects";
 import { rgbStripType as stripType } from "./types";
 const Gpio = gpio.Gpio;
 
@@ -40,9 +40,8 @@ export default class rgbStrip {
         return new Promise((res, rej) => {
             this.color = color;
             // TEMPORARY simulate async gpio library (idk if its async but i guess it is)
-            setTimeout(() => {
-                res();
-            }, 50);
+            sendDataUpdate();
+            res();
         });
     }
 
@@ -58,6 +57,8 @@ export default class rgbStrip {
         const effect = effects.find((eff) => eff.name === effectName);
         if (effect === undefined)
             throw new Error(`effect: ${effectName} not found`);
+
+        sendDataUpdate();
     }
 
     public runEffect(): void {

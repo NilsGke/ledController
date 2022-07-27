@@ -4,7 +4,7 @@ import { rgbStripType } from "./ledStrip/types";
 import config from "./config.json";
 import { preset } from "./presets/types";
 import { loadPresets, presets } from "./presets/";
-import { loadEffects } from "./effects/effect";
+import { loadEffects } from "./effects";
 
 export const strips: rgbStrip[] = [];
 

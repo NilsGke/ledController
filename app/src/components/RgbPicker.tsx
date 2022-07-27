@@ -23,11 +23,9 @@ const RgbPicker: React.FC<props> = ({
     const sliderGreen = useRef<HTMLInputElement | null>(null);
     const sliderBlue = useRef<HTMLInputElement | null>(null);
 
-    console.log(fancyColors);
 
     // change slider backgrounds to match color
     useEffect(() => {
-        console.log("updateSliders: ", fancyColors);
         if (sliderRed.current && sliderGreen.current && sliderBlue.current) {
             if (fancyColors === "fancyRgb") {
                 (

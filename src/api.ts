@@ -1,6 +1,6 @@
 import express from "express";
 import { applyPreset, setup, strips } from "./controller";
-import { effects } from "./effects/effect";
+import { effects } from "./effects";
 import { ledValue, rgbStripType } from "./ledStrip/types";
 import { presets } from "./presets";
 import checkColor from "./util/checkColor";
@@ -40,7 +40,6 @@ router.get("/strips/:name/set/color/:r/:g/:b", (req, res) => {
 
 // IDEA: remove this?
 router.get("/strips/:name/set/alpha/:a", (req, res) => {
-    console.log("setting alpha");
 
     // get strip
     const strip = strips.find((strip) => strip.name === req.params.name);
@@ -69,6 +68,6 @@ router.get("/presets/apply/:name", (req, res) => {
 });
 
 // TODO: all strips
-router.get("/strips/all/set/color/:r/:g/:b", (req, res) => {});
+router.get("/strips/all/set/color/:r/:g/:b", (req, res) => { });
 
 export default router;

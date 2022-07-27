@@ -11,10 +11,11 @@ import {
 } from "@mui/material";
 
 import "../../styles/dashboard/dashboardStrip.sass";
-import { effect } from "../../../../src/effects/effect";
+import { effect } from "../../../../src/effects";
 import HuePicker from "../HuePicker";
 import RgbPicker from "../RgbPicker";
 import BrightnessPicker from "../BrightnessPicker";
+import sendColorToServer from "../../connection/setColor";
 
 type props = {
     data: rgbStripType;
@@ -37,17 +38,14 @@ const DashboardStrip: React.FC<props> = ({
         blue: strip.color.blue,
     });
 
-    const [currentColor, setCurrentColor] = useState<
-        null | rgbStripType["color"]
-    >(null);
-    const [newColor, setNewColor] = useState<null | rgbStripType["color"]>(
-        null
-    );
+    const [currentColor, setCurrentColor] = useState<null | rgbStripType["color"]>(null);
+    const [newColor, setNewColor] = useState<null | rgbStripType["color"]>(null);
 
     const alpha = 1;
 
     const [effect, setEffect] = useState<effect | null>(null);
 
+    // color changes from outside of this component
     useEffect(() => {
         setColor({
             red: strip.color.red,
@@ -58,16 +56,13 @@ const DashboardStrip: React.FC<props> = ({
         setEffect(newEffect === undefined ? null : newEffect);
     }, [strip]);
 
+    // send color to server
     useEffect(() => {
         if (newColor === null) return;
         if (newColor !== currentColor) {
-            fetch(
-                `/api/strips/${strip.name}/set/color/${newColor.red}/${newColor.green}/${newColor.blue}`
-            ).then(() => {
-                refresh();
-                setCurrentColor(color);
-                setNewColor(null);
-            });
+            sendColorToServer(strip.name, newColor);
+            setCurrentColor(color);
+            setNewColor(null);
         }
     }, [newColor]);
 

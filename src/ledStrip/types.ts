@@ -1,4 +1,4 @@
-import { effect } from "../effects/effect";
+import { effect } from "../effects";
 
 type ports = {
     red: number;
