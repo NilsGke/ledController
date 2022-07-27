@@ -1,5 +1,6 @@
 import gpio from "pigpio";
 import { CONFIG, sendDataUpdate } from "../..";
+import { onOff, setAllOnOff } from "../controller";
 import { effect, effects } from "../effects";
 import { rgbStripType as stripType } from "./types";
 const Gpio = gpio.Gpio;
@@ -14,6 +15,7 @@ export default class rgbStrip {
     public effect: effect | null = null;
     private effectRunning: boolean = false;
     private startingTime: number = 0;
+    private onOff: onOff;
 
     constructor(
         name: stripType["name"],
@@ -23,6 +25,7 @@ export default class rgbStrip {
         this.name = name;
         this.id = id;
         this.ports = ports;
+        this.onOff = "on";
 
         try {
             this.gpioPorts = {
@@ -36,20 +39,13 @@ export default class rgbStrip {
         }
     }
 
+    public setOnOff = (onOff: onOff): void => { this.onOff === onOff }
+
     public setColors(color: stripType["color"]): Promise<void> {
         return new Promise((res, rej) => {
             this.color = color;
-            // TEMPORARY simulate async gpio library (idk if its async but i guess it is)
             sendDataUpdate();
             res();
-        });
-    }
-
-    // IDEA: remove this
-    public setAlpha(alpha: stripType["alpha"]): Promise<void> {
-        return new Promise((res, rej) => {
-            this.alpha = alpha;
-            this.setColors(this.color).then(() => res());
         });
     }
 
@@ -66,15 +62,27 @@ export default class rgbStrip {
             throw new Error(
                 "attempting to start effect while no effect is set!"
             );
-        this.updateColors();
+        this.effectUpdate();
     }
 
-    private updateColors() {
+    private effectUpdate() {
         if (!this.effectRunning) return;
 
         setTimeout(() => {
             this.updateColors();
         }, CONFIG.ledRefreshRate);
+    }
+
+    public updateColors() {
+        if (this.onOff === "off") {
+            this.gpioPorts?.red.pwmWrite(0)
+            this.gpioPorts?.green.pwmWrite(0)
+            this.gpioPorts?.blue.pwmWrite(0)
+        } else {
+            this.gpioPorts?.red.pwmWrite(this.color.red)
+            this.gpioPorts?.green.pwmWrite(this.color.green)
+            this.gpioPorts?.blue.pwmWrite(this.color.blue)
+        }
     }
 
     public stopEffect(): void { }
