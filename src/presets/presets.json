@@ -132,68 +132,122 @@
         ]
     },
     {
-        "name": "rgb",
+        "name": "test",
         "id": 4,
         "strips": [
             {
-                "id": 0,
                 "color": {
                     "red": 255,
                     "green": 0,
                     "blue": 0
                 },
-                "effect": null
-            },
-            {
-                "id": 1,
-                "color": {
-                    "red": 0,
-                    "green": 255,
-                    "blue": 0
+                "alpha": 255,
+                "effect": null,
+                "effectRunning": false,
+                "name": "Schreibtisch",
+                "id": 0,
+                "ports": {
+                    "red": 17,
+                    "green": 22,
+                    "blue": 24
                 },
-                "effect": null
+                "onOff": "on"
             },
             {
-                "id": 2,
                 "color": {
                     "red": 0,
                     "green": 0,
                     "blue": 255
                 },
-                "effect": null
+                "alpha": 255,
+                "effect": null,
+                "effectRunning": false,
+                "name": "Bett",
+                "id": 1,
+                "ports": {
+                    "red": 17,
+                    "green": 18,
+                    "blue": 19
+                },
+                "onOff": "on"
+            },
+            {
+                "color": {
+                    "red": 255,
+                    "green": 0,
+                    "blue": 0
+                },
+                "alpha": 255,
+                "effect": null,
+                "effectRunning": false,
+                "name": "Regal",
+                "id": 2,
+                "ports": {
+                    "red": 20,
+                    "green": 21,
+                    "blue": 22
+                },
+                "onOff": "on"
             }
         ]
     },
     {
-        "name": "green pink",
+        "name": "lila",
         "id": 5,
         "strips": [
             {
+                "color": {
+                    "red": 84,
+                    "green": 0,
+                    "blue": 255
+                },
+                "alpha": 255,
+                "effect": null,
+                "effectRunning": false,
+                "name": "Schreibtisch",
                 "id": 0,
-                "color": {
-                    "red": 0,
-                    "green": 255,
-                    "blue": 0
+                "ports": {
+                    "red": 17,
+                    "green": 22,
+                    "blue": 24
                 },
-                "effect": null
+                "onOff": "on"
             },
             {
+                "color": {
+                    "red": 144,
+                    "green": 0,
+                    "blue": 255
+                },
+                "alpha": 255,
+                "effect": null,
+                "effectRunning": false,
+                "name": "Bett",
                 "id": 1,
-                "color": {
-                    "red": 0,
-                    "green": 255,
-                    "blue": 0
+                "ports": {
+                    "red": 17,
+                    "green": 18,
+                    "blue": 19
                 },
-                "effect": null
+                "onOff": "on"
             },
             {
-                "id": 2,
                 "color": {
                     "red": 255,
                     "green": 0,
-                    "blue": 210
+                    "blue": 252
                 },
-                "effect": null
+                "alpha": 255,
+                "effect": null,
+                "effectRunning": false,
+                "name": "Regal",
+                "id": 2,
+                "ports": {
+                    "red": 20,
+                    "green": 21,
+                    "blue": 22
+                },
+                "onOff": "on"
             }
         ]
     }
