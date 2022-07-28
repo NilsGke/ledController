@@ -62,8 +62,8 @@ const DashboardStrip: React.FC<props> = ({
         }
     }, [newColor]);
 
-    const selectRef = useRef<HTMLInputElement | null>(null);
     const stripRef = useRef<HTMLInputElement | null>(null);
+    const selectRef = useRef<HTMLInputElement | null>(null);
 
     const colorString = `rgb(${Math.floor(color.red * alpha)}, ${Math.floor(
         color.green * alpha
@@ -76,24 +76,31 @@ const DashboardStrip: React.FC<props> = ({
         else setLedEffect(strip, effect);
     };
 
-    useEffect(() => {
-        if (stripRef.current === null) return;
-        if (strip.effect === null) {
-            stripRef.current
-                .getAnimations()
-                .forEach((animation) => animation.cancel());
-            return;
-        }
+    // useEffect(() => {
+    //     if (stripRef.current === null) return;
+    //     if (strip.effect === null) {
+    //         stripRef.current
+    //             .getAnimations()
+    //             .forEach((animation) => animation.cancel());
+    //         return;
+    //     }
 
-        const animationKeyframes = strip.effect.keyframes.map((frame) => ({
-            boxShadow: `0px 0px 40px 0px rgb(${frame.color.red}, ${frame.color.green}, ${frame.color.blue})`,
-            offset: frame.step / 100,
-        }));
-        const animationTiming = {
-            duration: strip.effect.duration,
-            iterations: Infinity,
-        };
-        stripRef.current.animate(animationKeyframes, animationTiming);
+    //     const animationKeyframes = strip.effect.keyframes.map((frame) => ({
+    //         boxShadow: `0px 0px 40px 0px rgb(${frame.color.red}, ${frame.color.green}, ${frame.color.blue})`,
+    //         offset: frame.step / 100,
+    //     }));
+    //     const animationTiming = {
+    //         duration: strip.effect.duration,
+    //         iterations: Infinity,
+    //     };
+    //     stripRef.current.animate(animationKeyframes, animationTiming);
+    // }, [strip.effect]);
+
+    useEffect(() => {
+        if (strip?.effect === null) return;
+        const { duration, time, keyframes } = strip.effect;
+
+        return () => {};
     }, [strip.effect]);
 
     return (
