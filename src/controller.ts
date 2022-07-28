@@ -62,33 +62,31 @@ export const setActivePreset = (preset: typeof activePreset) =>
 export const applyPreset = (
     presetId?: preset["id"],
     presetName?: preset["name"]
-): Promise<void> => {
-    return new Promise((resolve, reject) => {
-        const preset = presets.find(
-            (preset) => preset.name === presetName || preset.id === presetId
+): void => {
+    const preset = presets.find(
+        (preset) => preset.name === presetName || preset.id === presetId
+    );
+    if (preset === undefined)
+        throw new Error(
+            `Preset: "${presetName}" not found in presets. Check the json files!`
         );
-        if (preset === undefined)
-            throw new Error(
-                `Preset: "${presetName}" not found in presets. Check the json files!`
+
+    activePreset = preset;
+
+    preset.strips.map((presetStrip) => {
+        const strip = strips.find((strip) => strip.id === presetStrip.id);
+
+        if (strip === undefined)
+            console.warn(
+                `Strip (id: ${presetStrip.id}) not found, check json files (strips and presets)`
             );
-
-        activePreset = preset;
-
-        const proms = preset.strips.map((presetStrip) => {
-            const strip = strips.find((strip) => strip.id === presetStrip.id);
-
-            if (strip === undefined)
-                console.warn(
-                    `Strip (id: ${presetStrip.id}) not found, check json files (strips and presets)`
-                );
-            else return strip.setColors(presetStrip.color);
-        });
-
-        Promise.all(proms).then(() => {
-            sendDataUpdate();
-            resolve();
-        });
+        else {
+            strip.stopEffect();
+            strip.setColors(presetStrip.color);
+        }
     });
+
+    sendDataUpdate();
 };
 
 // info object
