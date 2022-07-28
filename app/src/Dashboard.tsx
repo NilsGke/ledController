@@ -9,6 +9,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup/ToggleButtonGroup
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import Preset from "./components/dashboard/Preset";
 import DashboardStrip, { sliderTypes } from "./components/dashboard/Strip";
+import { Presets } from "./components/Presets";
 import ws from "./connection/connection";
 import { infoData, newDataEvent, requestNewData } from "./connection/newData";
 import setOnOff from "./connection/onOff";
@@ -190,15 +191,7 @@ const Dashboard: React.FC = () => {
                     </div>
                 </ThemeProvider>
             </div>
-            <div id="presetsContainer">
-                {data.presets?.map((preset) => (
-                    <Preset
-                        key={preset.id}
-                        data={preset}
-                        refresh={() => setRefresh(true)}
-                    />
-                ))}
-            </div>
+            <Presets data={data} />
         </div>
     );
 };
