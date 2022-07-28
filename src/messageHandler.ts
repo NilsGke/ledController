@@ -72,6 +72,7 @@ const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
     if (m.apply) {
         const preset = presets.find(ps => ps.name === m.apply)
         if (preset === undefined) return console.error(`preset: ${m.apply}`)
+        if (sync) setSync(false);
         applyPreset(preset.id);
     }
 
