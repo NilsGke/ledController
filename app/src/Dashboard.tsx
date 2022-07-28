@@ -1,13 +1,4 @@
-import CircularProgress from "@mui/material/CircularProgress/CircularProgress";
-import { green } from "@mui/material/colors";
-import FormControlLabel from "@mui/material/FormControlLabel/FormControlLabel";
-import createTheme from "@mui/material/styles/createTheme";
-import ThemeProvider from "@mui/material/styles/ThemeProvider";
-import Switch from "@mui/material/Switch/Switch";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup/ToggleButtonGroup";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import Preset from "./components/dashboard/Preset";
 import DashboardStrip, { sliderTypes } from "./components/dashboard/Strip";
 import { Presets } from "./components/Presets";
 import ws from "./connection/connection";
@@ -16,7 +7,14 @@ import setOnOff from "./connection/onOff";
 import setStripSync from "./connection/sync";
 import "./styles/dashboard.sass";
 
-
+// mui
+import CircularProgress from "@mui/material/CircularProgress/CircularProgress";
+import FormControlLabel from "@mui/material/FormControlLabel/FormControlLabel";
+import createTheme from "@mui/material/styles/createTheme";
+import ThemeProvider from "@mui/material/styles/ThemeProvider";
+import Switch from "@mui/material/Switch/Switch";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup/ToggleButtonGroup";
 
 const Dashboard: React.FC = () => {
     const [on, setOn] = useState(true);
@@ -31,27 +29,26 @@ const Dashboard: React.FC = () => {
 
     const rootRef = useRef<HTMLInputElement | null>(null);
 
-
     // request new data
     useEffect(() => {
         if (data === null || refresh) requestNewData();
     }, [data, refresh]);
 
-
     // receive new data
     useEffect(() => {
-        const newDataHandler = (e: Event) => setData((e as newDataEvent).detail.newData)
-        ws.addEventListener("newData", newDataHandler)
-        return () => ws.removeEventListener("newData", newDataHandler)
-    }, [])
+        const newDataHandler = (e: Event) =>
+            setData((e as newDataEvent).detail.newData);
+        ws.addEventListener("newData", newDataHandler);
+        return () => ws.removeEventListener("newData", newDataHandler);
+    }, []);
 
     // handleNewData
     useEffect(() => {
         console.log(data);
         if (data === null) return;
-        setOn(data.onOff === "on")
-        setSync(data.sync)
-    }, [data])
+        setOn(data.onOff === "on");
+        setSync(data.sync);
+    }, [data]);
 
     // keypress handler
     useEffect(() => {
@@ -70,24 +67,27 @@ const Dashboard: React.FC = () => {
 
     // store slider position in local storage
     useEffect(() => {
-        localStorage.setItem("ledControllerSliders", sliders)
-    }, [sliders])
+        localStorage.setItem("ledControllerSliders", sliders);
+    }, [sliders]);
 
-    // on off change 
+    // on off change
     useEffect(() => {
-        if ((data?.onOff === "on") !== on)
-            setOnOff(on ? "on" : "off")
-    }, [on])
+        if ((data?.onOff === "on") !== on) setOnOff(on ? "on" : "off");
+    }, [on]);
 
     // sync change
     useEffect(() => {
         if (data?.sync !== undefined)
-            if (data?.sync !== sync)
-                setStripSync(sync)
-    }, [sync])
+            if (data?.sync !== sync) setStripSync(sync);
+    }, [sync]);
 
     // render loading if no data there
-    if (data === null) return <div className="dashboard loading"><CircularProgress /></div>;
+    if (data === null)
+        return (
+            <div className="dashboard loading">
+                <CircularProgress />
+            </div>
+        );
 
     return (
         <div className="dashboard" ref={rootRef}>
