@@ -72,11 +72,13 @@ const Dashboard: React.FC = () => {
         localStorage.setItem("ledControllerSliders", sliders)
     }, [sliders])
 
+    // on off change 
     useEffect(() => {
         if ((data?.onOff === "on") !== on)
             setOnOff(on ? "on" : "off")
     }, [on])
 
+    // sync change
     useEffect(() => {
         if (data?.sync !== undefined)
             if (data?.sync !== sync)
