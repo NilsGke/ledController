@@ -34,11 +34,14 @@ const DashboardStrip: React.FC<props> = ({
         blue: strip.color.blue,
     });
 
-    const [currentColor, setCurrentColor] = useState<null | rgbStripType["color"]>(null);
-    const [newColor, setNewColor] = useState<null | rgbStripType["color"]>(null);
+    const [currentColor, setCurrentColor] = useState<
+        null | rgbStripType["color"]
+    >(null);
+    const [newColor, setNewColor] = useState<null | rgbStripType["color"]>(
+        null
+    );
 
     const alpha = 1;
-
 
     // color changes from outside of this component
     useEffect(() => {
@@ -93,7 +96,6 @@ const DashboardStrip: React.FC<props> = ({
         stripRef.current.animate(animationKeyframes, animationTiming);
     }, [strip.effect]);
 
-
     return (
         <div className="stripContainer">
             <div
@@ -122,7 +124,7 @@ const DashboardStrip: React.FC<props> = ({
                                 color={color as rgbStripType["color"]}
                                 onChange={(color) => {
                                     if (strip.effect !== null)
-                                        setNewColor(color)
+                                        setNewColor(color);
                                     setColor(color);
                                 }}
                                 onChangeComplete={(color) => {
@@ -133,7 +135,7 @@ const DashboardStrip: React.FC<props> = ({
                                 color={color as rgbStripType["color"]}
                                 onChange={(color) => {
                                     if (strip.effect !== null)
-                                        setNewColor(color)
+                                        setNewColor(color);
                                     setColor(color);
                                 }}
                                 onChangeComplete={(color) => {
@@ -145,8 +147,7 @@ const DashboardStrip: React.FC<props> = ({
                         <RgbPicker
                             color={color as rgbStripType["color"]}
                             onChange={(color) => {
-                                if (strip.effect !== null)
-                                    setNewColor(color)
+                                if (strip.effect !== null) setNewColor(color);
                                 setColor(color);
                             }}
                             onChangeComplete={(color) => {
@@ -164,7 +165,9 @@ const DashboardStrip: React.FC<props> = ({
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            value={strip.effect === null ? "" : strip.effect.name}
+                            value={
+                                strip.effect === null ? "" : strip.effect.name
+                            }
                             label="Effect"
                             onChange={(e) =>
                                 changeEffect(e.target.value as string)
