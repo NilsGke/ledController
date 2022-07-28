@@ -12,6 +12,7 @@ import DashboardStrip, { sliderTypes } from "./components/dashboard/Strip";
 import ws from "./connection/connection";
 import { infoData, newDataEvent, requestNewData } from "./connection/newData";
 import setOnOff from "./connection/onOff";
+import setStripSync from "./connection/sync";
 import "./styles/dashboard.sass";
 
 
@@ -30,10 +31,6 @@ const Dashboard: React.FC = () => {
     const rootRef = useRef<HTMLInputElement | null>(null);
 
 
-
-
-
-
     // request new data
     useEffect(() => {
         if (data === null || refresh) requestNewData();
@@ -50,8 +47,9 @@ const Dashboard: React.FC = () => {
     // handleNewData
     useEffect(() => {
         console.log(data);
-
-        setOn(data?.onOff === "on")
+        if (data === null) return;
+        setOn(data.onOff === "on")
+        setSync(data.sync)
     }, [data])
 
     // keypress handler
@@ -78,6 +76,12 @@ const Dashboard: React.FC = () => {
         if ((data?.onOff === "on") !== on)
             setOnOff(on ? "on" : "off")
     }, [on])
+
+    useEffect(() => {
+        if (data?.sync !== undefined)
+            if (data?.sync !== sync)
+                setStripSync(sync)
+    }, [sync])
 
     // render loading if no data there
     if (data === null) return <div className="dashboard loading"><CircularProgress /></div>;
@@ -132,6 +136,7 @@ const Dashboard: React.FC = () => {
                                 <Switch
                                     color="primary"
                                     aria-label="sync strips"
+                                    checked={sync}
                                     onChange={(e, checked) => setSync(checked)}
                                 />
                             }
