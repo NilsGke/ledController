@@ -1,26 +1,36 @@
-import express from "express";
-import api from "./src/api";
-import { setup } from "./src/controller";
+import { getInfoObject, setup } from "./src/controller";
+import { port } from "./app/src/connectionConfig.json"
+import WebSocket from "ws";
+import messageHandler from "./src/messageHandler";
+import express from "express"
 
 const app = express();
-const port = process.env.PORT || 3030;
 
 export const CONFIG = {
-    ledRefreshRate: 200,
+    ledRefreshRate: 10,
 };
 
-// api route
-app.use("/api", api);
+const server = app.listen(port, "", () => console.log("\x1b[32mserver running!\x1b[0m"))
 
-// static directory to server react app
-app.use(express.static("app/build"));
-// server react app
-app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/app/build/index.html");
-});
+app.use(express.static(__dirname + '/app/build'));
 
-app.listen(port, () => {
-    console.log(`\x1b[42mServer is running on port: ${port}\x1b[0m`);
-});
+
+const wsServer = new WebSocket.Server({
+    server
+})
+
+wsServer.on("connection", (connection) => {
+    console.log("\x1b[32mconnection\x1b[0m");
+
+    connection.on("message", (message) => messageHandler(message, connection))
+    connection.on("close", () => console.log("\x1b[31mclosed\x1b[0m"))
+})
+
+
+export const sendDataUpdate = () => {
+    wsServer.clients.forEach(client => {
+        client.send(JSON.stringify(getInfoObject()))
+    })
+}
 
 setup();

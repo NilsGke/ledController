@@ -1,4 +1,4 @@
-import { effect } from "../effects/effect";
+import { effect } from "../effects";
 
 type ports = {
     red: number;
@@ -277,5 +277,5 @@ export type rgbStripType = {
     ports: ports;
     name: name;
     id: id;
-    effectName: effect["name"];
+    effect: effect | null;
 };

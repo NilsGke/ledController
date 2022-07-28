@@ -4,7 +4,8 @@ import { rgbStripType } from "./ledStrip/types";
 import config from "./config.json";
 import { preset } from "./presets/types";
 import { loadPresets, presets } from "./presets/";
-import { loadEffects } from "./effects/effect";
+import { effects, loadEffects } from "./effects";
+import { sendDataUpdate } from "..";
 
 export const strips: rgbStrip[] = [];
 
@@ -15,14 +16,8 @@ type stripData = {
 };
 
 export const setup = async () => {
-    await generateStrips();
-    await loadPresets();
-    await loadEffects();
-    applyPreset(config.defaultPreset);
-};
-
-const generateStrips = (): Promise<void> => {
-    return new Promise((resolve, reject) => {
+    // generate strips
+    await new Promise<void>((resolve, reject) => {
         fs.readFile("./src/strips.json", "utf8", (err, data) => {
             const dataStrips = JSON.parse(data) as stripData[];
             dataStrips.forEach((strip) =>
@@ -31,7 +26,32 @@ const generateStrips = (): Promise<void> => {
             resolve();
         });
     });
+
+    await loadPresets();
+    await loadEffects();
+    applyPreset(config.defaultPreset);
 };
+
+export type onOff = "on" | "off"
+export let onOff: onOff = "on";
+export const setAllOnOff = (state: onOff) => {
+    onOff = state;
+    strips.forEach(strip => strip.setOnOff(state));
+    updateColors()
+}
+
+const updateColors = () => {
+    strips.forEach(strip => strip.updateColors())
+    sendDataUpdate();
+}
+
+export type sync = boolean;
+export let sync: sync = false;
+export const setSync = (state: sync) => {
+    sync = state;
+    if (sync) strips.forEach(strip => strip.setColors(strips[0].color))
+    updateColors();
+}
 
 export const applyPreset = (
     presetId?: preset["id"],
@@ -57,6 +77,13 @@ export const applyPreset = (
             return strip.setColors(presetStrip.color);
         });
 
-        Promise.all(proms).then(() => resolve());
+        Promise.all(proms).then(() => {
+            sendDataUpdate();
+            resolve()
+        });
     });
 };
+
+export const getInfoObject = () =>
+    ({ strips, presets, effects, onOff, sync })
+

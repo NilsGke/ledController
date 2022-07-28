@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress/CircularProgress";
 import { green } from "@mui/material/colors";
 import FormControlLabel from "@mui/material/FormControlLabel/FormControlLabel";
 import createTheme from "@mui/material/styles/createTheme";
@@ -6,18 +7,15 @@ import Switch from "@mui/material/Switch/Switch";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup/ToggleButtonGroup";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { effect } from "../../src/effects/effect";
-import { rgbStripType } from "../../src/ledStrip/types";
-import { preset } from "../../src/presets/types";
 import Preset from "./components/dashboard/Preset";
 import DashboardStrip, { sliderTypes } from "./components/dashboard/Strip";
+import ws from "./connection/connection";
+import { infoData, newDataEvent, requestNewData } from "./connection/newData";
+import setOnOff from "./connection/onOff";
+import setStripSync from "./connection/sync";
 import "./styles/dashboard.sass";
 
-type infoData = {
-    strips: rgbStripType[];
-    presets: preset[];
-    effects: effect[];
-};
+
 
 const Dashboard: React.FC = () => {
     const [on, setOn] = useState(true);
@@ -25,36 +23,41 @@ const Dashboard: React.FC = () => {
     const [refresh, setRefresh] = useState<boolean>(false);
 
     const [sync, setSync] = useState<boolean>(false);
-    const [fancySliders, setFancySliders] = useState(false);
 
     const [sliders, setSliders] = useState<sliderTypes>(
         (localStorage.getItem("ledControllerSliders") || "hue") as sliderTypes
     );
 
-    // useEffect(() => {
-    //     const interval = setInterval(() => setRefresh(true), 1000);
-    //     return () => {
-    //         clearInterval(interval);
-    //     };
-    // }, []);
-
     const rootRef = useRef<HTMLInputElement | null>(null);
 
+
+    // request new data
     useEffect(() => {
-        if (data === null || refresh === true)
-            fetch("api/info")
-                .then((res) => res.json())
-                .then((data: infoData) => {
-                    setData(data);
-                    setRefresh(false);
-                });
+        if (data === null || refresh) requestNewData();
     }, [data, refresh]);
 
-    const keyHandler = (e: Event) => {
-        console.log(e);
-    };
 
+    // receive new data
     useEffect(() => {
+        const newDataHandler = (e: Event) => setData((e as newDataEvent).detail.newData)
+        ws.addEventListener("newData", newDataHandler)
+        return () => ws.removeEventListener("newData", newDataHandler)
+    }, [])
+
+    // handleNewData
+    useEffect(() => {
+        console.log(data);
+        if (data === null) return;
+        setOn(data.onOff === "on")
+        setSync(data.sync)
+    }, [data])
+
+    // keypress handler
+    useEffect(() => {
+        const keyHandler = (e: Event) => {
+            console.log(e);
+        };
+
         if (rootRef.current)
             rootRef.current.addEventListener("keyDown", keyHandler);
 
@@ -64,14 +67,24 @@ const Dashboard: React.FC = () => {
         };
     }, []);
 
-    if (data === null) return <div className="dashboard loading"></div>;
+    // store slider position in local storage
+    useEffect(() => {
+        localStorage.setItem("ledControllerSliders", sliders)
+    }, [sliders])
 
-    const handleSyncChange = (e: any, value: string) => {
-        console.log(value);
-        setSync(!sync);
-    };
+    useEffect(() => {
+        if ((data?.onOff === "on") !== on)
+            setOnOff(on ? "on" : "off")
+    }, [on])
 
-    console.log(data);
+    useEffect(() => {
+        if (data?.sync !== undefined)
+            if (data?.sync !== sync)
+                setStripSync(sync)
+    }, [sync])
+
+    // render loading if no data there
+    if (data === null) return <div className="dashboard loading"><CircularProgress /></div>;
 
     return (
         <div className="dashboard" ref={rootRef}>
@@ -123,6 +136,8 @@ const Dashboard: React.FC = () => {
                                 <Switch
                                     color="primary"
                                     aria-label="sync strips"
+                                    checked={sync}
+                                    onChange={(e, checked) => setSync(checked)}
                                 />
                             }
                             label="Sync"

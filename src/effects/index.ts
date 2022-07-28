@@ -1,7 +1,7 @@
 import { rgbStripType } from "../ledStrip/types";
 import fs from "fs";
 
-type keyframe = {
+export type keyframe = {
     step: number;
     color: rgbStripType["color"];
 };
@@ -11,6 +11,7 @@ export type effect = {
     id: number;
     duration: number;
     keyframes: keyframe[];
+    time?: number;
 };
 
 export const effects: effect[] = [];

@@ -1,6 +1,6 @@
 import express from "express";
 import { applyPreset, setup, strips } from "./controller";
-import { effects } from "./effects/effect";
+import { effects } from "./effects";
 import { ledValue, rgbStripType } from "./ledStrip/types";
 import { presets } from "./presets";
 import checkColor from "./util/checkColor";
@@ -38,27 +38,6 @@ router.get("/strips/:name/set/color/:r/:g/:b", (req, res) => {
     strip.setColors(colorValues).then(() => res.sendStatus(200));
 });
 
-// IDEA: remove this?
-router.get("/strips/:name/set/alpha/:a", (req, res) => {
-    console.log("setting alpha");
-
-    // get strip
-    const strip = strips.find((strip) => strip.name === req.params.name);
-    if (strip === undefined) return res.status(404).send("strip not found");
-
-    const alpha = parseInt(req.params.a);
-
-    // check that color is between 0 and 255
-    if (alpha > 255 || alpha < 0)
-        return res
-            .status(400)
-            .send(`value: ${alpha} is an invalid value for property alpha`);
-
-    // set color
-    strip
-        .setAlpha(alpha as rgbStripType["alpha"])
-        .then(() => res.sendStatus(200));
-});
 
 // preset
 router.get("/presets/apply/:name", (req, res) => {
@@ -69,6 +48,6 @@ router.get("/presets/apply/:name", (req, res) => {
 });
 
 // TODO: all strips
-router.get("/strips/all/set/color/:r/:g/:b", (req, res) => {});
+router.get("/strips/all/set/color/:r/:g/:b", (req, res) => { });
 
 export default router;

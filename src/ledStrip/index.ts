@@ -1,19 +1,21 @@
 import gpio from "pigpio";
-import { CONFIG } from "../..";
-import { effect, effects } from "../effects/effect";
-import { rgbStripType as stripType } from "./types";
+import { CONFIG, sendDataUpdate } from "../..";
+import { onOff, setAllOnOff } from "../controller";
+import { effect, effects, keyframe } from "../effects";
+import checkColor from "../util/checkColor";
+import { rgbStripType, rgbStripType as stripType } from "./types";
 const Gpio = gpio.Gpio;
 
 export default class rgbStrip {
     public name: stripType["name"];
     public id: stripType["id"];
     public ports: stripType["ports"];
-    public gpioPorts: { red: gpio.Gpio; green: gpio.Gpio; blue: gpio.Gpio };
+    public gpioPorts: { red: gpio.Gpio; green: gpio.Gpio; blue: gpio.Gpio } | undefined;
     public color: stripType["color"] = { red: 0, green: 0, blue: 0 };
     public alpha: stripType["alpha"] = 255;
     public effect: effect | null = null;
     private effectRunning: boolean = false;
-    private startingTime: number = 0;
+    private onOff: onOff;
 
     constructor(
         name: stripType["name"],
@@ -23,35 +25,40 @@ export default class rgbStrip {
         this.name = name;
         this.id = id;
         this.ports = ports;
-        this.gpioPorts = {
-            red: new Gpio(ports.red, { mode: Gpio.OUTPUT }),
-            green: new Gpio(ports.green, { mode: Gpio.OUTPUT }),
-            blue: new Gpio(ports.blue, { mode: Gpio.OUTPUT }),
-        };
+        this.onOff = "on";
+
+        try {
+            this.gpioPorts = {
+                red: new Gpio(ports.red, { mode: Gpio.OUTPUT }),
+                green: new Gpio(ports.green, { mode: Gpio.OUTPUT }),
+                blue: new Gpio(ports.blue, { mode: Gpio.OUTPUT }),
+            };
+        } catch (error) {
+            console.log(error);
+            console.log("\x1b[31m error while initializing gpio ports. You are probably using a device where there are no gpio ports. Be careful, not everything is gonna work!\x1b[0m")
+        }
     }
+
+    public setOnOff = (onOff: onOff): void => { this.onOff === onOff }
 
     public setColors(color: stripType["color"]): Promise<void> {
         return new Promise((res, rej) => {
+            if (!checkColor(color)) {
+                console.warn("tried setting color that falls outside of the specified range!", color)
+                rej()
+            }
             this.color = color;
-            // TEMPORARY simulate async gpio library (idk if its async but i guess it is)
-            setTimeout(() => {
-                res();
-            }, 50);
+            sendDataUpdate();
+            this.effectRunning = false;
+            res();
         });
     }
 
-    // IDEA: remove this
-    public setAlpha(alpha: stripType["alpha"]): Promise<void> {
-        return new Promise((res, rej) => {
-            this.alpha = alpha;
-            this.setColors(this.color).then(() => res());
-        });
-    }
+    public setEffect(effect: effect): void {
+        this.effect = effect;
 
-    public setEffect(effectName: effect["name"]): void {
-        const effect = effects.find((eff) => eff.name === effectName);
-        if (effect === undefined)
-            throw new Error(`effect: ${effectName} not found`);
+        sendDataUpdate();
+        this.runEffect()
     }
 
     public runEffect(): void {
@@ -59,16 +66,93 @@ export default class rgbStrip {
             throw new Error(
                 "attempting to start effect while no effect is set!"
             );
-        this.updateColors();
+        this.effectRunning = true;
+        this.effectUpdate();
     }
 
-    private updateColors() {
-        if (!this.effectRunning) return;
+    private effectUpdate() {
+        if (!this.effectRunning || this.effect == null) return;
+        if (this.effect.time === undefined) this.effect.time = Date.now(); // this should never happen but just in case and for the compiler its there
 
-        setTimeout(() => {
-            this.updateColors();
-        }, CONFIG.ledRefreshRate);
+        const { duration, time, keyframes } = this.effect;
+
+        const timePassed = Date.now() - time;
+
+        let timeInEffect = timePassed;
+        while (timeInEffect >= duration) timeInEffect -= duration
+
+        let prev: keyframe | undefined, next: keyframe | undefined;
+
+        let timeInTransition = timeInEffect;
+
+        for (let i = 0; i < keyframes.length - 1; i++) {
+            if (duration / 100 * keyframes[i].step <= timeInEffect && timeInEffect <= duration / 100 * keyframes[i + 1].step) {
+                // current transition
+                prev = keyframes[i];
+                next = keyframes[i + 1];
+                break
+            } else {
+                // previous transition
+                timeInTransition -= duration / 100 * keyframes[i + 1].step - duration / 100 * keyframes[i].step
+            }
+        }
+
+
+        if (prev !== undefined && next !== undefined) {
+            const transTime = (duration / 100 * next.step) - (duration / 100 * prev.step)
+
+
+            const percentTransPassed = Math.round(100 / transTime * timeInTransition)
+            const colorDiff = {
+                red: Math.round(prev.color.red - next.color.red),
+                green: Math.round(prev.color.green - next.color.green),
+                blue: Math.round(prev.color.blue - next.color.blue),
+            };
+
+            const addColor = {
+                red: Math.round(colorDiff.red * percentTransPassed / 100),
+                green: Math.round(colorDiff.green * percentTransPassed / 100),
+                blue: Math.round(colorDiff.blue * percentTransPassed / 100),
+            }
+
+            const newColor = {
+                red: prev.color.red - addColor.red,
+                green: prev.color.green - addColor.green,
+                blue: prev.color.blue - addColor.blue,
+            }
+
+            // just to make sure the colors are not above 255
+            newColor.red = newColor.red > 255 ? 255 : newColor.red;
+            newColor.green = newColor.green > 255 ? 255 : newColor.green;
+            newColor.blue = newColor.blue > 255 ? 255 : newColor.blue;
+
+            console.log(`%c ${newColor.red} ${newColor.green} ${newColor.blue}`, `background: rgb(${newColor.red}, ${newColor.green}, ${newColor.blue})`);
+
+            // IDEA: add cubic function to make transitions more interesting
+            // https://blog.maximeheckel.com/posts/cubic-bezier-from-math-to-motion/ 
+            // there could be a function for inbetween keyframes and one for the entire transition
+
+
+            // this.setColors(newColor as rgbStripType["color"]).then(this.updateColors)
+
+        } else {
+            console.warn("could not determine previous or next keyframe");
+
+        }
+        setTimeout(() => this.effectUpdate(), CONFIG.ledRefreshRate);
     }
 
-    public stopEffect(): void {}
+    public updateColors() {
+        if (this.onOff === "off") {
+            this.gpioPorts?.red.pwmWrite(0)
+            this.gpioPorts?.green.pwmWrite(0)
+            this.gpioPorts?.blue.pwmWrite(0)
+        } else {
+            this.gpioPorts?.red.pwmWrite(this.color.red)
+            this.gpioPorts?.green.pwmWrite(this.color.green)
+            this.gpioPorts?.blue.pwmWrite(this.color.blue)
+        }
+    }
+
+    public stopEffect(): void { this.effectRunning = false; }
 }

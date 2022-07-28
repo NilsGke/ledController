@@ -21,13 +21,11 @@ const HuePicker: React.FC<props> = ({ color, onChange, onChangeComplete }) => {
     const [value, setValue] = useState<hslColor>(hslColor);
 
     const handleChange = (e: any, val: number | number[] | undefined) => {
-        console.log(val);
         const rgbColor = hslToRgb({
             lightness: hslColor.lightness === 0 ? 127.5 : hslColor.lightness,
             saturation: 255,
             hue: val as number,
         });
-        console.log(rgbColor);
 
         onChange(rgbColor);
         setValue(rgbToHsl(rgbColor));
