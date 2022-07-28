@@ -32,6 +32,7 @@
             align-items: center
             justify-content: center
             flex-direction: row
+            flex-wrap: wrap
             gap: 20px
             .control
                 label
@@ -41,17 +42,19 @@
                     height: 50px
                     margin: 0
         #presetsContainer
+            margin-top: 30px
             display: flex
             align-items: center
             justify-content: center
             flex-direction: row
             flex-wrap: wrap
+            // gap: 20px
 
             .presetContainer
-                $padding: 2vw
+                $padding: 10px
                 flex: calc(10% - ($padding * 2))
                 max-width: calc(10%)
-                padding: 2rem $padding
+                padding: $padding
 
                 /* Responsive layout - makes a two column-layout instead of four columns */
                 @media screen and (max-width: 800px)
@@ -61,4 +64,4 @@
                 /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
                 @media screen and (max-width: 600px)
                     flex: 50%
-                    max-width: 50%
+                    max-width: calc(50% - $padding * 2)
