@@ -32,33 +32,33 @@ export const setup = async () => {
     applyPreset(config.defaultPreset);
 };
 
-
 const updateColors = () => {
-    strips.forEach(strip => strip.updateColors())
+    strips.forEach((strip) => strip.updateColors());
     sendDataUpdate();
-}
+};
 
 // on off
-export type onOff = "on" | "off"
+export type onOff = "on" | "off";
 export let onOff: onOff = "on";
 export const setAllOnOff = (state: onOff) => {
     onOff = state;
-    strips.forEach(strip => strip.setOnOff(state));
-    updateColors()
-}
+    strips.forEach((strip) => strip.setOnOff(state));
+    updateColors();
+};
 
 // sync
 export type sync = boolean;
 export let sync: sync = false;
 export const setSync = (state: sync, notify?: boolean) => {
     sync = state;
-    if (sync) strips.forEach(strip => strip.setColors(strips[0].color))
+    if (sync) strips.forEach((strip) => strip.setColors(strips[0].color));
     if (notify === undefined || notify === true) updateColors();
-}
+};
 
 // preset
 export let activePreset: preset | null = null;
-export const setActivePreset = (preset: typeof activePreset) => activePreset = preset;
+export const setActivePreset = (preset: typeof activePreset) =>
+    (activePreset = preset);
 export const applyPreset = (
     presetId?: preset["id"],
     presetName?: preset["name"]
@@ -78,7 +78,7 @@ export const applyPreset = (
             const strip = strips.find((strip) => strip.id === presetStrip.id);
 
             if (strip === undefined)
-                throw new Error(
+                console.warn(
                     `Strip (id: ${presetStrip.id}) not found, check json files (strips and presets)`
                 );
 
@@ -87,12 +87,17 @@ export const applyPreset = (
 
         Promise.all(proms).then(() => {
             sendDataUpdate();
-            resolve()
+            resolve();
         });
     });
 };
 
 // info object
-export const getInfoObject = () =>
-    ({ strips, presets, effects, onOff, sync, activePreset })
-
+export const getInfoObject = () => ({
+    strips,
+    presets,
+    effects,
+    onOff,
+    sync,
+    activePreset,
+});
