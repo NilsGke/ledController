@@ -277,5 +277,5 @@ export type rgbStripType = {
     ports: ports;
     name: name;
     id: id;
-    effectName: effect["name"];
+    effect: effect | null;
 };
