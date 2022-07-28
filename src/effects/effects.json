@@ -108,5 +108,108 @@
                 }
             }
         ]
+    },
+    {
+        "name": "police",
+        "id": 2,
+        "duration": 1000,
+        "keyframes": [
+            {
+                "step": 0,
+                "color": {
+                    "red": 255,
+                    "green": 0,
+                    "blue": 0
+                }
+            },
+            {
+                "step": 9,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 0
+                }
+            },
+            {
+                "step": 18,
+                "color": {
+                    "red": 255,
+                    "green": 0,
+                    "blue": 0
+                }
+            },
+            {
+                "step": 27,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 0
+                }
+            },
+            {
+                "step": 36,
+                "color": {
+                    "red": 255,
+                    "green": 0,
+                    "blue": 0
+                }
+            },
+            {
+                "step": 45,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 0
+                }
+            },
+            {
+                "step": 55,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 255
+                }
+            },
+            {
+                "step": 64,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 0
+                }
+            },
+            {
+                "step": 73,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 255
+                }
+            },
+            {
+                "step": 82,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 0
+                }
+            },
+            {
+                "step": 91,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 255
+                }
+            },
+            {
+                "step": 100,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 0
+                }
+            }
+        ]
     }
 ]
