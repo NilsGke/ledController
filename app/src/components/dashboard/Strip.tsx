@@ -64,12 +64,6 @@ const DashboardStrip: React.FC<props> = ({
         }
     }, [newColor]);
 
-
-
-    console.log(strip.effect || "");
-
-
-
     const selectRef = useRef<HTMLInputElement | null>(null);
     const stripRef = useRef<HTMLInputElement | null>(null);
 
