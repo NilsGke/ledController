@@ -4,26 +4,26 @@
         "id": 0,
         "ports": {
             "red": 17,
-            "green": 22,
-            "blue": 24
+            "green": 27,
+            "blue": 22
         }
     },
     {
         "name": "Bett",
         "id": 1,
         "ports": {
-            "red": 17,
-            "green": 18,
-            "blue": 19
+            "red": 26,
+            "green": 26,
+            "blue": 26
         }
     },
     {
         "name": "Regal",
         "id": 2,
         "ports": {
-            "red": 20,
-            "green": 21,
-            "blue": 22
+            "red": 26,
+            "green": 26,
+            "blue": 26
         }
     }
 ]
