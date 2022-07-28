@@ -1,6 +1,6 @@
 import WebSocket from "ws";
 import { rgbStripType } from "./ledStrip/types";
-import { applyPreset, getInfoObject, onOff, setAllOnOff, strips } from "./controller";
+import { applyPreset, getInfoObject, onOff, setAllOnOff, setSync, strips, sync } from "./controller";
 import { presets } from "./presets";
 import { effect, effects } from "./effects";
 import { preset } from "./presets/types";
@@ -15,9 +15,8 @@ type messageType = {
     all?: boolean
     apply?: preset["name"]
     on?: onOff
+    sync?: sync
 }
-
-type color = rgbStripType["color"]
 
 
 
@@ -36,7 +35,7 @@ const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
 
     if (m.set) {
         const setStrips = [];
-        if (m.all) {
+        if (m.all || sync) {
             strips.forEach(strip => setStrips.push(strip));
         } else if (m.stripName) {
             const strip = strips.find(s => s.name === m.stripName)
@@ -50,13 +49,16 @@ const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
             if (m.color) {
                 const color = m.color;
                 setStrips.forEach(strip => {
+                    strip.stopEffect();
+                    strip.effect = null;
                     strip.setColors(color)
                 })
             } else return console.error("color not provided!")
         } else if (m.set === "effect") {
             if (m.effectName) {
-                const effect = m.effectName;
-                if (effects.find(eff => eff.name === effect) === undefined) return console.error("effect not found!")
+                const effect = effects.find(eff => eff.name === m.effectName);
+                if (effect === undefined) return console.error("effect not found!")
+                effect.time = Date.now();
                 setStrips.forEach(strip => {
                     strip.setEffect(effect)
                 })
@@ -64,6 +66,8 @@ const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
         } else return console.error("not specified what to set")
     }
 
+    if (m.sync !== undefined)
+        setSync(m.sync)
 
     if (m.apply) {
         const preset = presets.find(ps => ps.name === m.apply)
