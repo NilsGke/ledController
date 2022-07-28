@@ -16,6 +16,7 @@ import HuePicker from "../HuePicker";
 import RgbPicker from "../RgbPicker";
 import BrightnessPicker from "../BrightnessPicker";
 import sendColorToServer from "../../connection/setColor";
+import setLedEffect from "../../connection/ledEffect";
 
 type props = {
     data: rgbStripType;
@@ -43,7 +44,6 @@ const DashboardStrip: React.FC<props> = ({
 
     const alpha = 1;
 
-    const [effect, setEffect] = useState<effect | null>(null);
 
     // color changes from outside of this component
     useEffect(() => {
@@ -52,8 +52,6 @@ const DashboardStrip: React.FC<props> = ({
             green: strip.color.green,
             blue: strip.color.blue,
         });
-        const newEffect = effects.find((eff) => strip.effectName === eff.name);
-        setEffect(newEffect === undefined ? null : newEffect);
     }, [strip]);
 
     // send color to server
@@ -66,6 +64,12 @@ const DashboardStrip: React.FC<props> = ({
         }
     }, [newColor]);
 
+
+
+    console.log(strip.effect || "");
+
+
+
     const selectRef = useRef<HTMLInputElement | null>(null);
     const stripRef = useRef<HTMLInputElement | null>(null);
 
@@ -76,29 +80,30 @@ const DashboardStrip: React.FC<props> = ({
 
     const changeEffect = (effectName: effect["name"]) => {
         const effect = effects.find((e) => e.name === effectName);
-        if (effect === undefined) return setEffect(null);
-        setEffect(effect);
+        if (effect === undefined) return;
+        setLedEffect(strip, effect);
     };
 
     useEffect(() => {
         if (stripRef.current === null) return;
-        if (effect === null) {
+        if (strip.effect === null) {
             stripRef.current
                 .getAnimations()
                 .forEach((animation) => animation.cancel());
             return;
         }
 
-        const animationKeyframes = effect.keyframes.map((frame) => ({
+        const animationKeyframes = strip.effect.keyframes.map((frame) => ({
             boxShadow: `0px 0px 40px 0px rgb(${frame.color.red}, ${frame.color.green}, ${frame.color.blue})`,
             offset: frame.step / 100,
         }));
         const animationTiming = {
-            duration: effect.duration,
+            duration: strip.effect.duration,
             iterations: Infinity,
         };
         stripRef.current.animate(animationKeyframes, animationTiming);
-    }, [effect]);
+    }, [strip.effect]);
+
 
     return (
         <div className="stripContainer">
@@ -128,7 +133,6 @@ const DashboardStrip: React.FC<props> = ({
                                 color={color as rgbStripType["color"]}
                                 onChange={(color) => {
                                     setColor(color);
-                                    setEffect(null);
                                 }}
                                 onChangeComplete={(color) => {
                                     setNewColor(color);
@@ -138,7 +142,6 @@ const DashboardStrip: React.FC<props> = ({
                                 color={color as rgbStripType["color"]}
                                 onChange={(color) => {
                                     setColor(color);
-                                    setEffect(null);
                                 }}
                                 onChangeComplete={(color) => {
                                     setNewColor(color);
@@ -150,7 +153,6 @@ const DashboardStrip: React.FC<props> = ({
                             color={color as rgbStripType["color"]}
                             onChange={(color) => {
                                 setColor(color);
-                                setEffect(null);
                             }}
                             onChangeComplete={(color) => {
                                 setNewColor(color);
@@ -167,7 +169,7 @@ const DashboardStrip: React.FC<props> = ({
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            value={effect === null ? "" : effect.name}
+                            value={strip.effect === null ? "" : strip.effect.name}
                             label="Effect"
                             onChange={(e) =>
                                 changeEffect(e.target.value as string)
