@@ -1,9 +1,11 @@
 import WebSocket from "ws";
 import { rgbStripType } from "./ledStrip/types";
-import { applyPreset, getInfoObject, onOff, setAllOnOff, setSync, strips, sync } from "./controller";
-import { presets } from "./presets";
+import { applyPreset, getInfoObject, onOff, setActivePreset, setAllOnOff, setSync, strips, sync } from "./controller";
+import { loadPresets, presets } from "./presets";
 import { effect, effects } from "./effects";
 import { preset } from "./presets/types";
+import fs from "fs"
+import { sendDataUpdate } from "..";
 
 
 type messageType = {
@@ -16,6 +18,7 @@ type messageType = {
     apply?: preset["name"]
     on?: onOff
     sync?: sync
+    newPreset: preset
 }
 
 
@@ -29,9 +32,10 @@ const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
         setAllOnOff(m.on)
 
 
-    if (m.get)
+    if (m.get) {
         if (m.get === "all")
             return connection.send(JSON.stringify(getInfoObject()))
+    }
 
     if (m.set) {
         const setStrips = [];
@@ -47,6 +51,7 @@ const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
 
         if (m.set === "color") {
             if (m.color) {
+                setActivePreset(null);
                 const color = m.color;
                 setStrips.forEach(strip => {
                     strip.stopEffect();
@@ -56,6 +61,7 @@ const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
             } else return console.error("color not provided!")
         } else if (m.set === "effect") {
             if (m.effectName) {
+                setActivePreset(null);
                 const effect = effects.find(eff => eff.name === m.effectName);
                 if (effect === undefined) return console.error("effect not found!")
                 effect.time = Date.now();
@@ -66,16 +72,24 @@ const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
         } else return console.error("not specified what to set")
     }
 
-    if (m.sync !== undefined)
+    if (m.sync !== undefined) {
         setSync(m.sync)
+    }
 
     if (m.apply) {
         const preset = presets.find(ps => ps.name === m.apply)
         if (preset === undefined) return console.error(`preset: ${m.apply}`)
-        if (sync) setSync(false);
+        if (sync) setSync(false, false);
         applyPreset(preset.id);
     }
 
+    if (m.newPreset) {
+        console.log("new Preset");
+
+        const newPresets = [...presets, m.newPreset];
+        fs.writeFileSync("./src/presets/presets.json", JSON.stringify(newPresets, null, "    "))
+        loadPresets().then(sendDataUpdate);
+    }
 
 }
 
