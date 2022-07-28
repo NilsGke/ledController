@@ -13,6 +13,14 @@
                 }
             },
             {
+                "step": 16,
+                "color": {
+                    "red": 255,
+                    "green": 255,
+                    "blue": 0
+                }
+            },
+            {
                 "step": 33,
                 "color": {
                     "red": 0,
@@ -21,9 +29,25 @@
                 }
             },
             {
+                "step": 49,
+                "color": {
+                    "red": 0,
+                    "green": 255,
+                    "blue": 255
+                }
+            },
+            {
                 "step": 66,
                 "color": {
                     "red": 0,
+                    "green": 0,
+                    "blue": 255
+                }
+            },
+            {
+                "step": 82,
+                "color": {
+                    "red": 255,
                     "green": 0,
                     "blue": 255
                 }
@@ -76,7 +100,7 @@
                 }
             },
             {
-                "step": 90,
+                "step": 100,
                 "color": {
                     "red": 0,
                     "green": 0,
