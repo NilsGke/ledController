@@ -137,10 +137,10 @@ export default class rgbStrip {
             newColor.green = newColor.green > 255 ? 255 : newColor.green;
             newColor.blue = newColor.blue > 255 ? 255 : newColor.blue;
 
-            console.log(
-                `%c ${newColor.red} ${newColor.green} ${newColor.blue}`,
-                `background: rgb(${newColor.red}, ${newColor.green}, ${newColor.blue})`
-            );
+            // console.log(
+            //     `%c ${newColor.red} ${newColor.green} ${newColor.blue}`,
+            //     `background: rgb(${newColor.red}, ${newColor.green}, ${newColor.blue})`
+            // );
 
             // IDEA: add cubic function to make transitions more interesting
             // https://blog.maximeheckel.com/posts/cubic-bezier-from-math-to-motion/
