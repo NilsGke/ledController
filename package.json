@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon -x npm run run -e ts",
-    "run": "tsc && sudo killall pigpiod && sudo node dist/index.js",
+    "run": "tsc && sudo killall pigpiod || echo 'no process stopped' && sudo node dist/index.js",
     "runInspect": "tsc && sudo node --inspect dist/index.js",
     "runInspectBreak": "tsc && sudo node --inspect-brk dist/index.js",
     "runWin": "ts-node index.ts",
