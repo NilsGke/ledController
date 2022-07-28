@@ -1,15 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ColorResult, AlphaPicker } from "react-color";
 import { rgbStripType } from "../../../../src/ledStrip/types";
-import {
-    InputLabel,
-    Select,
-    MenuItem,
-    ThemeProvider,
-    createTheme,
-    FormControl,
-} from "@mui/material";
-
 import "../../styles/dashboard/dashboardStrip.sass";
 import { effect } from "../../../../src/effects";
 import HuePicker from "../HuePicker";
@@ -17,6 +7,11 @@ import RgbPicker from "../RgbPicker";
 import BrightnessPicker from "../BrightnessPicker";
 import sendColorToServer from "../../connection/setColor";
 import setLedEffect from "../../connection/ledEffect";
+// mui
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 
 type props = {
     data: rgbStripType;
@@ -74,8 +69,8 @@ const DashboardStrip: React.FC<props> = ({
 
     const changeEffect = (effectName: effect["name"]) => {
         const effect = effects.find((e) => e.name === effectName);
-        if (effect === undefined) return;
-        setLedEffect(strip, effect);
+        if (effect === undefined) sendColorToServer(strip.name, color);
+        else setLedEffect(strip, effect);
     };
 
     useEffect(() => {
@@ -126,6 +121,8 @@ const DashboardStrip: React.FC<props> = ({
                             <HuePicker
                                 color={color as rgbStripType["color"]}
                                 onChange={(color) => {
+                                    if (strip.effect !== null)
+                                        setNewColor(color)
                                     setColor(color);
                                 }}
                                 onChangeComplete={(color) => {
@@ -135,6 +132,8 @@ const DashboardStrip: React.FC<props> = ({
                             <BrightnessPicker
                                 color={color as rgbStripType["color"]}
                                 onChange={(color) => {
+                                    if (strip.effect !== null)
+                                        setNewColor(color)
                                     setColor(color);
                                 }}
                                 onChangeComplete={(color) => {
@@ -146,6 +145,8 @@ const DashboardStrip: React.FC<props> = ({
                         <RgbPicker
                             color={color as rgbStripType["color"]}
                             onChange={(color) => {
+                                if (strip.effect !== null)
+                                    setNewColor(color)
                                 setColor(color);
                             }}
                             onChangeComplete={(color) => {
