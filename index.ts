@@ -7,10 +7,10 @@ import express from "express"
 const app = express();
 
 export const CONFIG = {
-    ledRefreshRate: 200,
+    ledRefreshRate: 10,
 };
 
-const server = app.listen(port)
+const server = app.listen(port, "", () => console.log("\x1b[32mserver running!\x1b[0m"))
 
 app.use(express.static(__dirname + '/app/build'));
 
