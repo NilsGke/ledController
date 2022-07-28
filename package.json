@@ -8,7 +8,9 @@
     "run": "tsc && sudo node dist/index.js",
     "runInspect": "tsc && sudo node --inspect dist/index.js",
     "runInspectBreak": "tsc && sudo node --inspect-brk dist/index.js",
-    "runDev": "ts-node index.ts"
+    "runWin": "ts-node index.ts",
+    "runWinInspect": "tsc && node --inspect dist/index.js",
+    "runWinInspectBreak": "tsc && node --inspect-brk dist/index.js"
   },
   "repository": {
     "type": "git",
