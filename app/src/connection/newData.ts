@@ -10,6 +10,7 @@ export type infoData = {
     effects: effect[];
     onOff: onOff;
     sync: boolean;
+    activePreset: preset | null;
 };
 
 export const requestNewData = (): void => ws.send(JSON.stringify({ get: "all" }))

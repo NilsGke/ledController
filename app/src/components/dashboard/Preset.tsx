@@ -5,16 +5,16 @@ import "../../styles/dashboard/preset.sass";
 
 type props = {
     data: preset;
-    refresh: () => void;
+    active?: boolean
 };
 
-const Preset: React.FC<props> = ({ data: preset, refresh }) => {
+const Preset: React.FC<props> = ({ data: preset, active }) => {
 
 
     return (
         <div className="presetContainer">
             <div
-                className="preset"
+                className={"preset" + (active ? " active" : "")}
                 onClick={() => {
                     applyPreset(preset.name)
                 }}

@@ -32,6 +32,13 @@ export const setup = async () => {
     applyPreset(config.defaultPreset);
 };
 
+
+const updateColors = () => {
+    strips.forEach(strip => strip.updateColors())
+    sendDataUpdate();
+}
+
+// on off
 export type onOff = "on" | "off"
 export let onOff: onOff = "on";
 export const setAllOnOff = (state: onOff) => {
@@ -40,19 +47,18 @@ export const setAllOnOff = (state: onOff) => {
     updateColors()
 }
 
-const updateColors = () => {
-    strips.forEach(strip => strip.updateColors())
-    sendDataUpdate();
-}
-
+// sync
 export type sync = boolean;
 export let sync: sync = false;
-export const setSync = (state: sync) => {
+export const setSync = (state: sync, notify?: boolean) => {
     sync = state;
     if (sync) strips.forEach(strip => strip.setColors(strips[0].color))
-    updateColors();
+    if (notify === undefined || notify === true) updateColors();
 }
 
+// preset
+export let activePreset: preset | null = null;
+export const setActivePreset = (preset: typeof activePreset) => activePreset = preset;
 export const applyPreset = (
     presetId?: preset["id"],
     presetName?: preset["name"]
@@ -65,6 +71,8 @@ export const applyPreset = (
             throw new Error(
                 `Preset: "${presetName}" not found in presets. Check the json files!`
             );
+
+        activePreset = preset;
 
         const proms = preset.strips.map((presetStrip) => {
             const strip = strips.find((strip) => strip.id === presetStrip.id);
@@ -84,6 +92,7 @@ export const applyPreset = (
     });
 };
 
+// info object
 export const getInfoObject = () =>
-    ({ strips, presets, effects, onOff, sync })
+    ({ strips, presets, effects, onOff, sync, activePreset })
 
