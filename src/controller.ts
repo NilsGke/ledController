@@ -16,12 +16,21 @@ type stripData = {
 };
 
 export const setup = async () => {
-    await generateStrips();
+    // generate strips
+    await new Promise<void>((resolve, reject) => {
+        fs.readFile("./src/strips.json", "utf8", (err, data) => {
+            const dataStrips = JSON.parse(data) as stripData[];
+            dataStrips.forEach((strip) =>
+                strips.push(new rgbStrip(strip.name, strip.id, strip.ports))
+            );
+            resolve();
+        });
+    });
+
     await loadPresets();
     await loadEffects();
     applyPreset(config.defaultPreset);
 };
-
 
 export type onOff = "on" | "off"
 export let onOff: onOff = "on";
@@ -36,17 +45,13 @@ const updateColors = () => {
     sendDataUpdate();
 }
 
-const generateStrips = (): Promise<void> => {
-    return new Promise((resolve, reject) => {
-        fs.readFile("./src/strips.json", "utf8", (err, data) => {
-            const dataStrips = JSON.parse(data) as stripData[];
-            dataStrips.forEach((strip) =>
-                strips.push(new rgbStrip(strip.name, strip.id, strip.ports))
-            );
-            resolve();
-        });
-    });
-};
+export type sync = boolean;
+export let sync: sync = false;
+export const setSync = (state: sync) => {
+    sync = state;
+    if (sync) strips.forEach(strip => strip.setColors(strips[0].color))
+    updateColors();
+}
 
 export const applyPreset = (
     presetId?: preset["id"],
@@ -80,5 +85,5 @@ export const applyPreset = (
 };
 
 export const getInfoObject = () =>
-    ({ strips, presets, effects, onOff })
+    ({ strips, presets, effects, onOff, sync })
 
