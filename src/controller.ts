@@ -81,8 +81,7 @@ export const applyPreset = (
                 console.warn(
                     `Strip (id: ${presetStrip.id}) not found, check json files (strips and presets)`
                 );
-
-            return strip.setColors(presetStrip.color);
+            else return strip.setColors(presetStrip.color);
         });
 
         Promise.all(proms).then(() => {
