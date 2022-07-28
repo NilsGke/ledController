@@ -9,6 +9,7 @@ export type infoData = {
     presets: preset[];
     effects: effect[];
     onOff: onOff;
+    sync: boolean;
 };
 
 export const requestNewData = (): void => ws.send(JSON.stringify({ get: "all" }))
