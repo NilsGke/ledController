@@ -10,6 +10,7 @@ export type effect = {
     name: string;
     id: number;
     duration: number;
+    transition: "linear" | "none";
     keyframes: keyframe[];
     time?: number;
 };
