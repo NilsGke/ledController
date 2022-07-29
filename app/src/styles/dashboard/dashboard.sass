@@ -17,15 +17,24 @@
                 max-width: calc(33%)
                 padding: 2rem $padding
 
-                /* Responsive layout - makes a two column-layout instead of four columns */
+                
                 @media screen and (max-width: 800px)
                     flex: calc(50% - ($padding * 2))
                     max-width: 50%
 
-                /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
-                @media screen and (max-width: 600px)
-                    flex: 100%
-                    max-width: 100%
+            
+            @media screen and (max-width: 600px)
+                flex-wrap: nowrap
+                justify-content: start
+                overflow-x: scroll
+                scroll-snap-type: x mandatory
+                padding: 20px 40px
+                .stripContainer
+                    min-width: 80vw
+                    margin: 0 30px
+                    scroll-snap-align: center
+
+            
         #controls
             margin-top: 20px
             display: flex
@@ -35,12 +44,21 @@
             flex-wrap: wrap
             gap: 20px
             .control
+                a
+                    text-decoration: none
                 label
                     padding: 20px
                     background: #2d2d2d
                     border-radius: 20px
                     height: 50px
                     margin: 0
+
+                    span 
+                        display: flex
+                        justify-content: center
+                        align-items: flex-start
+                        gap: 10px
+
         #presetsContainer
             margin-top: 30px
             display: flex
