@@ -1,3 +1,4 @@
+import { sendDataUpdate } from "./../../index";
 import { rgbStripType } from "../ledStrip/types";
 import fs from "fs";
 
@@ -25,4 +26,24 @@ export const loadEffects = (): Promise<void> => {
             resolve();
         });
     });
+};
+
+export const moveEffect = (id: effect["id"], direction: 1 | -1) => {
+    const newEffects = effects.slice();
+    const effect = effects.find((effect) => effect.id === id);
+    if (effect === undefined)
+        return console.warn("effect to move not found in data");
+    const index = effects.indexOf(effect);
+    if (index + direction === -1 || index + direction === effects.length)
+        return console.warn(
+            "tried moving effect that is on the edge of the list!"
+        );
+    const temp = newEffects[index];
+    newEffects[index] = newEffects[index + direction];
+    newEffects[index + direction] = temp;
+
+    effects.length = 0;
+    newEffects.forEach((effect) => effects.push(effect));
+
+    sendDataUpdate();
 };

@@ -1,3 +1,4 @@
+import { moveEffect } from "./effects/index";
 import WebSocket from "ws";
 import { rgbStripType } from "./ledStrip/types";
 import {
@@ -26,7 +27,9 @@ type messageType = {
     apply?: preset["name"];
     on?: onOff;
     sync?: sync;
-    newPreset: preset;
+    newPreset?: preset;
+    moveEffect?: effect["id"];
+    direction?: -1 | 1;
 };
 
 const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
@@ -99,6 +102,12 @@ const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
             JSON.stringify(newPresets, null, "    ")
         );
         loadPresets().then(sendDataUpdate);
+    }
+
+    if (m.moveEffect !== undefined) {
+        if (m.direction !== undefined) {
+            moveEffect(m.moveEffect, m.direction);
+        }
     }
 };
 
