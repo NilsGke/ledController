@@ -29,9 +29,12 @@
                 width: 100%
                 filter: blur(0px)
                 opacity: 0
-                transition: all .3s ease-in-out
+                transition: all .3s .3s ease-in-out
+                @media screen and (max-width: 600px)
+                    opacity: 1
             &:hover 
                 .preview
+                    transition: all 0s ease-in-out
                     opacity: 1
 
             
