@@ -1,0 +1,78 @@
+#app.effectsOverview
+    div.backButton
+        position: absolute
+        top: 20px
+        left: 20px
+        a
+            text-decoration: none
+        label
+            padding: 20px
+            background: #2d2d2d
+            border-radius: 20px
+            height: 50px
+            margin: 0
+
+            span 
+                display: flex
+                justify-content: center
+                align-items: flex-start
+                gap: 10px
+
+    display: flex
+    align-items: center
+    justify-content: center
+    flex-direction: column
+    @media screen and (max-width: 600px)
+        h1
+            margin-top: 12vh
+    .effectsContainer
+        display: flex
+        align-items: center
+        justify-content: center
+        flex-wrap: wrap
+        gap: 50px
+        .effect
+            display: flex
+            align-items: center
+            justify-content: center
+            flex-direction: column
+            min-width: 150px
+            min-height: 110px
+            padding: 20px
+            background: #2d2d2d
+            border-radius: 20px
+            animation: none
+            .header
+                display: flex
+                justify-content: center
+                flex-direction: row
+                h2
+                    margin: 0
+                button
+                    height: 40px 
+                    width:  40px
+                    padding: 0
+                    opacity: 0
+                    transition: opacity .2s ease-in-out
+                    svg
+                        height: 100%
+                        width: 100%
+            &:first-of-type .header button.left,
+            &:last-of-type .header button.right
+                opacity: 0
+                touch-action: none
+                cursor: auto
+
+            .buttons
+                overflow: hidden
+                transition: all .2s ease-in-out
+                height: 0
+                opacity: 0
+            &:hover 
+                animation: unset
+                .header button
+                    opacity: 1
+                .buttons
+                    transition: height .2s ease-in-out
+                    height: 40px
+                    opacity: 1
