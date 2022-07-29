@@ -1,7 +1,7 @@
 [
     {
         "name": "RGB",
-        "id": 1,
+        "id": 0,
         "duration": 5000,
         "transition": "linear",
         "keyframes": [
