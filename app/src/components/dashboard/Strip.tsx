@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { rgbStripType } from "../../../../src/ledStrip/types";
 import "../../styles/dashboard/dashboardStrip.sass";
-import { effect } from "../../../../src/effects";
+import { effect, keyframe } from "../../../../src/effects";
 import HuePicker from "../HuePicker";
 import RgbPicker from "../RgbPicker";
 import BrightnessPicker from "../BrightnessPicker";
@@ -33,6 +33,8 @@ const DashboardStrip: React.FC<props> = ({
         green: strip.color.green,
         blue: strip.color.blue,
     });
+
+    const [updateColor, setUpdateColor] = useState<boolean>(true);
 
     const [currentColor, setCurrentColor] = useState<
         null | rgbStripType["color"]
@@ -98,10 +100,86 @@ const DashboardStrip: React.FC<props> = ({
 
     useEffect(() => {
         if (strip?.effect === null) return;
+        if (strip.effect.time === undefined) strip.effect.time = Date.now(); // this should never happen but just in case and for the compiler its there
+
         const { duration, time, keyframes } = strip.effect;
 
-        return () => {};
-    }, [strip.effect]);
+        const timePassed = Date.now() - time;
+
+        let timeInEffect = timePassed;
+        while (timeInEffect >= duration) timeInEffect -= duration;
+
+        let prev: keyframe | undefined, next: keyframe | undefined;
+
+        let timeInTransition = timeInEffect;
+
+        for (let i = 0; i < keyframes.length - 1; i++) {
+            if (
+                (duration / 100) * keyframes[i].step <= timeInEffect &&
+                timeInEffect <= (duration / 100) * keyframes[i + 1].step
+            ) {
+                // current transition
+                prev = keyframes[i];
+                next = keyframes[i + 1];
+                break;
+            } else {
+                // previous transition
+                timeInTransition -=
+                    (duration / 100) * keyframes[i + 1].step -
+                    (duration / 100) * keyframes[i].step;
+            }
+        }
+
+        if (prev !== undefined && next !== undefined) {
+            const transTime =
+                (duration / 100) * next.step - (duration / 100) * prev.step;
+
+            const percentTransPassed = Math.round(
+                (100 / transTime) * timeInTransition
+            );
+            const colorDiff = {
+                red: Math.round(prev.color.red - next.color.red),
+                green: Math.round(prev.color.green - next.color.green),
+                blue: Math.round(prev.color.blue - next.color.blue),
+            };
+
+            const addColor = {
+                red: Math.round((colorDiff.red * percentTransPassed) / 100),
+                green: Math.round((colorDiff.green * percentTransPassed) / 100),
+                blue: Math.round((colorDiff.blue * percentTransPassed) / 100),
+            };
+
+            const newColor = {
+                red: prev.color.red - addColor.red,
+                green: prev.color.green - addColor.green,
+                blue: prev.color.blue - addColor.blue,
+            };
+
+            // just to make sure the colors are not above 255
+            newColor.red = newColor.red > 255 ? 255 : newColor.red;
+            newColor.green = newColor.green > 255 ? 255 : newColor.green;
+            newColor.blue = newColor.blue > 255 ? 255 : newColor.blue;
+
+            console.log(
+                `%c ${newColor.red} ${newColor.green} ${newColor.blue}`,
+                `background: rgb(${newColor.red}, ${newColor.green}, ${newColor.blue})`
+            );
+
+            // IDEA: add cubic function to make transitions more interesting
+            // https://blog.maximeheckel.com/posts/cubic-bezier-from-math-to-motion/
+            // there could be a function for inbetween keyframes and one for the entire transition
+
+            const colorString: string = `rgb(${newColor.red}, ${newColor.green}, ${newColor.blue})`;
+
+            (stripRef.current as HTMLDivElement).style.boxShadow = `0px 0px 40px 0px ${colorString}`
+
+        } else console.warn("could not determine previous or next keyframe");
+
+        setTimeout(() => {
+            setUpdateColor(!updateColor);
+        }, 50);
+
+    }, [strip.effect, updateColor]);
 
     return (
         <div className="stripContainer">
