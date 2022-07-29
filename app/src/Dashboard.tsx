@@ -5,7 +5,7 @@ import ws from "./connection/connection";
 import { infoData, newDataEvent, requestNewData } from "./connection/newData";
 import setOnOff from "./connection/onOff";
 import setStripSync from "./connection/sync";
-import "./styles/dashboard.sass";
+import "./styles/dashboard/dashboard.sass";
 
 // mui
 import CircularProgress from "@mui/material/CircularProgress/CircularProgress";
@@ -15,6 +15,8 @@ import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import Switch from "@mui/material/Switch/Switch";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup/ToggleButtonGroup";
+import { Link } from "react-router-dom";
+import EastRoundedIcon from '@mui/icons-material/EastRounded';
 
 const Dashboard: React.FC = () => {
     const [on, setOn] = useState(true);
@@ -90,108 +92,120 @@ const Dashboard: React.FC = () => {
         );
 
     return (
-        <div className="dashboard" ref={rootRef}>
-            <div id="stripsContainer" className={on ? "on" : "off"}>
-                {data.strips.map((strip) => (
-                    <DashboardStrip
-                        key={strip.name}
-                        data={strip}
-                        effects={data.effects}
-                        refresh={() => setRefresh(true)}
-                        sliderType={sliders}
-                    />
-                ))}
-            </div>
-            <div id="controls">
-                <ThemeProvider
-                    theme={createTheme({
-                        palette: {
-                            primary: {
-                                main: "#2666ff",
-                            },
-                            success: {
-                                main: "#61dd2e",
-                            },
-                        },
-                    })}
-                >
-                    <div className="control" id="onOffToggle">
-                        <FormControlLabel
-                            value="onOff"
-                            control={
-                                <Switch
-                                    color="success"
-                                    aria-label="switch strips on / off"
-                                    checked={on}
-                                    onChange={(
-                                        state: ChangeEvent<HTMLInputElement>
-                                    ) => setOn(state.target.checked)}
-                                />
-                            }
-                            label="onOff"
-                            labelPlacement="start"
+
+        <div id="app" className="dashboard">
+            <div className="dashboard" ref={rootRef}>
+                <div id="stripsContainer" className={on ? "on" : "off"}>
+                    {data.strips.map((strip) => (
+                        <DashboardStrip
+                            key={strip.name}
+                            data={strip}
+                            effects={data.effects}
+                            refresh={() => setRefresh(true)}
+                            sliderType={sliders}
                         />
-                    </div>
-                    <div className="control" id="syncToggle">
-                        <FormControlLabel
-                            value="sync"
-                            control={
-                                <Switch
-                                    color="primary"
-                                    aria-label="sync strips"
-                                    checked={sync}
-                                    onChange={(e, checked) => setSync(checked)}
-                                />
-                            }
-                            label="Sync"
-                            labelPlacement="start"
-                        />
-                    </div>
-                    <div className="control" id="fancySliderContainer">
-                        <FormControlLabel
-                            label=""
-                            control={
-                                <ThemeProvider
-                                    theme={createTheme({
-                                        palette: {
-                                            mode: "dark",
-                                        },
-                                    })}
-                                >
-                                    <ToggleButtonGroup
-                                        value={sliders}
-                                        exclusive
-                                        onChange={(e, v) =>
-                                            setSliders(v || sliders)
-                                        }
-                                        aria-label="text alignment"
+                    ))}
+                </div>
+                <div id="controls">
+                    <ThemeProvider
+                        theme={createTheme({
+                            palette: {
+                                primary: {
+                                    main: "#2666ff",
+                                },
+                                success: {
+                                    main: "#61dd2e",
+                                },
+                            },
+                        })}
+                    >
+                        <div className="control" id="onOffToggle">
+                            <FormControlLabel
+                                value="onOff"
+                                control={
+                                    <Switch
+                                        color="success"
+                                        aria-label="switch strips on / off"
+                                        checked={on}
+                                        onChange={(
+                                            state: ChangeEvent<HTMLInputElement>
+                                        ) => setOn(state.target.checked)}
+                                    />
+                                }
+                                label="onOff"
+                                labelPlacement="start"
+                            />
+                        </div>
+                        <div className="control" id="syncToggle">
+                            <FormControlLabel
+                                value="sync"
+                                control={
+                                    <Switch
+                                        color="primary"
+                                        aria-label="sync strips"
+                                        checked={sync}
+                                        onChange={(e, checked) => setSync(checked)}
+                                    />
+                                }
+                                label="Sync"
+                                labelPlacement="start"
+                            />
+                        </div>
+                        <div className="control" id="fancySliderContainer">
+                            <FormControlLabel
+                                label=""
+                                control={
+                                    <ThemeProvider
+                                        theme={createTheme({
+                                            palette: {
+                                                mode: "dark",
+                                            },
+                                        })}
                                     >
-                                        <ToggleButton
-                                            value="hue"
-                                            aria-label="left aligned"
+                                        <ToggleButtonGroup
+                                            value={sliders}
+                                            exclusive
+                                            onChange={(e, v) =>
+                                                setSliders(v || sliders)
+                                            }
+                                            aria-label="text alignment"
                                         >
-                                            hue
-                                        </ToggleButton>
-                                        <ToggleButton
-                                            value="rbg"
-                                            aria-label="centered"
-                                        >
-                                            rgb
-                                        </ToggleButton>
-                                        <ToggleButton
-                                            value="fancyRgb"
-                                            aria-label="right aligned"
-                                        >
-                                            fancyRgb
-                                        </ToggleButton>
-                                    </ToggleButtonGroup>
-                                </ThemeProvider>
-                            }
-                        ></FormControlLabel>
-                    </div>
-                </ThemeProvider>
+                                            <ToggleButton
+                                                value="hue"
+                                                aria-label="left aligned"
+                                            >
+                                                hue
+                                            </ToggleButton>
+                                            <ToggleButton
+                                                value="rbg"
+                                                aria-label="centered"
+                                            >
+                                                rgb
+                                            </ToggleButton>
+                                            <ToggleButton
+                                                value="fancyRgb"
+                                                aria-label="right aligned"
+                                            >
+                                                fancyRgb
+                                            </ToggleButton>
+                                        </ToggleButtonGroup>
+                                    </ThemeProvider>
+                                }
+                            ></FormControlLabel>
+                        </div>
+                        <div className="control" id="effects">
+                            <Link to={"/effects"}>
+                                <FormControlLabel
+                                    label=""
+                                    control={
+                                        <span>Effects <EastRoundedIcon /></span>
+                                    }
+                                ></FormControlLabel></Link>
+                        </div>
+                    </ThemeProvider>
+                </div>
+                <Presets data={data} />
             </div>
-            <Presets data={data} />
         </div>
     );
 };
