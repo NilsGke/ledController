@@ -5,12 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon -x npm run run -e ts",
-    "run": "tsc && sudo killall pigpiod || echo 'no process stopped' && sudo node dist/index.js",
-    "runInspect": "tsc && sudo node --inspect dist/index.js",
-    "runInspectBreak": "tsc && sudo node --inspect-brk dist/index.js",
-    "runWin": "ts-node index.ts",
-    "runWinInspect": "tsc && node --inspect dist/index.js",
-    "runWinInspectBreak": "tsc && node --inspect-brk dist/index.js"
+    "kill": "sudo killall pigpiod || echo 'no process stopped' && exit",
+    "run": "tsc && sudo node dist/index.js ",
+    "runNoLeds": "tsc && sudo node dist/index.js  --noLeds",
+    "runWin": "tsc && node --inspect dist/index.js  --noLeds"
   },
   "repository": {
     "type": "git",
