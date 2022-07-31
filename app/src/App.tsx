@@ -4,7 +4,7 @@ import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ws from "./connection/connection";
 import Dashboard from "./Dashboard";
-import EffectsPage from "./Effects";
+import EditEffect from "./EditEffect";
 import EffectsOverview from "./EffectsOverview";
 
 import "./styles/index.sass";
@@ -31,7 +31,7 @@ const Router = () => {
                     <Route path="/effects" element={<EffectsOverview />} />
                     <Route
                         path="/effects/:effectName"
-                        element={<EffectsPage />}
+                        element={<EditEffect />}
                     />
                 </Routes>
             </BrowserRouter>
