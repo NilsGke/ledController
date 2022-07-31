@@ -16,7 +16,7 @@ import Switch from "@mui/material/Switch/Switch";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup/ToggleButtonGroup";
 import { Link } from "react-router-dom";
-import EastRoundedIcon from '@mui/icons-material/EastRounded';
+import EastRoundedIcon from "@mui/icons-material/EastRounded";
 
 const Dashboard: React.FC = () => {
     const [on, setOn] = useState(true);
@@ -92,7 +92,6 @@ const Dashboard: React.FC = () => {
         );
 
     return (
-
         <div id="app" className="dashboard">
             <div className="dashboard" ref={rootRef}>
                 <div id="stripsContainer" className={on ? "on" : "off"}>
@@ -144,7 +143,9 @@ const Dashboard: React.FC = () => {
                                         color="primary"
                                         aria-label="sync strips"
                                         checked={sync}
-                                        onChange={(e, checked) => setSync(checked)}
+                                        onChange={(e, checked) =>
+                                            setSync(checked)
+                                        }
                                     />
                                 }
                                 label="Sync"
@@ -198,9 +199,12 @@ const Dashboard: React.FC = () => {
                                 <FormControlLabel
                                     label=""
                                     control={
-                                        <span>Effects <EastRoundedIcon /></span>
+                                        <span>
+                                            Effects <EastRoundedIcon />
+                                        </span>
                                     }
-                                ></FormControlLabel></Link>
+                                ></FormControlLabel>
+                            </Link>
                         </div>
                     </ThemeProvider>
                 </div>
