@@ -7,7 +7,7 @@ import express from "express";
 const app = express();
 
 export const CONFIG = {
-    ledRefreshRate: 50,
+    ledRefreshRate: 10,
 };
 
 const server = app.listen(port, "", () =>
