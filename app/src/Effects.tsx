@@ -4,7 +4,7 @@ import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import { Link, useLocation } from "react-router-dom";
 import ws from "./connection/connection";
 import { MouseEventHandler, useEffect, useRef, useState } from "react";
-import { infoData, newDataEvent } from "./connection/newData";
+import { infoData, newDataEvent, requestNewData } from "./connection/newData";
 import setStripSync from "./connection/sync";
 import sendColorToServer from "./connection/setColor";
 import ThemeProvider from "@mui/system/ThemeProvider/ThemeProvider";
@@ -21,8 +21,9 @@ import { rgbStripType } from "../../src/ledStrip/types";
 import TextField from "@mui/material/TextField/TextField";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import Button from "@mui/material/Button/Button";
-import Keyframe from "./styles/Effects/Keyframe";
+import Keyframe from "./components/Keyframe";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import testEffect from "./connection/testEffect";
 
 interface indexedKeyframe extends keyframe {
     id: number;
@@ -84,12 +85,7 @@ const EffectsPage = () => {
 
     // sync the strips to all show the effect and set default color
     useEffect(() => {
-        setStripSync(true);
-        sendColorToServer(data?.strips[0].name || "", {
-            red: 255,
-            green: 255,
-            blue: 255,
-        });
+        requestNewData();
     }, []);
     // receive new data
     useEffect(() => {
@@ -137,6 +133,7 @@ const EffectsPage = () => {
             })
         );
         setKeyframes(newKeyframes);
+        setSetEditEffect(true);
     }, [data]);
 
     const handleSliderChange = (
@@ -174,6 +171,8 @@ const EffectsPage = () => {
             </SliderThumb>
         );
     };
+
+    console.log("%crerender effects", "background: lime");
 
     return (
         <div id="app" className="effects">
@@ -271,7 +270,19 @@ const EffectsPage = () => {
                     >
                         <div className="control" id="start">
                             <div className="label">
-                                <Button variant="text">
+                                <Button
+                                    variant="text"
+                                    onClick={() =>
+                                        testEffect({
+                                            keyframes,
+                                            duration,
+                                            id: -1,
+                                            name: "test",
+                                            transition,
+                                            time: undefined,
+                                        })
+                                    }
+                                >
                                     <PlayArrowRoundedIcon />
                                 </Button>
                             </div>
@@ -374,8 +385,22 @@ const EffectsPage = () => {
                 <div id="keyframes" ref={keyframeList}>
                     {keyframes
                         .sort((a, b) => a.step - b.step)
-                        .map((frame) => (
-                            <Keyframe key={frame.id} frame={frame} />
+                        .map((frame, i) => (
+                            <Keyframe
+                                key={frame.id}
+                                move={(direction: -1 | 1) => {
+                                    const temp = keyframes[i + direction];
+                                    keyframes[i + direction] = keyframes[i];
+                                    keyframes[i] = temp;
+                                    setKeyframes(keyframes);
+                                }}
+                                changeStep={(value: number) => {
+                                    if (value < 0 || value > 100) return;
+                                    keyframes[i].step = value;
+                                    setKeyframes(keyframes);
+                                }}
+                                frame={frame}
+                            />
                         ))}
                 </div>
             </div>
