@@ -19,7 +19,8 @@ const Keyframe: React.FC<props> = ({ frame, move, changeStep }) => {
                     type="number"
                     name="stepInput"
                     id="stepInput"
-                    defaultValue={frame.step}
+                    value={frame.step}
+                    onChange={(ev) => changeStep(parseInt(ev.target.value))}
                     onBlur={(ev) => changeStep(parseInt(ev.target.value))}
                     onKeyDown={(ev) => {
                         if (ev.key === "Enter") {
