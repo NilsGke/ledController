@@ -18,6 +18,8 @@ import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 import moveEffect from "./connection/moveEffect";
 import autoAnimate from "@formkit/auto-animate";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import testEffect from "./connection/testEffect";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 const EffectsOverview = () => {
     const [data, setData] = useState<null | infoData>(null);
@@ -29,14 +31,15 @@ const EffectsOverview = () => {
     useEffect(() => requestNewData(), []);
     // receive new data
     useEffect(() => {
-        const newDataHandler = (e: Event) =>
+        const newDataHandler = (e: Event) => {
+            console.log("newData: ", { e });
             setData((e as newDataEvent).detail.newData);
+        };
         ws.addEventListener("newData", newDataHandler);
         return () => ws.removeEventListener("newData", newDataHandler);
     }, []);
     // handleNewData
     useEffect(() => {
-        console.log(data);
         if (data === null) return;
         setEffects(data.effects);
     }, [data]);
@@ -49,15 +52,20 @@ const EffectsOverview = () => {
         );
 
         elements.forEach((element, i) => {
-            const animationKeyframes = effects[i].keyframes.map((frame) => ({
-                boxShadow: `0px 0px 40px 0px rgb(${frame.color.red}, ${frame.color.green}, ${frame.color.blue})`,
-                offset: frame.step / 100,
-            }));
-            const animationTiming = {
-                duration: effects[i].duration,
-                iterations: Infinity,
-            };
-            element.animate(animationKeyframes, animationTiming);
+            console.log(element);
+            if (effects[i] !== undefined) {
+                const animationKeyframes = effects[i].keyframes.map(
+                    (frame) => ({
+                        boxShadow: `0px 0px 40px 0px rgb(${frame.color.red}, ${frame.color.green}, ${frame.color.blue})`,
+                        offset: frame.step / 100,
+                    })
+                );
+                const animationTiming = {
+                    duration: effects[i].duration,
+                    iterations: Infinity,
+                };
+                element.animate(animationKeyframes, animationTiming);
+            }
         });
     }, [effects]);
 
@@ -70,8 +78,6 @@ const EffectsOverview = () => {
     useEffect(() => {
         effectsRef.current && autoAnimate(effectsRef.current);
     }, [effectsRef]);
-
-    console.log(data?.effects);
 
     return (
         <div id="app" className="effectsOverview">
@@ -111,7 +117,10 @@ const EffectsOverview = () => {
                             </div>
                             <div className="buttons">
                                 <Stack direction="row" spacing={1}>
-                                    <IconButton color="success">
+                                    <IconButton
+                                        color="success"
+                                        onClick={() => testEffect(effect)}
+                                    >
                                         <PlayArrowRoundedIcon color="success" />
                                     </IconButton>
                                     <IconButton>
@@ -131,6 +140,9 @@ const EffectsOverview = () => {
                         </div>
                     ))
                 )}
+                <div className="effect addEffect">
+                    <AddRoundedIcon />
+                </div>
             </div>
         </div>
     );
