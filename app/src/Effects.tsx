@@ -172,8 +172,6 @@ const EffectsPage = () => {
         );
     };
 
-    console.log("%crerender effects", "background: lime");
-
     return (
         <div id="app" className="effects">
             <div className="backButton">
