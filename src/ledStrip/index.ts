@@ -29,18 +29,19 @@ export default class rgbStrip {
         this.ports = ports;
         this.onOff = "on";
 
-        try {
-            this.gpioPorts = {
-                red: new Gpio(ports.red, { mode: Gpio.OUTPUT }),
-                green: new Gpio(ports.green, { mode: Gpio.OUTPUT }),
-                blue: new Gpio(ports.blue, { mode: Gpio.OUTPUT }),
-            };
-        } catch (error) {
-            console.log(error);
-            console.log(
-                "\x1b[31m error while initializing gpio ports. You are probably using a device where there are no gpio ports. Be careful, not everything is gonna work!\x1b[0m"
-            );
-        }
+        if (!process.argv.slice(2).includes("--noLeds"))
+            try {
+                this.gpioPorts = {
+                    red: new Gpio(ports.red, { mode: Gpio.OUTPUT }),
+                    green: new Gpio(ports.green, { mode: Gpio.OUTPUT }),
+                    blue: new Gpio(ports.blue, { mode: Gpio.OUTPUT }),
+                };
+            } catch (error) {
+                console.log(error);
+                console.log(
+                    "\x1b[31m error while initializing gpio ports. You are probably using a device where there are no gpio ports. Be careful, not everything is gonna work!\x1b[0m"
+                );
+            }
     }
 
     public setOnOff = (onOff: onOff): void => {
@@ -159,6 +160,11 @@ export default class rgbStrip {
     }
 
     public updateColors() {
+        if (process.argv.slice(2).includes("--noLeds"))
+            return console.log(
+                `%c strip "${this.name}" set to color: ${this.color.red} ${this.color.green} ${this.color.blue}`,
+                `background: rgb(${this.color.red}, ${this.color.green}, ${this.color.blue})`
+            );
         if (this.onOff === "off") {
             this.gpioPorts?.red.pwmWrite(0);
             this.gpioPorts?.green.pwmWrite(0);

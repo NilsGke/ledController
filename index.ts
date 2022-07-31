@@ -10,6 +10,10 @@ export const CONFIG = {
     ledRefreshRate: 10,
 };
 
+if (process.argv.slice(2).includes("--noLeds"))
+    console.log(
+        "\x1b[31musing --noLeds flag will log all led chagnes to console instead of applying them to the strips!"
+    );
 const server = app.listen(port, "", () =>
     console.log("\x1b[32mserver running!\x1b[0m")
 );
