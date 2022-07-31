@@ -361,5 +361,308 @@
                 }
             }
         ]
+    },
+    {
+        "name": "all rgb",
+        "id": 7,
+        "strips": [
+            {
+                "color": {
+                    "red": 255,
+                    "green": 0,
+                    "blue": 0
+                },
+                "alpha": 255,
+                "effect": {
+                    "name": "RGB",
+                    "id": 0,
+                    "duration": 5000,
+                    "transition": "linear",
+                    "keyframes": [
+                        {
+                            "step": 0,
+                            "color": {
+                                "red": 255,
+                                "green": 0,
+                                "blue": 0
+                            }
+                        },
+                        {
+                            "step": 16,
+                            "color": {
+                                "red": 255,
+                                "green": 255,
+                                "blue": 0
+                            }
+                        },
+                        {
+                            "step": 33,
+                            "color": {
+                                "red": 0,
+                                "green": 255,
+                                "blue": 0
+                            }
+                        },
+                        {
+                            "step": 49,
+                            "color": {
+                                "red": 0,
+                                "green": 255,
+                                "blue": 255
+                            }
+                        },
+                        {
+                            "step": 66,
+                            "color": {
+                                "red": 0,
+                                "green": 0,
+                                "blue": 255
+                            }
+                        },
+                        {
+                            "step": 82,
+                            "color": {
+                                "red": 255,
+                                "green": 0,
+                                "blue": 255
+                            }
+                        },
+                        {
+                            "step": 100,
+                            "color": {
+                                "red": 255,
+                                "green": 0,
+                                "blue": 0
+                            }
+                        }
+                    ],
+                    "time": 1659180879014
+                },
+                "effectRunning": true,
+                "name": "Schreibtisch",
+                "id": 0,
+                "ports": {
+                    "red": 17,
+                    "green": 27,
+                    "blue": 22
+                },
+                "onOff": "on",
+                "gpioPorts": {
+                    "red": {
+                        "_events": {},
+                        "_eventsCount": 0,
+                        "gpio": 17
+                    },
+                    "green": {
+                        "_events": {},
+                        "_eventsCount": 0,
+                        "gpio": 27
+                    },
+                    "blue": {
+                        "_events": {},
+                        "_eventsCount": 0,
+                        "gpio": 22
+                    }
+                }
+            },
+            {
+                "color": {
+                    "red": 255,
+                    "green": 3,
+                    "blue": 0
+                },
+                "alpha": 255,
+                "effect": {
+                    "name": "RGB",
+                    "id": 0,
+                    "duration": 5000,
+                    "transition": "linear",
+                    "keyframes": [
+                        {
+                            "step": 0,
+                            "color": {
+                                "red": 255,
+                                "green": 0,
+                                "blue": 0
+                            }
+                        },
+                        {
+                            "step": 16,
+                            "color": {
+                                "red": 255,
+                                "green": 255,
+                                "blue": 0
+                            }
+                        },
+                        {
+                            "step": 33,
+                            "color": {
+                                "red": 0,
+                                "green": 255,
+                                "blue": 0
+                            }
+                        },
+                        {
+                            "step": 49,
+                            "color": {
+                                "red": 0,
+                                "green": 255,
+                                "blue": 255
+                            }
+                        },
+                        {
+                            "step": 66,
+                            "color": {
+                                "red": 0,
+                                "green": 0,
+                                "blue": 255
+                            }
+                        },
+                        {
+                            "step": 82,
+                            "color": {
+                                "red": 255,
+                                "green": 0,
+                                "blue": 255
+                            }
+                        },
+                        {
+                            "step": 100,
+                            "color": {
+                                "red": 255,
+                                "green": 0,
+                                "blue": 0
+                            }
+                        }
+                    ],
+                    "time": 1659180879014
+                },
+                "effectRunning": true,
+                "name": "Bett",
+                "id": 1,
+                "ports": {
+                    "red": 26,
+                    "green": 26,
+                    "blue": 26
+                },
+                "onOff": "on",
+                "gpioPorts": {
+                    "red": {
+                        "_events": {},
+                        "_eventsCount": 0,
+                        "gpio": 26
+                    },
+                    "green": {
+                        "_events": {},
+                        "_eventsCount": 0,
+                        "gpio": 26
+                    },
+                    "blue": {
+                        "_events": {},
+                        "_eventsCount": 0,
+                        "gpio": 26
+                    }
+                }
+            },
+            {
+                "color": {
+                    "red": 0,
+                    "green": 228,
+                    "blue": 255
+                },
+                "alpha": 255,
+                "effect": {
+                    "name": "RGB",
+                    "id": 0,
+                    "duration": 5000,
+                    "transition": "linear",
+                    "keyframes": [
+                        {
+                            "step": 0,
+                            "color": {
+                                "red": 255,
+                                "green": 0,
+                                "blue": 0
+                            }
+                        },
+                        {
+                            "step": 16,
+                            "color": {
+                                "red": 255,
+                                "green": 255,
+                                "blue": 0
+                            }
+                        },
+                        {
+                            "step": 33,
+                            "color": {
+                                "red": 0,
+                                "green": 255,
+                                "blue": 0
+                            }
+                        },
+                        {
+                            "step": 49,
+                            "color": {
+                                "red": 0,
+                                "green": 255,
+                                "blue": 255
+                            }
+                        },
+                        {
+                            "step": 66,
+                            "color": {
+                                "red": 0,
+                                "green": 0,
+                                "blue": 255
+                            }
+                        },
+                        {
+                            "step": 82,
+                            "color": {
+                                "red": 255,
+                                "green": 0,
+                                "blue": 255
+                            }
+                        },
+                        {
+                            "step": 100,
+                            "color": {
+                                "red": 255,
+                                "green": 0,
+                                "blue": 0
+                            }
+                        }
+                    ],
+                    "time": 1659180879014
+                },
+                "effectRunning": false,
+                "name": "Regal",
+                "id": 2,
+                "ports": {
+                    "red": 26,
+                    "green": 26,
+                    "blue": 26
+                },
+                "onOff": "on",
+                "gpioPorts": {
+                    "red": {
+                        "_events": {},
+                        "_eventsCount": 0,
+                        "gpio": 26
+                    },
+                    "green": {
+                        "_events": {},
+                        "_eventsCount": 0,
+                        "gpio": 26
+                    },
+                    "blue": {
+                        "_events": {},
+                        "_eventsCount": 0,
+                        "gpio": 26
+                    }
+                }
+            }
+        ]
     }
 ]
