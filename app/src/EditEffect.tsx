@@ -3,10 +3,8 @@ import FormControlLabel from "@mui/material/FormControlLabel/FormControlLabel";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import { Link, useLocation } from "react-router-dom";
 import ws from "./connection/connection";
-import { MouseEventHandler, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { infoData, newDataEvent, requestNewData } from "./connection/newData";
-import setStripSync from "./connection/sync";
-import sendColorToServer from "./connection/setColor";
 import ThemeProvider from "@mui/system/ThemeProvider/ThemeProvider";
 import createTheme from "@mui/material/styles/createTheme";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup/ToggleButtonGroup";
@@ -29,7 +27,7 @@ interface indexedKeyframe extends keyframe {
     id: number;
 }
 
-const EffectsPage = () => {
+const EditEffect = () => {
     const [data, setData] = useState<null | infoData>(null);
 
     // try to find effect name in url to edit
@@ -406,4 +404,4 @@ const EffectsPage = () => {
     );
 };
 
-export default EffectsPage;
+export default EditEffect;
