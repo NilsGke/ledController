@@ -13,20 +13,30 @@ export type infoData = {
     activePreset: preset | null;
 };
 
-export const requestNewData = (): void => ws.send(JSON.stringify({ get: "all" }))
-
+export const requestNewData = (): void =>
+    ws.send(JSON.stringify({ get: "all" }));
 
 export interface newDataEvent extends Event {
     detail: {
-        newData: infoData
-    }
+        newData: infoData;
+    };
 }
 ws.onmessage = (message) => {
-    const event = new CustomEvent("newData", {
-        bubbles: true,
-        detail: {
-            newData: JSON.parse(message.data) as infoData
-        }
-    });
-    ws.dispatchEvent(event)
-}
+    const data = JSON.parse(message.data) as infoData;
+    if (
+        data.activePreset !== undefined &&
+        data.effects !== undefined &&
+        data.onOff !== undefined &&
+        data.presets !== undefined &&
+        data.strips !== undefined &&
+        data.sync !== undefined
+    ) {
+        const event = new CustomEvent("newData", {
+            bubbles: true,
+            detail: {
+                newData: data,
+            },
+        });
+        ws.dispatchEvent(event);
+    }
+};
