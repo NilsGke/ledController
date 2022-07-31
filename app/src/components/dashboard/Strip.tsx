@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { rgbStripType } from "../../../../src/ledStrip/types";
+import { ledValue, rgbStripType } from "../../../../src/ledStrip/types";
 import "../../styles/dashboard/dashboardStrip.sass";
 import { effect, keyframe } from "../../../../src/effects";
 import HuePicker from "../HuePicker";
@@ -7,11 +7,13 @@ import RgbPicker from "../RgbPicker";
 import BrightnessPicker from "../BrightnessPicker";
 import sendColorToServer from "../../connection/setColor";
 import setLedEffect from "../../connection/ledEffect";
+import { isMobile } from "react-device-detect";
 // mui
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import { timeDifference } from "../../connection/connection";
 
 type props = {
     data: rgbStripType;
@@ -67,9 +69,7 @@ const DashboardStrip: React.FC<props> = ({
     const stripRef = useRef<HTMLInputElement | null>(null);
     const selectRef = useRef<HTMLInputElement | null>(null);
 
-    const colorString = `rgb(${Math.floor(color.red * alpha)}, ${Math.floor(
-        color.green * alpha
-    )}, ${Math.floor(color.blue * alpha)})`;
+    const colorString = `rgb(${color.red}, ${color.green}, ${color.blue})`;
     const actualColorString = `rgb(${strip.color.red}, ${strip.color.green}, ${strip.color.blue})`;
 
     const changeEffect = (effectName: effect["name"]) => {
@@ -78,33 +78,13 @@ const DashboardStrip: React.FC<props> = ({
         else setLedEffect(strip, effect);
     };
 
-    // useEffect(() => {
-    //     if (stripRef.current === null) return;
-    //     if (strip.effect === null) {
-    //         stripRef.current
-    //             .getAnimations()
-    //             .forEach((animation) => animation.cancel());
-    //         return;
-    //     }
-
-    //     const animationKeyframes = strip.effect.keyframes.map((frame) => ({
-    //         boxShadow: `0px 0px 40px 0px rgb(${frame.color.red}, ${frame.color.green}, ${frame.color.blue})`,
-    //         offset: frame.step / 100,
-    //     }));
-    //     const animationTiming = {
-    //         duration: strip.effect.duration,
-    //         iterations: Infinity,
-    //     };
-    //     stripRef.current.animate(animationKeyframes, animationTiming);
-    // }, [strip.effect]);
-
     useEffect(() => {
         if (strip?.effect === null) return;
         if (strip.effect.time === undefined) strip.effect.time = Date.now(); // this should never happen but just in case and for the compiler its there
 
         const { duration, time, keyframes } = strip.effect;
 
-        const timePassed = Date.now() - time;
+        const timePassed = Date.now() + timeDifference - time;
 
         let timeInEffect = timePassed;
         while (timeInEffect >= duration) timeInEffect -= duration;
@@ -150,9 +130,9 @@ const DashboardStrip: React.FC<props> = ({
             };
 
             const newColor = {
-                red: prev.color.red - addColor.red,
-                green: prev.color.green - addColor.green,
-                blue: prev.color.blue - addColor.blue,
+                red: (prev.color.red - addColor.red) as ledValue,
+                green: (prev.color.green - addColor.green) as ledValue,
+                blue: (prev.color.blue - addColor.blue) as ledValue,
             };
 
             // just to make sure the colors are not above 255
@@ -161,7 +141,9 @@ const DashboardStrip: React.FC<props> = ({
             newColor.blue = newColor.blue > 255 ? 255 : newColor.blue;
 
             console.log(
-                `%c ${newColor.red} ${newColor.green} ${newColor.blue}`,
+                `%c ${newColor.red} ${newColor.green} ${
+                    newColor.blue
+                } ${Date.now()}`,
                 `background: rgb(${newColor.red}, ${newColor.green}, ${newColor.blue})`
             );
 
@@ -171,14 +153,17 @@ const DashboardStrip: React.FC<props> = ({
 
             const colorString: string = `rgb(${newColor.red}, ${newColor.green}, ${newColor.blue})`;
 
-            (stripRef.current as HTMLDivElement).style.boxShadow = `0px 0px 40px 0px ${colorString}`
-
+            (
+                stripRef.current as HTMLDivElement
+            ).style.boxShadow = `0px 0px 40px 0px ${colorString}`;
         } else console.warn("could not determine previous or next keyframe");
 
-        setTimeout(() => {
-            setUpdateColor(!updateColor);
-        }, 50);
-
+        setTimeout(
+            () => {
+                setUpdateColor(!updateColor);
+            },
+            isMobile ? 100 : 10
+        );
     }, [strip.effect, updateColor]);
 
     return (
@@ -187,6 +172,7 @@ const DashboardStrip: React.FC<props> = ({
                 className="strip"
                 style={{
                     boxShadow: `0px 0px 40px 0px ${colorString}`,
+                    transition: isMobile ? "box-shadow .1s linear" : "none",
                 }}
                 ref={stripRef}
             >
