@@ -12,19 +12,18 @@
             height: 50px
             margin: 0
 
-            span 
+            span
                 display: flex
                 justify-content: center
                 align-items: flex-start
                 gap: 10px
 
-    
     #timeLineContainer
         margin: 3%
         padding: 2%
         margin-top: 15vh
         #timeLine
-            > span 
+            > span
                 .MuiSlider-mark
                     height: 10px
                     width: 1px
@@ -40,12 +39,10 @@
                     border-radius: 100%
                     // position: absolute
                     // transform: translateX(calc($width / 2 * -1))
-                    &.active 
+                    &.active
                         background: #ffffff
                         box-shadow: 0px 0px 10px white
                         outline: 2px solid #00e4f5
-
-
 
     #controls
         padding: 30px
@@ -62,7 +59,6 @@
             max-width: calc(33%)
             padding: 2rem $padding
 
-            
             /* Responsive layout - makes a two column-layout instead of four columns */
             @media screen and (max-width: 800px)
                 flex: calc(25% - ($padding * 2))
@@ -72,18 +68,17 @@
             @media screen and (max-width: 600px)
                 flex: 50%
                 max-width: calc(100% - $padding * 2)
-            
 
         #keyframeSettings
             min-width: 200px
-            @media screen and (max-width: 600px)
-                min-width: calc(100% - $padding * 2)
+            background: #2d2d2d
             display: flex
             align-items: center
             justify-content: center
             flex-direction: column
-            background: #2d2d2d
             border-radius: 20px
+            @media screen and (max-width: 600px)
+                min-width: calc(100% - $padding * 2)
             h2
                 margin: 0
             .colorInput
@@ -115,13 +110,13 @@
                     align-items: center
                     justify-content: center
 
-                    span 
+                    span
                         display: flex
                         justify-content: center
                         align-items: flex-start
                         gap: 10px
-                
-                &#start >.label 
+
+                &#start >.label
                     padding: 0
                     min-height: 70px
                     min-width: 70px
@@ -140,12 +135,48 @@
 
                 &#name >.label > div
                     width: 150px
-                        
+
                 &#duration
                     >.label
                         >div
                             width: 100px
 
         #keyframes
-            background: #2d2d2d
+            // background: #2d2d2d
             border-radius: 20px
+            display: flex
+            align-items: center
+            justify-content: center
+            flex-direction: column
+            gap: 10px
+            .keyframe
+                width: 100%
+                background: #2d2d2d
+                padding: 10px
+                display: flex
+                align-items: center
+                justify-content: space-between
+                border-radius: 20px
+                .color
+                    min-height: 5px
+                    min-width: 20%
+                .stepInput
+                    width: min-content
+                    input
+                        background: transparent
+                        color: white
+                        border: none
+                        padding: 10px
+                        width: 30px
+                        cursor: pointer
+                        text-align: center
+                        &::-webkit-inner-spin-button,
+                        &::-webkit-outer-spin-button
+                            -webkit-appearance: none
+                            margin: 0
+                .arrows
+                    display: flex
+                    align-items: center
+                    justify-content: center
+                    flex-direction: row
+                    flex-wrap: nowrap
