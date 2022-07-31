@@ -30,6 +30,8 @@ type messageType = {
     newPreset?: preset;
     moveEffect?: effect["id"];
     direction?: -1 | 1;
+    testEffect?: effect;
+    time?: number;
 };
 
 const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
@@ -39,9 +41,18 @@ const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
 
     if (m.on !== undefined) setAllOnOff(m.on);
 
+    if (m.time !== undefined)
+        connection.send(
+            JSON.stringify({ timeDifference: Date.now() - m.time })
+        );
+
     if (m.get) {
         if (m.get === "all")
             return connection.send(JSON.stringify(getInfoObject()));
+    }
+
+    if (m.sync !== undefined) {
+        setSync(m.sync);
     }
 
     if (m.set) {
@@ -82,8 +93,12 @@ const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
         } else return console.error("not specified what to set");
     }
 
-    if (m.sync !== undefined) {
-        setSync(m.sync);
+    if (m.testEffect !== undefined) {
+        const effect = m.testEffect;
+        setSync(true, false);
+        setActivePreset(null);
+        effect.time = Date.now();
+        strips.forEach((strip) => strip.setEffect(effect));
     }
 
     if (m.apply) {
