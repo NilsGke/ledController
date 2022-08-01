@@ -1,19 +1,34 @@
 import { keyframe } from "../../../src/effects";
-import Input from "@mui/material/Input";
-import TextField from "@mui/material/TextField/TextField";
-import { useEffect, useState } from "react";
 import IconButton from "@mui/material/IconButton/IconButton";
 import ArrowDropUpRoundedIcon from "@mui/icons-material/ArrowDropUpRounded";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
+import { indexedKeyframe } from "../EditEffect";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 
 type props = {
-    frame: keyframe;
+    frame: indexedKeyframe;
+    active: boolean;
+    setActive: (id: indexedKeyframe["id"]) => void;
     move: (direction: -1 | 1) => void;
     changeStep: (value: number) => void;
+    remove: (id: indexedKeyframe["id"]) => void;
+    deletable: boolean;
 };
-const Keyframe: React.FC<props> = ({ frame, move, changeStep }) => {
+
+const Keyframe: React.FC<props> = ({
+    frame,
+    move,
+    changeStep,
+    remove,
+    active,
+    setActive,
+    deletable,
+}) => {
     return (
-        <div className="keyframe">
+        <div
+            className={"keyframe" + (active ? " active" : "")}
+            onClick={() => setActive(frame.id)}
+        >
             <div className="stepInput">
                 <input
                     type="number"
@@ -39,12 +54,18 @@ const Keyframe: React.FC<props> = ({ frame, move, changeStep }) => {
                 }}
             ></div>
             <div className="arrows">
-                <IconButton className="left" onClick={() => -1}>
+                <IconButton className="left" onClick={() => move(-1)}>
                     <ArrowDropUpRoundedIcon />
                 </IconButton>
-                <IconButton className="left" onClick={() => 1}>
+                <IconButton className="left" onClick={() => move(1)}>
                     <ArrowDropDownRoundedIcon />
                 </IconButton>
+            </div>
+            <div
+                className={"delete" + (deletable ? "" : " disabled")}
+                onClick={() => deletable && remove(frame.id)}
+            >
+                <DeleteRoundedIcon />
             </div>
         </div>
     );
