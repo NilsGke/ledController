@@ -7,8 +7,8 @@
     "start": "nodemon -x npm run run -e ts",
     "kill": "sudo killall pigpiod || echo 'no process stopped' && exit",
     "run": "tsc && sudo node dist/index.js ",
-    "runNoLeds": "tsc && sudo node dist/index.js  --noLeds",
-    "runWin": "tsc && node --inspect dist/index.js  --noLeds"
+    "runNoLeds": "tsc && sudo node dist/index.js --noLeds",
+    "runWin": "tsc && node --inspect dist/index.js --noLeds --refreshRate 100"
   },
   "repository": {
     "type": "git",
