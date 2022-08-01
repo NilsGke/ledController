@@ -62,6 +62,8 @@ const CustomSlider: React.FC<props> = ({
         elements[
             elements.length - 1
         ].style.background = `linear-gradient(to right, ${keyframes
+            .slice()
+            .sort((a, b) => a.step - b.step)
             .map(
                 (frame) =>
                     `rgb(${frame.color.red}, ${frame.color.green}, ${frame.color.blue}) ${frame.step}%`
@@ -80,12 +82,9 @@ const CustomSlider: React.FC<props> = ({
     // couldnt solve props with types as it was very complicated and i am not that deep into typescript to figure this out
     const KeyFrameThumb = (props: any) => {
         const { children, ...other } = props;
-        const id =
-            parseInt(
-                props.children.props["aria-label"].replace("slider", "")
-            ) || -1;
+        const label = props.children.props.children[0].props["aria-label"];
+        const id = parseInt((label || "-1").replace("slider", "")) || -1;
         const frame = keyframes.find((frame) => frame.id === id);
-        console.log(frame);
         return (
             <SliderThumb
                 {...other}
@@ -108,6 +107,7 @@ const CustomSlider: React.FC<props> = ({
                             "muiSlider" +
                             (activeKeyframeId === frame.id ? " active" : "")
                         }
+                        valueLabelDisplay="auto"
                         aria-label={"slider" + frame.id}
                         value={frame.step}
                         track={false}
