@@ -6,8 +6,12 @@ import express from "express";
 
 const app = express();
 
+const args = process.argv.slice(2);
+
 export const CONFIG = {
-    ledRefreshRate: 10,
+    ledRefreshRate: args.includes("--refreshRate")
+        ? parseInt(args[args.indexOf("--refreshRate") + 1])
+        : 10, // default refresh rate
 };
 
 if (process.argv.slice(2).includes("--noLeds"))
