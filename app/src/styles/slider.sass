@@ -7,7 +7,9 @@
         position: relative
         .muiSlider
             position: absolute
+            pointer-events: none !important
             .MuiSlider-thumb
+                pointer-events: all !important
                 z-index: 3
                 $width: 6px
                 $height: 30px
@@ -21,6 +23,8 @@
                     // outline-width: 10px
                     // width: 1px
                     background: initial
+                &::before
+                    box-shadow: none
             .MuiSlider-mark
                 height: 12px
                 background: grey
