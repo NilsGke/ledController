@@ -15,7 +15,7 @@ import { sliderTypes } from "./components/dashboard/Strip";
 import HuePicker from "./components/HuePicker";
 import BrightnessPicker from "./components/BrightnessPicker";
 import RgbPicker from "./components/RgbPicker";
-import { rgbStripType } from "../../src/ledStrip/types";
+import { ledValue, rgbStripType } from "../../src/ledStrip/types";
 import TextField from "@mui/material/TextField/TextField";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import Button from "@mui/material/Button/Button";
@@ -129,9 +129,65 @@ const EditEffect = () => {
                 id: i,
             })
         );
-        setKeyframes(newKeyframes);
+        setKeyframes(newKeyframes.sort((a, b) => a.step - b.step));
         setSetEditEffect(true);
     }, [data]);
+
+    const addKeyframe = () => {
+        let biggestGapLow: indexedKeyframe = {
+                id: -1,
+                color: { red: 255, green: 0, blue: 0 },
+                step: 0,
+            },
+            biggestGapHigh: indexedKeyframe = {
+                id: -1,
+                color: { red: 255, green: 0, blue: 0 },
+                step: 100,
+            },
+            diff: number = 0;
+
+        console.log(keyframes.length);
+
+        if (keyframes.length > 2)
+            // find the biggest gap in the keyframes
+            for (let i = 0; i < keyframes.length - 1; i++) {
+                let newDiff = keyframes[i + 1].step - keyframes[i].step;
+                if (newDiff >= diff) {
+                    biggestGapLow = keyframes[i];
+                    biggestGapHigh = keyframes[i + 1];
+                    diff = newDiff;
+                }
+            }
+
+        let newId = 0;
+        while (keyframes.map((f) => f.id).includes(newId)) newId++;
+        const newKeyframe: indexedKeyframe = {
+            id: newId,
+            step: Math.round(biggestGapLow.step + diff / 2),
+            color: {
+                // calculate the color between the two keyframes
+                red: (biggestGapLow.color.red +
+                    0.5 *
+                        (biggestGapHigh.color.red -
+                            biggestGapLow.color.red)) as ledValue,
+                green: (biggestGapLow.color.green +
+                    0.5 *
+                        (biggestGapHigh.color.green -
+                            biggestGapLow.color.green)) as ledValue,
+                blue: (biggestGapLow.color.blue +
+                    0.5 *
+                        (biggestGapHigh.color.blue -
+                            biggestGapLow.color.blue)) as ledValue,
+            },
+        };
+
+        const newKeyframes: indexedKeyframe[] = keyframes.slice();
+        newKeyframes.push(newKeyframe);
+        setKeyframes(newKeyframes.sort((a, b) => a.step - b.step));
+        setActiveKeyframeId(newKeyframe.id);
+    };
+
+    console.log("rerender");
 
     return (
         <div id="app" className="effects">
@@ -164,7 +220,11 @@ const EditEffect = () => {
                                 setActiveKeyframeId(id)
                             }
                             onChange={(changedKeyframes: indexedKeyframe[]) =>
-                                setKeyframes(changedKeyframes)
+                                setKeyframes(
+                                    changedKeyframes.sort(
+                                        (a, b) => a.step - b.step
+                                    )
+                                )
                             }
                             onChangeCommit={(changedKeyframes: keyframe[]) =>
                                 console.log(changedKeyframes)
@@ -246,7 +306,11 @@ const EditEffect = () => {
                                     variant="text"
                                     onClick={() =>
                                         testEffect({
-                                            keyframes,
+                                            keyframes: keyframes
+                                                .slice()
+                                                .sort(
+                                                    (a, b) => a.step - b.step
+                                                ),
                                             duration,
                                             id: -1,
                                             name: "test",
@@ -284,7 +348,13 @@ const EditEffect = () => {
                                 />
                             </div>
                         </div>
-
+                        <div className="control" id="addKeyframe">
+                            <div className="label">
+                                <Button onClick={() => addKeyframe()}>
+                                    Add keyframe
+                                </Button>
+                            </div>
+                        </div>
                         <div className="control" id="transitionToggle">
                             <div className="label">
                                 <ToggleButtonGroup
@@ -361,18 +431,46 @@ const EditEffect = () => {
                         .map((frame, i) => (
                             <Keyframe
                                 key={frame.id}
+                                frame={frame}
+                                active={false}
+                                deletable={keyframes.length > 1}
+                                setActive={(id: indexedKeyframe["id"]) =>
+                                    setActiveKeyframeId(id)
+                                }
                                 move={(direction: -1 | 1) => {
-                                    const temp = keyframes[i + direction];
-                                    keyframes[i + direction] = keyframes[i];
-                                    keyframes[i] = temp;
-                                    setKeyframes(keyframes);
+                                    const newKeyframes = keyframes.slice();
+                                    setActiveKeyframeId(newKeyframes[i].id);
+                                    //FIXME: change does not apply instantly if keyframe is active but only if active is set to other keyframe
+                                    const temp =
+                                        newKeyframes[i + direction].step;
+                                    newKeyframes[i + direction].step =
+                                        newKeyframes[i].step;
+                                    newKeyframes[i].step = temp;
+                                    setKeyframes(
+                                        keyframes.sort(
+                                            (a, b) => a.step - b.step
+                                        )
+                                    );
                                 }}
                                 changeStep={(value: number) => {
                                     if (value < 0 || value > 100) return;
                                     keyframes[i].step = value;
-                                    setKeyframes(keyframes);
+                                    setKeyframes(
+                                        keyframes.sort(
+                                            (a, b) => a.step - b.step
+                                        )
+                                    );
                                 }}
-                                frame={frame}
+                                remove={(id: indexedKeyframe["id"]) => {
+                                    const newKeyframes = keyframes.slice();
+                                    newKeyframes.splice(
+                                        newKeyframes.findIndex(
+                                            (frame) => frame.id === id
+                                        ),
+                                        1
+                                    );
+                                    setKeyframes(newKeyframes);
+                                }}
                             />
                         ))}
                 </div>

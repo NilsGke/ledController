@@ -150,6 +150,9 @@
             flex-direction: column
             gap: 10px
             .keyframe
+                transition: outline .2s ease-in-out
+                outline: 3px solid transparent
+                cursor: pointer
                 width: 100%
                 background: #2d2d2d
                 padding: 10px
@@ -180,3 +183,17 @@
                     justify-content: center
                     flex-direction: row
                     flex-wrap: nowrap
+                .delete
+                    cursor: pointer
+                    width: 0
+                    overflow: hidden
+                    transition: all .2s ease-in-out
+                    svg
+                        color: #ff3838
+                    &.disabled svg
+                        color: grey
+                        cursor: no-drop
+                &.active 
+                    outline: 2px solid grey
+                    .delete
+                        width: 30px
