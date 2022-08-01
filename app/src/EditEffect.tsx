@@ -5,12 +5,12 @@ import { Link, useLocation } from "react-router-dom";
 import ws from "./connection/connection";
 import { useEffect, useRef, useState } from "react";
 import { infoData, newDataEvent, requestNewData } from "./connection/newData";
+import CustomSlider from "./components/Slider";
 import ThemeProvider from "@mui/system/ThemeProvider/ThemeProvider";
 import createTheme from "@mui/material/styles/createTheme";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup/ToggleButtonGroup";
 import { effect, keyframe } from "../../src/effects";
 import ToggleButton from "@mui/material/ToggleButton/ToggleButton";
-import Slider, { SliderThumb } from "@mui/material/Slider/Slider";
 import { sliderTypes } from "./components/dashboard/Strip";
 import HuePicker from "./components/HuePicker";
 import BrightnessPicker from "./components/BrightnessPicker";
@@ -23,7 +23,7 @@ import Keyframe from "./components/Keyframe";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import testEffect from "./connection/testEffect";
 
-interface indexedKeyframe extends keyframe {
+export interface indexedKeyframe extends keyframe {
     id: number;
 }
 
@@ -32,10 +32,8 @@ const EditEffect = () => {
 
     // try to find effect name in url to edit
     const effectName = decodeURI(useLocation().pathname.split("/")[2]);
-    console.log(effectName);
     const editEffect: effect | null =
         data?.effects.find((effect) => effect.name === effectName) || null;
-    console.log(editEffect);
 
     const [sliders, setSliders] = useState<sliderTypes>(
         (localStorage.getItem("ledControllerSliders") || "hue") as sliderTypes
@@ -66,11 +64,13 @@ const EditEffect = () => {
         },
     ];
 
-    const [activeKeyframeNumber, setActiveKeyframeNumber] = useState(0);
+    const [activeKeyframeId, setActiveKeyframeId] = useState(0);
     const [keyframes, setKeyframes] =
         useState<indexedKeyframe[]>(defaultKeyframes);
 
-    const activeKeyframe = keyframes[activeKeyframeNumber];
+    const activeKeyframe = keyframes.find(
+        (frame) => frame.id === activeKeyframeId
+    );
     const [activeKeyframeColor, setActiveKeyframeColor] = useState<
         rgbStripType["color"] | null
     >(null);
@@ -92,11 +92,6 @@ const EditEffect = () => {
         ws.addEventListener("newData", newDataHandler);
         return () => ws.removeEventListener("newData", newDataHandler);
     }, []);
-    // handleNewData
-    useEffect(() => {
-        console.log(data);
-        if (data === null) return;
-    }, [data]);
 
     // apply colors to slider
     useEffect(() => {
@@ -115,13 +110,17 @@ const EditEffect = () => {
     useEffect(() => {
         if (activeKeyframeColor === null) return;
         const newKeyframes = keyframes;
-        keyframes[activeKeyframeNumber].color = activeKeyframeColor;
+        const index = keyframes.findIndex(
+            (frame) => frame.id === activeKeyframeId
+        );
+        keyframes[index].color = activeKeyframeColor;
         setKeyframes(newKeyframes);
     }, [activeKeyframeColor]);
 
     // try to set edit effect
     useEffect(() => {
-        if (data === null || setEditEffect || editEffect === null) return;
+        if (data === null || setEditEffect) return; // effect already set or data not yet provided
+        if (editEffect === null) return setSetEditEffect(true); // no effect found
         setDuration(editEffect.duration);
         setName(editEffect.name);
         const newKeyframes: indexedKeyframe[] = editEffect.keyframes.map(
@@ -133,42 +132,6 @@ const EditEffect = () => {
         setKeyframes(newKeyframes);
         setSetEditEffect(true);
     }, [data]);
-
-    const handleSliderChange = (
-        event: React.SyntheticEvent | Event,
-        value: number | number[],
-        activeThumb: number
-    ) => {
-        setActiveKeyframeNumber(activeThumb);
-        setActiveKeyframeColor(keyframes[activeThumb].color);
-        const steps: number[] = value as number[];
-        const newKeyframes: indexedKeyframe[] = keyframes.map((frame, i) => ({
-            ...frame,
-            step: steps[i],
-        }));
-        setKeyframes(newKeyframes);
-    };
-
-    interface KeyFrameThumbProps extends React.HTMLAttributes<unknown> {
-        "data-index": number;
-    }
-
-    const KeyFrameThumb = (props: KeyFrameThumbProps) => {
-        const { children, ...other } = props;
-        return (
-            <SliderThumb
-                {...other}
-                className={
-                    "MuiSlider-thumb" +
-                    (props["data-index"] === activeKeyframeNumber
-                        ? " active"
-                        : "")
-                }
-            >
-                {children}
-            </SliderThumb>
-        );
-    };
 
     return (
         <div id="app" className="effects">
@@ -193,22 +156,23 @@ const EditEffect = () => {
             </div>
             <div id="timeLineContainer">
                 <div id="timeLine">
-                    <Slider
-                        onChange={handleSliderChange}
-                        ref={sliderRef}
-                        components={{
-                            Thumb: KeyFrameThumb,
-                        }}
-                        defaultValue={defaultKeyframes.map((k) => k.step)}
-                        value={keyframes.map((k) => k.step)}
-                        marks={[...new Array(11)].map((d, i) => ({
-                            value: i * 10,
-                        }))}
-                        valueLabelDisplay="auto"
-                        track={false}
-                        min={0}
-                        max={100}
-                    />
+                    {setEditEffect ? (
+                        <CustomSlider
+                            keyframes={keyframes}
+                            activeKeyframeId={activeKeyframeId}
+                            changeActiveKeyframe={(id: indexedKeyframe["id"]) =>
+                                setActiveKeyframeId(id)
+                            }
+                            onChange={(changedKeyframes: indexedKeyframe[]) =>
+                                setKeyframes(changedKeyframes)
+                            }
+                            onChangeCommit={(changedKeyframes: keyframe[]) =>
+                                console.log(changedKeyframes)
+                            }
+                        />
+                    ) : (
+                        "loading"
+                    )}
                 </div>
             </div>
             <div id="controls">
@@ -219,7 +183,11 @@ const EditEffect = () => {
                             <>
                                 <HuePicker
                                     color={
-                                        activeKeyframe.color as rgbStripType["color"]
+                                        (activeKeyframe?.color || {
+                                            red: 0,
+                                            green: 0,
+                                            blue: 0,
+                                        }) as rgbStripType["color"]
                                     }
                                     onChange={(color) => {
                                         setActiveKeyframeColor(color);
@@ -230,7 +198,11 @@ const EditEffect = () => {
                                 />
                                 <BrightnessPicker
                                     color={
-                                        activeKeyframe.color as rgbStripType["color"]
+                                        (activeKeyframe?.color || {
+                                            red: 0,
+                                            green: 0,
+                                            blue: 0,
+                                        }) as rgbStripType["color"]
                                     }
                                     onChange={(color) => {
                                         setActiveKeyframeColor(color);
@@ -243,7 +215,11 @@ const EditEffect = () => {
                         ) : (
                             <RgbPicker
                                 color={
-                                    activeKeyframe.color as rgbStripType["color"]
+                                    (activeKeyframe?.color || {
+                                        red: 0,
+                                        green: 0,
+                                        blue: 0,
+                                    }) as rgbStripType["color"]
                                 }
                                 onChange={(color) => {
                                     setActiveKeyframeColor(color);
@@ -380,6 +356,7 @@ const EditEffect = () => {
                 </div>
                 <div id="keyframes" ref={keyframeList}>
                     {keyframes
+                        .slice()
                         .sort((a, b) => a.step - b.step)
                         .map((frame, i) => (
                             <Keyframe

@@ -1,0 +1,32 @@
+
+.sliderContainer
+    .track
+        width: 100%
+        border-radius: 10px
+        background: grey
+        position: relative
+        .muiSlider
+            position: absolute
+            .MuiSlider-thumb
+                z-index: 3
+                $width: 6px
+                $height: 30px
+                height: $height
+                width: $width
+                border-radius: 10px
+                outline: 3px solid grey
+                background: #202124
+                // transition: all .2s ease-in-out
+                &.active
+                    // outline-width: 10px
+                    // width: 1px
+                    background: initial
+            .MuiSlider-mark
+                height: 12px
+                background: grey
+                border-radius: 10px
+            .MuiSlider-rail
+                opacity: 0
+            &:last-of-type
+                .MuiSlider-rail
+                    opacity: 1
