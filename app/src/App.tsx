@@ -11,25 +11,7 @@ import EffectsOverview from "./EffectsOverview";
 import "./styles/index.sass";
 
 const Router = () => {
-    const [connected, setConnected] = useState(wsConnected);
-
-    // handle connection
-    useEffect(() => {
-        const handleConnection = () => setConnected(true);
-        wsEvents.addEventListener("connectionOpened", handleConnection);
-        return () =>
-            wsEvents.removeEventListener("connectionOpened", handleConnection);
-    }, []);
-
-    // handle disconnect
-    useEffect(() => {
-        const handleDisconnect = () => setConnected(false);
-        wsEvents.addEventListener("connectionClosed", handleDisconnect);
-        return () =>
-            wsEvents.removeEventListener("connectionClosed", handleDisconnect);
-    }, []);
-
-    if (!connected)
+    if (ws.CONNECTING)
         return (
             <div className="dashboard loading">
                 connecting...
