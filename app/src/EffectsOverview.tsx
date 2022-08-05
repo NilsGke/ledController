@@ -17,13 +17,17 @@ import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 import moveEffect from "./connection/moveEffect";
 import autoAnimate from "@formkit/auto-animate";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 import testEffect from "./connection/testEffect";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import { deleteEffect } from "./connection/ledEffect";
+import ConfirmDialog from "./components/ConfirmDialog";
 
 const EffectsOverview = () => {
     const [data, setData] = useState<null | infoData>(null);
     const [effects, setEffects] = useState<effect[]>([]);
+
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [deleteEffectId, setDeleteEffectId] = useState<effect["id"]>(-1);
 
     const effectsRef = useRef<null | HTMLInputElement>(null);
 
@@ -132,7 +136,13 @@ const EffectsOverview = () => {
                                     >
                                         <EditRoundedIcon color="warning" />
                                     </IconButton>
-                                    <IconButton color="error">
+                                    <IconButton
+                                        color="error"
+                                        onClick={() => {
+                                            setDeleteEffectId(effect.id);
+                                            setDialogOpen(true);
+                                        }}
+                                    >
                                         <DeleteRoundedIcon color="error" />
                                     </IconButton>
                                 </Stack>
@@ -141,9 +151,35 @@ const EffectsOverview = () => {
                     ))
                 )}
                 <div className="effect addEffect">
-                    <AddRoundedIcon />
+                    <Link to="/effects/new">
+                        <AddRoundedIcon />
+                    </Link>
                 </div>
             </div>
+            <ConfirmDialog
+                open={dialogOpen}
+                text={`are you sure you want to delete effect: "${
+                    effects?.find((eff) => eff.id === deleteEffectId)?.name ||
+                    ""
+                }"`}
+                close={() => setDialogOpen(false)}
+                options={[
+                    {
+                        name: "keep",
+                        function: () => {
+                            setDialogOpen(false);
+                            setDeleteEffectId(-1);
+                        },
+                    },
+                    {
+                        name: "delete",
+                        function: () => {
+                            setDialogOpen(false);
+                            deleteEffect(deleteEffectId);
+                        },
+                    },
+                ]}
+            />
         </div>
     );
 };

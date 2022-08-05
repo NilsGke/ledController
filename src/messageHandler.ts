@@ -1,4 +1,9 @@
-import { moveEffect } from "./effects/index";
+import {
+    deleteEffect,
+    editEffect,
+    moveEffect,
+    newEffect,
+} from "./effects/index";
 import WebSocket from "ws";
 import { rgbStripType } from "./ledStrip/types";
 import {
@@ -18,20 +23,31 @@ import fs from "fs";
 import { sendDataUpdate } from "..";
 
 type messageType = {
+    time?: number;
+
     get?: "strips" | "effects" | "presets" | "all";
     set?: "color" | "effect";
+
     stripName?: rgbStripType["name"];
+    all?: boolean;
+
     color?: rgbStripType["color"];
     effectName?: effect["name"];
-    all?: boolean;
-    apply?: preset["name"];
+
     on?: onOff;
     sync?: sync;
+
+    apply?: preset["name"];
     newPreset?: preset;
+
     moveEffect?: effect["id"];
     direction?: -1 | 1;
+
     testEffect?: effect;
-    time?: number;
+
+    newEffect?: effect;
+    editEffect?: effect;
+    deleteEffect?: effect["id"];
 };
 
 const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
@@ -124,6 +140,10 @@ const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
             moveEffect(m.moveEffect, m.direction);
         }
     }
+
+    if (m.newEffect) newEffect(m.newEffect);
+    if (m.editEffect) editEffect(m.editEffect);
+    if (m.deleteEffect) deleteEffect(m.deleteEffect);
 };
 
 export default messageHandler;

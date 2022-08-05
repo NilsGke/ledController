@@ -133,6 +133,7 @@
                             path
                                 color: #00c94f
 
+
                 &#name >.label > div
                     width: 150px
 
@@ -140,6 +141,30 @@
                     >.label
                         >div
                             width: 100px
+
+                &#group .MuiButtonGroup-root 
+                    height: 100%
+                    button
+                        border-color: #474747
+                        &#centerKeyframe svg
+                            transform: rotate(90deg)
+
+                &#save >.label
+                    padding: 0
+                    min-height: 70px
+                    min-width: 70px
+                    display: flex
+                    align-items: center
+                    justify-content: center
+                    button
+                        border-radius: 20px
+                        height: 100%
+                        width: 100%
+                        svg
+                            height: 55%
+                            width: 55%
+                            path
+                                color:white
 
         #keyframes
             // background: #2d2d2d
@@ -161,8 +186,10 @@
                 justify-content: space-between
                 border-radius: 20px
                 .color
-                    min-height: 5px
-                    min-width: 20%
+                    min-height: 7px
+                    width: 20%
+                    border-radius: 10px
+                    max-width: 60px
                 .stepInput
                     width: min-content
                     input

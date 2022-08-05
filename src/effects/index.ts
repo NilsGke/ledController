@@ -22,6 +22,7 @@ export const loadEffects = (): Promise<void> => {
     return new Promise((resolve, reject) => {
         fs.readFile("src/effects/effects.json", "utf8", (err, data) => {
             const dataEffects = JSON.parse(data) as effect[];
+            effects.length = 0;
             effects.push(...dataEffects);
             resolve();
         });
@@ -46,4 +47,69 @@ export const moveEffect = (id: effect["id"], direction: 1 | -1) => {
     newEffects.forEach((effect) => effects.push(effect));
 
     sendDataUpdate();
+};
+
+export const newEffect = (newEffect: effect): Promise<void> => {
+    return new Promise((resolve, reject) => {
+        let id = -1;
+        while (effects.map((e) => e.id).includes(id)) id++;
+        const newEffects: effect[] = effects.slice();
+
+        let counter = 0;
+        if (effects.map((e) => e.name).includes(newEffect.name))
+            while (effects.map((e) => e.name).includes(newEffect.name))
+                counter++;
+
+        newEffect.name =
+            counter != 0 ? newEffect.name + counter : newEffect.name;
+
+        newEffects.push({ ...newEffect, id });
+
+        fs.writeFile(
+            "src/effects/effects.json",
+            JSON.stringify(newEffects, null, "    "),
+            (err) => {
+                if (err) reject();
+                loadEffects().then(sendDataUpdate).then(resolve);
+            }
+        );
+    });
+};
+
+export const editEffect = (newEffect: effect): Promise<void> => {
+    return new Promise((resolve, reject) => {
+        const newEffects: effect[] = effects.slice();
+        const index = newEffects.findIndex(
+            (effect) => effect.id === newEffect.id
+        );
+
+        newEffects[index] = newEffect;
+
+        fs.writeFile(
+            "src/effects/effects.json",
+            JSON.stringify(newEffects, null, "    "),
+            (err) => {
+                if (err) reject();
+                loadEffects().then(sendDataUpdate).then(resolve);
+            }
+        );
+    });
+};
+
+export const deleteEffect = (id: effect["id"]): Promise<void> => {
+    return new Promise((resolve, reject) => {
+        const index = effects.findIndex((effect) => effect.id === id);
+
+        const newEffects = effects.slice();
+        newEffects.splice(index, 1);
+
+        fs.writeFile(
+            "src/effects/effects.json",
+            JSON.stringify(newEffects, null, "    "),
+            (err) => {
+                if (err) reject();
+                loadEffects().then(sendDataUpdate).then(resolve);
+            }
+        );
+    });
 };
