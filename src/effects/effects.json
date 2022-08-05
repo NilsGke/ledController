@@ -61,7 +61,8 @@
                     "blue": 0
                 }
             }
-        ]
+        ],
+        "time": 1659700329876
     },
     {
         "name": "blink Red",
@@ -109,13 +110,10 @@
                     "blue": 0
                 }
             }
-        ]
+        ],
+        "time": 1659700269338
     },
     {
-        "name": "police",
-        "id": 2,
-        "duration": 1000,
-        "transition": "linear",
         "keyframes": [
             {
                 "step": 0,
@@ -123,86 +121,106 @@
                     "red": 255,
                     "green": 0,
                     "blue": 0
-                }
+                },
+                "id": 0
             },
             {
-                "step": 9,
+                "step": 8,
                 "color": {
                     "red": 0,
                     "green": 0,
                     "blue": 0
-                }
+                },
+                "id": 1
             },
             {
-                "step": 18,
+                "step": 17,
                 "color": {
                     "red": 255,
                     "green": 0,
                     "blue": 0
-                }
+                },
+                "id": 2
             },
             {
-                "step": 27,
+                "step": 25,
                 "color": {
                     "red": 0,
                     "green": 0,
                     "blue": 0
-                }
+                },
+                "id": 3
             },
             {
-                "step": 36,
+                "step": 33,
                 "color": {
                     "red": 255,
                     "green": 0,
                     "blue": 0
-                }
+                },
+                "id": 4
             },
             {
-                "step": 45,
+                "step": 42,
                 "color": {
                     "red": 0,
                     "green": 0,
                     "blue": 0
-                }
+                },
+                "id": 5
             },
             {
-                "step": 55,
+                "step": 50,
                 "color": {
                     "red": 0,
                     "green": 0,
                     "blue": 255
-                }
+                },
+                "id": 6
             },
             {
-                "step": 64,
+                "step": 58,
                 "color": {
                     "red": 0,
                     "green": 0,
                     "blue": 0
-                }
+                },
+                "id": 7
             },
             {
-                "step": 73,
+                "step": 67,
                 "color": {
                     "red": 0,
                     "green": 0,
                     "blue": 255
-                }
+                },
+                "id": 8
             },
             {
-                "step": 82,
+                "step": 75,
                 "color": {
                     "red": 0,
                     "green": 0,
                     "blue": 0
-                }
+                },
+                "id": 9
             },
             {
-                "step": 91,
+                "step": 83,
                 "color": {
                     "red": 0,
                     "green": 0,
                     "blue": 255
+                },
+                "id": 10
+            },
+            {
+                "id": 12,
+                "step": 92,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 0
                 }
             },
             {
@@ -211,8 +229,49 @@
                     "red": 0,
                     "green": 0,
                     "blue": 0
-                }
+                },
+                "id": 11
             }
-        ]
+        ],
+        "duration": 1000,
+        "id": 2,
+        "name": "police",
+        "transition": "none",
+        "time": 1659700325420
+    },
+    {
+        "keyframes": [
+            {
+                "id": 0,
+                "step": 0,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 0
+                }
+            },
+            {
+                "step": 20,
+                "color": {
+                    "red": 192,
+                    "green": 0,
+                    "blue": 0
+                },
+                "id": 1
+            },
+            {
+                "step": 100,
+                "color": {
+                    "red": 246,
+                    "green": 255,
+                    "blue": 0
+                },
+                "id": 2
+            }
+        ],
+        "duration": 600000,
+        "id": -1,
+        "name": "Sunrise",
+        "transition": "linear"
     }
 ]
