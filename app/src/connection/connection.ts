@@ -8,6 +8,7 @@ const ws = new WebSocket(
 );
 ws.onopen = (ev) => {
     console.log(ev);
+    wsConnected = true;
     getTimeDifference();
 };
 
@@ -29,5 +30,7 @@ const timeMessageHandler = (ev: Event) => {
 };
 
 export let timeDifference: number = 0;
+
+export let wsConnected = false;
 
 export default ws;
