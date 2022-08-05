@@ -112,9 +112,13 @@ export default class rgbStrip {
             const transTime =
                 (duration / 100) * next.step - (duration / 100) * prev.step;
 
-            const percentTransPassed = Math.round(
-                (100 / transTime) * timeInTransition
-            );
+            let percentTransPassed: number = 0;
+            if (this.effect.transition === "linear")
+                percentTransPassed = Math.round(
+                    (100 / transTime) * timeInTransition
+                );
+            else if (this.effect.transition === "none") percentTransPassed = 0;
+
             const colorDiff = {
                 red: Math.round(prev.color.red - next.color.red),
                 green: Math.round(prev.color.green - next.color.green),

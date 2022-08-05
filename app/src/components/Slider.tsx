@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { keyframe } from "../../../src/effects";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { effect, keyframe } from "../../../src/effects";
 import Slider, { SliderThumb } from "@mui/material/Slider/Slider";
 import { indexedKeyframe } from "../EditEffect";
 import "../styles/slider.sass";
@@ -7,6 +7,7 @@ import "../styles/slider.sass";
 type props = {
     keyframes: indexedKeyframe[];
     activeKeyframeId: indexedKeyframe["id"];
+    transition: effect["transition"];
     changeActiveKeyframe: (id: indexedKeyframe["id"]) => void;
     onChange: (keyframes: indexedKeyframe[]) => void;
     onChangeCommit: (keyframes: indexedKeyframe[]) => void;
@@ -14,18 +15,19 @@ type props = {
 
 /**
  * this is my own slider component because the MUI one worked but i could not switch the keyframes (slider thumbs) and it was overall somewhat limited, so i made my own :)
- * its basically a stack of the mui sliders with the thumbs positioned to be at the top. This way i dont have to make my own draggable element.
+ * its basically a stack of the mui sliders with the thumbs positioned to be at the top.
  */
 const CustomSlider: React.FC<props> = ({
     keyframes,
     activeKeyframeId,
+    transition,
     changeActiveKeyframe,
     onChange,
     onChangeCommit,
 }) => {
     // add color to keyframes
     const trackRef = useRef<HTMLDivElement>(null);
-    useEffect(() => {
+    useLayoutEffect(() => {
         (
             Array.from(
                 trackRef.current?.getElementsByClassName("MuiSlider-thumb") ||
@@ -54,21 +56,36 @@ const CustomSlider: React.FC<props> = ({
     });
 
     // apply gradient
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!trackRef.current) return;
         const elements = Array.from(
             trackRef.current.getElementsByClassName("MuiSlider-rail")
         ) as HTMLElement[];
-        elements[
-            elements.length - 1
-        ].style.background = `linear-gradient(to right, ${keyframes
+
+        const sortedKeyframe = keyframes
+            .slice()
+            .sort((a, b) => a.step - b.step);
+
+        const gradient = `linear-gradient(to right, ${sortedKeyframe
             .slice()
             .sort((a, b) => a.step - b.step)
-            .map(
-                (frame) =>
-                    `rgb(${frame.color.red}, ${frame.color.green}, ${frame.color.blue}) ${frame.step}%`
-            )
+            .map((frame, i) => {
+                if (transition === "none" && i > 0)
+                    return ` rgb(${sortedKeyframe[i - 1].color.red}, ${
+                        sortedKeyframe[i - 1].color.green
+                    }, ${sortedKeyframe[i - 1].color.blue}) ${
+                        sortedKeyframe[i].step
+                    }%, rgb(${frame.color.red}, ${frame.color.green}, ${
+                        frame.color.blue
+                    }) ${frame.step}%`;
+                else
+                    return `rgb(${frame.color.red}, ${frame.color.green}, ${frame.color.blue}) ${frame.step}%`;
+            })
             .join(", ")})`;
+
+        elements[
+            elements.length - 1 // get the last track slider since its on top
+        ].style.backgroundImage = gradient;
     });
 
     const sliderChange = (frameId: indexedKeyframe["id"], value: number) => {

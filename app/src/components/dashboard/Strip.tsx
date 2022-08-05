@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ledValue, rgbStripType } from "../../../../src/ledStrip/types";
 import "../../styles/dashboard/dashboardStrip.sass";
 import { effect, keyframe } from "../../../../src/effects";
@@ -6,7 +6,7 @@ import HuePicker from "../HuePicker";
 import RgbPicker from "../RgbPicker";
 import BrightnessPicker from "../BrightnessPicker";
 import sendColorToServer from "../../connection/setColor";
-import setLedEffect from "../../connection/ledEffect";
+import { setLedEffect } from "../../connection/ledEffect";
 import { isMobile } from "react-device-detect";
 // mui
 import FormControl from "@mui/material/FormControl";
@@ -78,11 +78,11 @@ const DashboardStrip: React.FC<props> = ({
         else setLedEffect(strip, effect);
     };
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (strip?.effect === null) return;
         if (strip.effect.time === undefined) strip.effect.time = Date.now(); // this should never happen but just in case and for the compiler its there
 
-        const { duration, time, keyframes } = strip.effect;
+        const { duration, time, keyframes, transition } = strip.effect;
 
         const timePassed = Date.now() + timeDifference - time;
 
@@ -114,9 +114,13 @@ const DashboardStrip: React.FC<props> = ({
             const transTime =
                 (duration / 100) * next.step - (duration / 100) * prev.step;
 
-            const percentTransPassed = Math.round(
-                (100 / transTime) * timeInTransition
-            );
+            let percentTransPassed: number = 0;
+            if (transition === "linear")
+                percentTransPassed = Math.round(
+                    (100 / transTime) * timeInTransition
+                );
+            else if (transition === "none") percentTransPassed = 0;
+
             const colorDiff = {
                 red: Math.round(prev.color.red - next.color.red),
                 green: Math.round(prev.color.green - next.color.green),
