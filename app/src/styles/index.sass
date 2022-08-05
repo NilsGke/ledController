@@ -3,9 +3,33 @@ html, body, #root, #app
     margin: 0
     height: 100%
     width: 100%
+    
+
+
 *
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif!important
     color: white
 
+
 svg * 
     color: unset
+
+
+html
+    scrollbar-gutter: stable
+
+
+body
+    &::-webkit-scrollbar 
+        width: 10px
+        background: #202124
+        padding: 2px
+    &::-webkit-scrollbar-track
+        background-color:lime
+    &::-webkit-scrollbar-thumb 
+        margin: 2px
+        background: #2d2d2d
+        width: 6px
+        border-radius: 100px
+    &::-webkit-scrollbar-thumb:hover 
+        
