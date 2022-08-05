@@ -153,16 +153,16 @@ const Dashboard: React.FC = () => {
                             />
                         </div>
                         <div className="control" id="fancySliderContainer">
-                            <FormControlLabel
-                                label=""
-                                control={
-                                    <ThemeProvider
-                                        theme={createTheme({
-                                            palette: {
-                                                mode: "dark",
-                                            },
-                                        })}
-                                    >
+                            <ThemeProvider
+                                theme={createTheme({
+                                    palette: {
+                                        mode: "dark",
+                                    },
+                                })}
+                            >
+                                <FormControlLabel
+                                    label=""
+                                    control={
                                         <ToggleButtonGroup
                                             value={sliders}
                                             exclusive
@@ -190,9 +190,9 @@ const Dashboard: React.FC = () => {
                                                 fancyRgb
                                             </ToggleButton>
                                         </ToggleButtonGroup>
-                                    </ThemeProvider>
-                                }
-                            ></FormControlLabel>
+                                    }
+                                ></FormControlLabel>
+                            </ThemeProvider>
                         </div>
                         <div className="control" id="effects">
                             <Link to={"/effects"}>
