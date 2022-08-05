@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import "./styles/effectsOverview.sass";
 import { useEffect, useRef, useState } from "react";
 import { infoData, newDataEvent, requestNewData } from "./connection/newData";
-import ws from "./connection/connection";
+import ws, { wsEvents } from "./connection/connection";
 import CircularProgress from "@mui/material/CircularProgress/CircularProgress";
 import { effect, keyframe } from "../../src/effects";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
@@ -39,8 +39,8 @@ const EffectsOverview = () => {
             console.log("newData: ", { e });
             setData((e as newDataEvent).detail.newData);
         };
-        ws.addEventListener("newData", newDataHandler);
-        return () => ws.removeEventListener("newData", newDataHandler);
+        wsEvents.addEventListener("newData", newDataHandler);
+        return () => wsEvents.removeEventListener("newData", newDataHandler);
     }, []);
     // handleNewData
     useEffect(() => {

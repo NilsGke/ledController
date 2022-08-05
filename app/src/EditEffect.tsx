@@ -1,6 +1,6 @@
 import "./styles/Effects/effects.sass";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import ws, { wsConnected } from "./connection/connection";
+import ws, { wsConnected, wsEvents } from "./connection/connection";
 import { useEffect, useRef, useState } from "react";
 import { infoData, newDataEvent, requestNewData } from "./connection/newData";
 import CustomSlider from "./components/Slider";
@@ -113,8 +113,8 @@ const EditEffect = () => {
     useEffect(() => {
         const newDataHandler = (e: Event) =>
             setData((e as newDataEvent).detail.newData);
-        ws.addEventListener("newData", newDataHandler);
-        return () => ws.removeEventListener("newData", newDataHandler);
+        wsEvents.addEventListener("newData", newDataHandler);
+        return () => wsEvents.removeEventListener("newData", newDataHandler);
     }, []);
 
     // change color on a keyframe

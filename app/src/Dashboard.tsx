@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import DashboardStrip, { sliderTypes } from "./components/dashboard/Strip";
 import { Presets } from "./components/Presets";
-import ws from "./connection/connection";
+import ws, { wsEvents } from "./connection/connection";
 import { infoData, newDataEvent, requestNewData } from "./connection/newData";
 import setOnOff from "./connection/onOff";
 import setStripSync from "./connection/sync";
@@ -40,8 +40,8 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         const newDataHandler = (e: Event) =>
             setData((e as newDataEvent).detail.newData);
-        ws.addEventListener("newData", newDataHandler);
-        return () => ws.removeEventListener("newData", newDataHandler);
+        wsEvents.addEventListener("newData", newDataHandler);
+        return () => wsEvents.removeEventListener("newData", newDataHandler);
     }, []);
 
     // handleNewData

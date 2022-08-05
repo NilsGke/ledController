@@ -1,7 +1,7 @@
 import { effect } from "../../../src/effects";
 import { rgbStripType } from "../../../src/ledStrip/types";
 import { preset } from "../../../src/presets/types";
-import ws from "./connection";
+import ws, { wsEvents } from "./connection";
 import { onOff } from "./onOff";
 
 export type infoData = {
@@ -37,6 +37,6 @@ ws.onmessage = (message) => {
                 newData: data,
             },
         });
-        ws.dispatchEvent(event);
+        wsEvents.dispatchEvent(event);
     }
 };
