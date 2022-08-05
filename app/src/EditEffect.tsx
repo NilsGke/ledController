@@ -1,34 +1,49 @@
 import "./styles/Effects/effects.sass";
-import FormControlLabel from "@mui/material/FormControlLabel/FormControlLabel";
-import WestRoundedIcon from "@mui/icons-material/WestRounded";
-import { Link, useLocation } from "react-router-dom";
-import ws from "./connection/connection";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import ws, { wsConnected } from "./connection/connection";
 import { useEffect, useRef, useState } from "react";
 import { infoData, newDataEvent, requestNewData } from "./connection/newData";
 import CustomSlider from "./components/Slider";
-import ThemeProvider from "@mui/system/ThemeProvider/ThemeProvider";
-import createTheme from "@mui/material/styles/createTheme";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup/ToggleButtonGroup";
 import { effect, keyframe } from "../../src/effects";
-import ToggleButton from "@mui/material/ToggleButton/ToggleButton";
 import { sliderTypes } from "./components/dashboard/Strip";
 import HuePicker from "./components/HuePicker";
 import BrightnessPicker from "./components/BrightnessPicker";
 import RgbPicker from "./components/RgbPicker";
 import { ledValue, rgbStripType } from "../../src/ledStrip/types";
-import TextField from "@mui/material/TextField/TextField";
-import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
-import Button from "@mui/material/Button/Button";
 import Keyframe from "./components/Keyframe";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import testEffect from "./connection/testEffect";
+// mui
+import FormControlLabel from "@mui/material/FormControlLabel/FormControlLabel";
+import WestRoundedIcon from "@mui/icons-material/WestRounded";
+import ThemeProvider from "@mui/system/ThemeProvider/ThemeProvider";
+import createTheme from "@mui/material/styles/createTheme";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup/ToggleButtonGroup";
+import ToggleButton from "@mui/material/ToggleButton/ToggleButton";
+import TextField from "@mui/material/TextField/TextField";
+import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
+import Button from "@mui/material/Button/Button";
+import VerticalAlignCenterRoundedIcon from "@mui/icons-material/VerticalAlignCenterRounded";
+import CalendarViewWeekRoundedIcon from "@mui/icons-material/CalendarViewWeekRounded";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import Tooltip from "@mui/material/Tooltip/Tooltip";
+import LinearProgress from "@mui/material/LinearProgress/LinearProgress";
+import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
+import SaveAsRoundedIcon from "@mui/icons-material/SaveAsRounded";
+import { FormLabel } from "@mui/material";
+import ConfirmDialog from "./components/ConfirmDialog";
+import { addLedEffect, editLedEffect } from "./connection/ledEffect";
 
 export interface indexedKeyframe extends keyframe {
     id: number;
 }
 
 const EditEffect = () => {
+    let navigate = useNavigate();
+
     const [data, setData] = useState<null | infoData>(null);
+    const [requestData, setRequestData] = useState(true);
 
     // try to find effect name in url to edit
     const effectName = decodeURI(useLocation().pathname.split("/")[2]);
@@ -39,10 +54,14 @@ const EditEffect = () => {
         (localStorage.getItem("ledControllerSliders") || "hue") as sliderTypes
     );
 
+    const [dialogOpen, setDialogOpen] = useState(false);
+
     const [setEditEffect, setSetEditEffect] = useState(false);
 
     const [name, setName] = useState("");
-    const [duration, setDuration] = useState(5);
+    const nameTaken =
+        editEffect === null && data?.effects.map((e) => e.name).includes(name);
+    const [duration, setDuration] = useState(5000);
     const [transition, setTransition] =
         useState<effect["transition"]>("linear");
 
@@ -53,8 +72,8 @@ const EditEffect = () => {
             id: 0,
         },
         {
-            step: 40,
-            color: { red: 0, green: 255, blue: 0 },
+            step: 50,
+            color: { red: 255, green: 0, blue: 255 },
             id: 1,
         },
         {
@@ -83,8 +102,13 @@ const EditEffect = () => {
 
     // sync the strips to all show the effect and set default color
     useEffect(() => {
+        if (!requestData || !wsConnected) {
+            setRequestData(false);
+            setTimeout(() => setRequestData(true), 100);
+            return;
+        }
         requestNewData();
-    }, []);
+    }, [requestData]);
     // receive new data
     useEffect(() => {
         const newDataHandler = (e: Event) =>
@@ -92,19 +116,6 @@ const EditEffect = () => {
         ws.addEventListener("newData", newDataHandler);
         return () => ws.removeEventListener("newData", newDataHandler);
     }, []);
-
-    // apply colors to slider
-    useEffect(() => {
-        if (!sliderRef?.current) return;
-        (
-            sliderRef.current.getElementsByClassName(
-                "MuiSlider-rail"
-            )[0] as HTMLElement
-        ).style.background = `white linear-gradient(to right, ${keyframes.map(
-            (frame) =>
-                ` rgb(${frame.color.red}, ${frame.color.green}, ${frame.color.blue}) ${frame.step}%`
-        )})`;
-    });
 
     // change color on a keyframe
     useEffect(() => {
@@ -146,8 +157,6 @@ const EditEffect = () => {
             },
             diff: number = 0;
 
-        console.log(keyframes.length);
-
         if (keyframes.length > 2)
             // find the biggest gap in the keyframes
             for (let i = 0; i < keyframes.length - 1; i++) {
@@ -187,7 +196,46 @@ const EditEffect = () => {
         setActiveKeyframeId(newKeyframe.id);
     };
 
-    console.log("rerender");
+    const saveEffect = () => {
+        addLedEffect({
+            keyframes: keyframes.slice().sort((a, b) => a.step - b.step),
+            duration,
+            id: -1,
+            name: name.trim(),
+            transition,
+            time: undefined,
+        } as effect);
+        navigate("/effects");
+    };
+
+    const saveEditedEffect = () => {
+        if (editEffect === null) return;
+        editLedEffect({
+            keyframes: keyframes.slice().sort((a, b) => a.step - b.step),
+            duration,
+            id: editEffect.id,
+            name: name.trim(),
+            transition,
+            time: undefined,
+        } as effect);
+        navigate("/effects");
+    };
+
+    const createCopy = () => {
+        let effName = name.trim();
+
+        if (data?.effects.map((e) => e.name).includes(effName))
+            effName = 'copy of "' + effName + '"';
+
+        addLedEffect({
+            keyframes: keyframes.slice().sort((a, b) => a.step - b.step),
+            duration,
+            id: -1,
+            name: effName,
+            transition,
+            time: undefined,
+        } as effect);
+    };
 
     return (
         <div id="app" className="effects">
@@ -214,24 +262,29 @@ const EditEffect = () => {
                 <div id="timeLine">
                     {setEditEffect ? (
                         <CustomSlider
+                            transition={transition}
                             keyframes={keyframes}
                             activeKeyframeId={activeKeyframeId}
                             changeActiveKeyframe={(id: indexedKeyframe["id"]) =>
                                 setActiveKeyframeId(id)
                             }
                             onChange={(changedKeyframes: indexedKeyframe[]) =>
+                                setKeyframes(changedKeyframes)
+                            }
+                            onChangeCommit={(
+                                changedKeyframes: indexedKeyframe[]
+                            ) =>
                                 setKeyframes(
                                     changedKeyframes.sort(
                                         (a, b) => a.step - b.step
                                     )
                                 )
                             }
-                            onChangeCommit={(changedKeyframes: keyframe[]) =>
-                                console.log(changedKeyframes)
-                            }
                         />
                     ) : (
-                        "loading"
+                        <>
+                            <span>connecting...</span> <LinearProgress />
+                        </>
                     )}
                 </div>
             </div>
@@ -302,25 +355,28 @@ const EditEffect = () => {
                     >
                         <div className="control" id="start">
                             <div className="label">
-                                <Button
-                                    variant="text"
-                                    onClick={() =>
-                                        testEffect({
-                                            keyframes: keyframes
-                                                .slice()
-                                                .sort(
-                                                    (a, b) => a.step - b.step
-                                                ),
-                                            duration,
-                                            id: -1,
-                                            name: "test",
-                                            transition,
-                                            time: undefined,
-                                        })
-                                    }
-                                >
-                                    <PlayArrowRoundedIcon />
-                                </Button>
+                                <Tooltip title="play effect">
+                                    <Button
+                                        variant="text"
+                                        onClick={() =>
+                                            testEffect({
+                                                keyframes: keyframes
+                                                    .slice()
+                                                    .sort(
+                                                        (a, b) =>
+                                                            a.step - b.step
+                                                    ),
+                                                duration,
+                                                id: -1,
+                                                name: "test",
+                                                transition,
+                                                time: undefined,
+                                            })
+                                        }
+                                    >
+                                        <PlayArrowRoundedIcon />
+                                    </Button>
+                                </Tooltip>
                             </div>
                         </div>
                         <div className="control" id="duration">
@@ -341,18 +397,96 @@ const EditEffect = () => {
                             <div className="label">
                                 <TextField
                                     value={name}
-                                    onChange={(ev) => setName(ev.target.value)}
+                                    error={nameTaken || name === ""}
+                                    helperText={
+                                        nameTaken ? "Name already taken" : ""
+                                    }
+                                    onChange={(ev) => {
+                                        const re = /([a-z0-9ßöäü\s]+)/gi;
+                                        setName(
+                                            (
+                                                ev.target.value.match(re) || []
+                                            ).join("")
+                                        );
+                                    }}
                                     id="outlined-basic"
                                     label="Name"
                                     variant="outlined"
                                 />
                             </div>
                         </div>
-                        <div className="control" id="addKeyframe">
+                        <div className="control" id="group">
                             <div className="label">
-                                <Button onClick={() => addKeyframe()}>
-                                    Add keyframe
-                                </Button>
+                                <ButtonGroup
+                                    variant="outlined"
+                                    aria-label="outlined primary button group"
+                                >
+                                    <Tooltip title="add new keyframe">
+                                        <Button onClick={() => addKeyframe()}>
+                                            <AddRoundedIcon />
+                                        </Button>
+                                    </Tooltip>
+                                    <Tooltip title="center keyframe">
+                                        <Button
+                                            id="centerKeyframe"
+                                            onClick={() => {
+                                                const newKeyframes =
+                                                    keyframes.slice();
+                                                const index =
+                                                    newKeyframes.findIndex(
+                                                        (frame) =>
+                                                            frame.id ===
+                                                            activeKeyframeId
+                                                    );
+
+                                                if (
+                                                    index === 0 ||
+                                                    index ===
+                                                        newKeyframes.length
+                                                )
+                                                    return;
+
+                                                newKeyframes[index].step =
+                                                    Math.round(
+                                                        newKeyframes[index - 1]
+                                                            .step +
+                                                            (newKeyframes[
+                                                                index + 1
+                                                            ].step -
+                                                                newKeyframes[
+                                                                    index - 1
+                                                                ].step) /
+                                                                2
+                                                    );
+
+                                                setKeyframes(newKeyframes);
+                                            }}
+                                        >
+                                            <VerticalAlignCenterRoundedIcon />
+                                        </Button>
+                                    </Tooltip>
+                                    <Tooltip title="spread keyframes evenly">
+                                        <Button
+                                            onClick={() => {
+                                                const newKeyframes: indexedKeyframe[] =
+                                                    keyframes
+                                                        .slice()
+                                                        .map((frame, i) => ({
+                                                            ...frame,
+                                                            step: Math.round(
+                                                                (100 /
+                                                                    (keyframes.length -
+                                                                        1)) *
+                                                                    i
+                                                            ),
+                                                        }));
+                                                setKeyframes(newKeyframes);
+                                            }}
+                                        >
+                                            <CalendarViewWeekRoundedIcon />
+                                        </Button>
+                                    </Tooltip>
+                                </ButtonGroup>
                             </div>
                         </div>
                         <div className="control" id="transitionToggle">
@@ -422,6 +556,31 @@ const EditEffect = () => {
                                 }
                             ></FormControlLabel>
                         </div>
+                        <div className="control" id="save">
+                            <div className="label">
+                                <Tooltip
+                                    title={
+                                        editEffect === null
+                                            ? "save"
+                                            : "save edited effect"
+                                    }
+                                >
+                                    <Button
+                                        onClick={() => {
+                                            if (editEffect === null)
+                                                saveEffect();
+                                            else setDialogOpen(true);
+                                        }}
+                                    >
+                                        {editEffect === null ? (
+                                            <SaveRoundedIcon />
+                                        ) : (
+                                            <SaveAsRoundedIcon />
+                                        )}
+                                    </Button>
+                                </Tooltip>
+                            </div>
+                        </div>
                     </ThemeProvider>
                 </div>
                 <div id="keyframes" ref={keyframeList}>
@@ -432,7 +591,7 @@ const EditEffect = () => {
                             <Keyframe
                                 key={frame.id}
                                 frame={frame}
-                                active={false}
+                                active={activeKeyframeId === frame.id}
                                 deletable={keyframes.length > 1}
                                 setActive={(id: indexedKeyframe["id"]) =>
                                     setActiveKeyframeId(id)
@@ -475,6 +634,33 @@ const EditEffect = () => {
                         ))}
                 </div>
             </div>
+            <ConfirmDialog
+                text="This will overwrite the old effect"
+                close={() => setDialogOpen(false)}
+                open={dialogOpen}
+                options={[
+                    {
+                        name: "cancel",
+                        function: () => {
+                            setDialogOpen(false);
+                        },
+                    },
+                    {
+                        name: "create copy",
+                        function: () => {
+                            setDialogOpen(false);
+                            createCopy();
+                        },
+                    },
+                    {
+                        name: "save",
+                        function: () => {
+                            setDialogOpen(false);
+                            saveEditedEffect();
+                        },
+                    },
+                ]}
+            />
         </div>
     );
 };
