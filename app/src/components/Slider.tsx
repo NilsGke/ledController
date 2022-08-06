@@ -120,6 +120,7 @@ const CustomSlider: React.FC<props> = ({
             <div className="track" ref={trackRef}>
                 {keyframes.map((frame) => (
                     <Slider
+                        key={frame.id}
                         className={
                             "muiSlider" +
                             (activeKeyframeId === frame.id ? " active" : "")
