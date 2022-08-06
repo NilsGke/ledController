@@ -1,6 +1,9 @@
 import Slider, { SliderThumb } from "@mui/material/Slider/Slider";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { effect } from "../../../src/effects";
+import timeDifference, {
+    returnTimeDifference,
+} from "../connection/timeDifference";
 import "../styles/pointerSlider.sass";
 
 type props = {
@@ -23,7 +26,7 @@ const PointerSlider: React.FC<props> = ({ effect }) => {
 
         const { duration, time } = effect;
 
-        const timePassed = Date.now() - time;
+        const timePassed = Date.now() + returnTimeDifference() - time;
 
         let timeInEffect = timePassed;
         while (timeInEffect >= duration) timeInEffect -= duration;
