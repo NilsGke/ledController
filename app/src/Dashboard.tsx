@@ -17,6 +17,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup/ToggleButtonGroup";
 import { Link } from "react-router-dom";
 import EastRoundedIcon from "@mui/icons-material/EastRounded";
+import MusicSyncControls from "./components/dashboard/MusicSyncControls";
 
 const Dashboard: React.FC = () => {
     const [on, setOn] = useState(true);
@@ -209,6 +210,7 @@ const Dashboard: React.FC = () => {
                     </ThemeProvider>
                 </div>
                 <Presets data={data} />
+                <MusicSyncControls data={data} />
             </div>
         </div>
     );
