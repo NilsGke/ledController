@@ -124,8 +124,9 @@ const EditEffect = () => {
     useEffect(() => {
         console.log(data);
         if (data === null) return;
-        if (data.strips[0].effect?.name === "test") setTestingEffect(data.strips[0].effect);
-        else setTestingEffect(null)
+        if (data.strips[0].effect?.name === "test")
+            setTestingEffect(data.strips[0].effect);
+        else setTestingEffect(null);
     }, [data]);
     // remove testing effect on change
     useEffect(() => setTestingEffect(null), [keyframes]);
@@ -190,18 +191,23 @@ const EditEffect = () => {
             step: Math.round(biggestGapLow.step + diff / 2),
             color: {
                 // calculate the color between the two keyframes
-                red: (biggestGapLow.color.red +
-                    0.5 *
-                        (biggestGapHigh.color.red -
-                            biggestGapLow.color.red)) as ledValue,
-                green: (biggestGapLow.color.green +
-                    0.5 *
-                        (biggestGapHigh.color.green -
-                            biggestGapLow.color.green)) as ledValue,
-                blue: (biggestGapLow.color.blue +
-                    0.5 *
-                        (biggestGapHigh.color.blue -
-                            biggestGapLow.color.blue)) as ledValue,
+                red: Math.round(
+                    biggestGapLow.color.red +
+                        0.5 *
+                            (biggestGapHigh.color.red - biggestGapLow.color.red)
+                ) as ledValue,
+                green: Math.round(
+                    biggestGapLow.color.green +
+                        0.5 *
+                            (biggestGapHigh.color.green -
+                                biggestGapLow.color.green)
+                ) as ledValue,
+                blue: Math.round(
+                    biggestGapLow.color.blue +
+                        0.5 *
+                            (biggestGapHigh.color.blue -
+                                biggestGapLow.color.blue)
+                ) as ledValue,
             },
         };
 
