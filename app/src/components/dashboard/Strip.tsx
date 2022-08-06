@@ -13,7 +13,9 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import timeDifference from "../../connection/timeDifference";
+import timeDifference, {
+    returnTimeDifference,
+} from "../../connection/timeDifference";
 
 type props = {
     data: rgbStripType;
@@ -45,6 +47,8 @@ const DashboardStrip: React.FC<props> = ({
         null
     );
 
+    console.log(returnTimeDifference());
+
     const alpha = 1;
 
     // color changes from outside of this component
@@ -67,7 +71,6 @@ const DashboardStrip: React.FC<props> = ({
     }, [newColor]);
 
     const stripRef = useRef<HTMLInputElement | null>(null);
-    const selectRef = useRef<HTMLInputElement | null>(null);
 
     const colorString = `rgb(${color.red}, ${color.green}, ${color.blue})`;
     const actualColorString = `rgb(${strip.color.red}, ${strip.color.green}, ${strip.color.blue})`;
@@ -84,7 +87,7 @@ const DashboardStrip: React.FC<props> = ({
 
         const { duration, time, keyframes, transition } = strip.effect;
 
-        const timePassed = Date.now() + timeDifference - time;
+        const timePassed = Date.now() + returnTimeDifference() - time;
 
         let timeInEffect = timePassed;
         while (timeInEffect >= duration) timeInEffect -= duration;
@@ -247,7 +250,6 @@ const DashboardStrip: React.FC<props> = ({
                             onChange={(e) =>
                                 changeEffect(e.target.value as string)
                             }
-                            ref={selectRef}
                         >
                             <MenuItem value={""}>-</MenuItem>
                             {effects.map((effect) => (
