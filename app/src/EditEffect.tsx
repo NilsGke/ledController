@@ -237,6 +237,9 @@ const EditEffect = () => {
         } as effect);
     };
 
+    const error: boolean =
+        isNaN(duration) || duration <= 0 || name.length === 0;
+
     return (
         <div id="app" className="effects">
             <div className="backButton">
@@ -386,8 +389,16 @@ const EditEffect = () => {
                                     onChange={(ev) =>
                                         setDuration(parseInt(ev.target.value))
                                     }
+                                    error={isNaN(duration) || duration <= 0}
+                                    helperText={
+                                        isNaN(duration)
+                                            ? "required"
+                                            : duration <= 0
+                                            ? "duration > 0"
+                                            : ""
+                                    }
                                     id="outlined-basic"
-                                    label="Duration"
+                                    label="Duration (ms)"
                                     variant="outlined"
                                     type="number"
                                 />
@@ -556,7 +567,10 @@ const EditEffect = () => {
                                 }
                             ></FormControlLabel>
                         </div>
-                        <div className="control" id="save">
+                        <div
+                            className={"control" + (error ? " disabled" : "")}
+                            id="save"
+                        >
                             <div className="label">
                                 <Tooltip
                                     title={

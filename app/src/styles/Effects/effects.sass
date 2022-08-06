@@ -164,7 +164,13 @@
                             height: 55%
                             width: 55%
                             path
+                                transition: color .2s ease-in-out
                                 color:white
+                &.disabled button
+                        pointer-events: none
+                        svg path
+                            color: grey
+
 
         #keyframes
             // background: #2d2d2d
