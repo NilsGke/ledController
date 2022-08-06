@@ -1,0 +1,13 @@
+@use "sass:math"
+
+.PointerSlider
+    position: relative
+    .MuiSlider-root 
+        position: absolute
+        .MuiSlider-thumb
+            transition: left .1s linear
+            color: #00c94f
+            pointer-events: none
+            transform: translateY(20px)
+            border-radius: 0
+            clip-path: polygon(50% calc(100% - math.sqrt(100*100 - 50*50)  * 1%), 100% 100%, 0 100%) // math function to get perfect triangle

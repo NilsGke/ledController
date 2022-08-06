@@ -34,6 +34,7 @@ import SaveAsRoundedIcon from "@mui/icons-material/SaveAsRounded";
 import { FormLabel } from "@mui/material";
 import ConfirmDialog from "./components/ConfirmDialog";
 import { addLedEffect, editLedEffect } from "./connection/ledEffect";
+import PointerSlider from "./components/PointerSlider";
 
 export interface indexedKeyframe extends keyframe {
     id: number;
@@ -64,6 +65,8 @@ const EditEffect = () => {
     const [duration, setDuration] = useState(5000);
     const [transition, setTransition] =
         useState<effect["transition"]>("linear");
+
+    const [testingEffect, setTestingEffect] = useState<effect | null>(null);
 
     const defaultKeyframes: indexedKeyframe[] = [
         {
@@ -116,6 +119,18 @@ const EditEffect = () => {
         wsEvents.addEventListener("newData", newDataHandler);
         return () => wsEvents.removeEventListener("newData", newDataHandler);
     }, []);
+
+    // set testing effect
+    useEffect(() => {
+        console.log(data);
+        if (data === null) return;
+        if (data.strips[0].effect?.name === "test") setTestingEffect(data.strips[0].effect);
+        else setTestingEffect(null)
+    }, [data]);
+    // remove testing effect on change
+    useEffect(() => setTestingEffect(null), [keyframes]);
+    // setTesting slider and color
+    useEffect(() => {}, [testingEffect]);
 
     // change color on a keyframe
     useEffect(() => {
@@ -288,6 +303,13 @@ const EditEffect = () => {
                         <>
                             <span>connecting...</span> <LinearProgress />
                         </>
+                    )}
+                </div>
+                <div id="pointer">
+                    {testingEffect === null ? (
+                        ""
+                    ) : (
+                        <PointerSlider effect={testingEffect} />
                     )}
                 </div>
             </div>
