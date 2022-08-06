@@ -1,4 +1,4 @@
-import "./styles/Effects/effects.sass";
+import "./styles/editEffect.sass";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ws, { wsConnected, wsEvents } from "./connection/connection";
 import { useEffect, useRef, useState } from "react";
