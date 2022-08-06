@@ -21,6 +21,21 @@ ws.onopen = (ev) => {
 
 const retry = () => {};
 
+export interface newMessageEvent extends Event {
+    detail: {
+        message: string;
+    };
+}
+ws.onmessage = (message: MessageEvent) => {
+    const newMessageEvent = new CustomEvent("message", {
+        bubbles: true,
+        detail: {
+            message: message.data,
+        },
+    });
+    wsEvents.dispatchEvent(newMessageEvent);
+};
+
 export const wsEvents = new EventTarget();
 
 export let wsConnected = false;

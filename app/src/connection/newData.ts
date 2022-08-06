@@ -1,7 +1,7 @@
 import { effect } from "../../../src/effects";
 import { rgbStripType } from "../../../src/ledStrip/types";
 import { preset } from "../../../src/presets/types";
-import ws, { wsEvents } from "./connection";
+import ws, { newMessageEvent, wsEvents } from "./connection";
 import { onOff } from "./onOff";
 
 export type infoData = {
@@ -21,8 +21,11 @@ export interface newDataEvent extends Event {
         newData: infoData;
     };
 }
-ws.onmessage = (message) => {
-    const data = JSON.parse(message.data) as infoData;
+
+const messageHandler = (ev: Event) => {
+    const event = ev as newMessageEvent;
+    const data = JSON.parse(event.detail.message) as infoData;
+    console.log(data);
     if (
         data.activePreset !== undefined &&
         data.effects !== undefined &&
@@ -40,3 +43,5 @@ ws.onmessage = (message) => {
         wsEvents.dispatchEvent(event);
     }
 };
+
+wsEvents.addEventListener("message", messageHandler);
