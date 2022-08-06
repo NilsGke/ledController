@@ -1,0 +1,32 @@
+.musicSyncControlsContainer
+    display: flex
+    align-items: center
+    justify-content: center
+    .musicSyncControls
+        background: lime
+        margin-top: 4vh
+        display: flex
+        align-items: center
+        justify-content: center
+        gap: 10px
+        padding: 15px
+        background: #2d2d2d
+        border-radius: 20px
+        .field
+            width: min-content
+            &.tapButton
+                button
+                    border: none
+                    background: #353535
+                    border-radius: 20px
+                    padding: 15px 20px
+                    font-size: 18px
+
+            &.bpmDisplay
+                .MuiTextField-root
+                    white-space: nowrap
+                    min-width: 80px
+
+            &.timeOptions
+                .MuiFormControlLabel-root
+                    margin: 0

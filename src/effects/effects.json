@@ -68,7 +68,8 @@
         "duration": 5000,
         "id": 0,
         "name": "RGB",
-        "transition": "linear"
+        "transition": "linear",
+        "time": 1659810970079
     },
     {
         "name": "blink Red",
@@ -117,7 +118,7 @@
                 }
             }
         ],
-        "time": 1659700269338
+        "time": 1659806208407
     },
     {
         "keyframes": [
@@ -277,6 +278,68 @@
         "duration": 600000,
         "id": -1,
         "name": "Sunrise",
+        "transition": "linear"
+    },
+    {
+        "keyframes": [
+            {
+                "step": 0,
+                "color": {
+                    "red": 255,
+                    "green": 0,
+                    "blue": 0
+                },
+                "id": 0
+            },
+            {
+                "step": 40,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 0
+                },
+                "id": 1
+            },
+            {
+                "id": 3,
+                "step": 50,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 0
+                }
+            },
+            {
+                "step": 50,
+                "color": {
+                    "red": 255,
+                    "green": 255,
+                    "blue": 255
+                },
+                "id": 2
+            },
+            {
+                "id": 4,
+                "step": 65,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 0
+                }
+            },
+            {
+                "id": 5,
+                "step": 100,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 0
+                }
+            }
+        ],
+        "duration": 2000,
+        "id": 3,
+        "name": "blink rythm",
         "transition": "linear"
     }
 ]
