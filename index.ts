@@ -11,7 +11,7 @@ const args = process.argv.slice(2);
 export const CONFIG = {
     ledRefreshRate: args.includes("--refreshRate")
         ? parseInt(args[args.indexOf("--refreshRate") + 1])
-        : 10, // default refresh rate
+        : 50, // default refresh rate
 };
 
 if (process.argv.slice(2).includes("--noLeds"))
