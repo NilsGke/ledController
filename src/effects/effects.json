@@ -69,7 +69,7 @@
         "id": 0,
         "name": "RGB",
         "transition": "linear",
-        "time": 1659810970079
+        "time": 1659824302491
     },
     {
         "name": "blink Red",
@@ -340,6 +340,131 @@
         "duration": 2000,
         "id": 3,
         "name": "blink rythm",
+        "transition": "linear",
+        "time": 1659812762864
+    },
+    {
+        "keyframes": [
+            {
+                "step": 0,
+                "color": {
+                    "red": 255,
+                    "green": 0,
+                    "blue": 228
+                },
+                "id": 0
+            },
+            {
+                "id": 4,
+                "step": 25,
+                "color": {
+                    "red": 42,
+                    "green": 0,
+                    "blue": 255
+                }
+            },
+            {
+                "step": 50,
+                "color": {
+                    "red": 0,
+                    "green": 210,
+                    "blue": 255
+                },
+                "id": 1
+            },
+            {
+                "id": 3,
+                "step": 75,
+                "color": {
+                    "red": 0,
+                    "green": 255,
+                    "blue": 246
+                }
+            },
+            {
+                "step": 100,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 255
+                },
+                "id": 2
+            }
+        ],
+        "duration": 2000,
+        "id": 4,
+        "name": "four bar",
+        "transition": "none"
+    },
+    {
+        "keyframes": [
+            {
+                "step": 0,
+                "color": {
+                    "red": 255,
+                    "green": 0,
+                    "blue": 0
+                },
+                "id": 0
+            },
+            {
+                "step": 17,
+                "color": {
+                    "red": 255,
+                    "green": 255,
+                    "blue": 0
+                },
+                "id": 1
+            },
+            {
+                "step": 33,
+                "color": {
+                    "red": 0,
+                    "green": 255,
+                    "blue": 0
+                },
+                "id": 2
+            },
+            {
+                "step": 50,
+                "color": {
+                    "red": 0,
+                    "green": 255,
+                    "blue": 255
+                },
+                "id": 3
+            },
+            {
+                "step": 67,
+                "color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 255
+                },
+                "id": 4
+            },
+            {
+                "step": 83,
+                "color": {
+                    "red": 255,
+                    "green": 0,
+                    "blue": 255
+                },
+                "id": 5
+            },
+            {
+                "step": 100,
+                "color": {
+                    "red": 255,
+                    "green": 0,
+                    "blue": 0
+                },
+                "id": 6
+            }
+        ],
+        "duration": 60000,
+        "id": 5,
+        "name": "copy of \"RGB\"",
         "transition": "linear"
     }
 ]
