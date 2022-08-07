@@ -13,6 +13,7 @@ import { returnTimeDifference } from "../../connection/timeDifference";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
+import testEffect from "../../connection/testEffect";
 
 type props = {
     data: infoData;
@@ -39,10 +40,10 @@ const MusicSyncControls: React.FC<props> = ({ data }) => {
 
     useEffect(() => {
         const ms = 60000 / bpm;
-        setOption1(Math.round(ms / 2));
-        setOption2(Math.round(ms));
-        setOption3(Math.round(ms * 2));
-        setSelectedOption(Math.round(ms));
+        setOption1(Math.round(ms * 2));
+        setOption2(Math.round(ms * 4));
+        setOption3(Math.round(ms * 8));
+        setSelectedOption(Math.round(ms * 4));
     }, [taps, bpm]);
 
     const tap = () => {
@@ -115,11 +116,13 @@ const MusicSyncControls: React.FC<props> = ({ data }) => {
     }
 
     const sync = () => {
+        console.log(effect, data.strips.length);
         if (effect === undefined || data.strips.length === 0 || effect === null)
             return;
 
-        setLedEffect(data.strips[0], {
+        testEffect({
             ...effect,
+            duration: selectedOption,
             time: Date.now() - returnTimeDifference(),
         });
     };
