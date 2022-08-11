@@ -40,9 +40,9 @@ const MusicSyncControls: React.FC<props> = ({ data }) => {
 
     useEffect(() => {
         const ms = 60000 / bpm;
-        setOption1(Math.round(ms * 2));
-        setOption2(Math.round(ms * 4));
-        setOption3(Math.round(ms * 8));
+        setOption1(ms === Infinity ? 0 : Math.round(ms * 2));
+        setOption2(ms === Infinity ? 0 : Math.round(ms * 4));
+        setOption3(ms === Infinity ? 0 : Math.round(ms * 8));
         setSelectedOption(Math.round(ms * 4));
     }, [taps, bpm]);
 
@@ -51,10 +51,12 @@ const MusicSyncControls: React.FC<props> = ({ data }) => {
         const newTaps = taps.slice();
 
         // reset if no tap for two seconds
-        if (newTaps[0] !== undefined && newTaps[0] - Date.now() > 2000)
+        if (
+            newTaps.length > 0 &&
+            Date.now() - newTaps[newTaps.length - 1] > 5000
+        )
             newTaps.length = 0;
 
-        if (newTaps.length === 20) newTaps.shift();
         newTaps.push(time);
         setTaps(newTaps);
         calcBPM();
@@ -78,11 +80,6 @@ const MusicSyncControls: React.FC<props> = ({ data }) => {
                 }
             }
         }
-
-        if (taps.length >= 24) {
-            taps.shift();
-        }
-
         if (ticks.length >= 2) {
             current_bpm = getAverage(ticks, precision);
 
@@ -116,7 +113,6 @@ const MusicSyncControls: React.FC<props> = ({ data }) => {
     }
 
     const sync = () => {
-        console.log(effect, data.strips.length);
         if (effect === undefined || data.strips.length === 0 || effect === null)
             return;
 
@@ -162,7 +158,7 @@ const MusicSyncControls: React.FC<props> = ({ data }) => {
                         </Select>
                     </FormControl>
                 </div>
-                <div className="field tapButton">
+                <div className="field button">
                     <button onKeyDown={tap} onMouseDown={tap}>
                         Tap
                     </button>
@@ -183,7 +179,7 @@ const MusicSyncControls: React.FC<props> = ({ data }) => {
                         }
                     />
                 </div>
-                <div className="field tapButton">
+                <div className="field button">
                     <button onKeyDown={sync} onMouseDown={sync}>
                         Sync
                     </button>
