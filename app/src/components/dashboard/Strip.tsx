@@ -47,8 +47,6 @@ const DashboardStrip: React.FC<props> = ({
         null
     );
 
-    console.log(returnTimeDifference());
-
     const alpha = 1;
 
     // color changes from outside of this component
