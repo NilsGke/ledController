@@ -19,6 +19,8 @@ type props = {
     data: infoData;
 };
 
+const effectNamePrefix = "musicSynced";
+
 /**
  * music controls for led strip effects
  * pbm calculating functions from: https://codepen.io/Theavon/pen/dyYeVLY
@@ -45,6 +47,28 @@ const MusicSyncControls: React.FC<props> = ({ data }) => {
         setOption3(ms === Infinity ? 0 : Math.round(ms * 8));
         setSelectedOption(Math.round(ms * 4));
     }, [taps, bpm]);
+
+    useEffect(() => {
+        if (
+            data.strips[0].effect !== null &&
+            data.strips[0].effect.name.includes(effectNamePrefix)
+        )
+            setEffect({
+                ...data.strips[0].effect,
+                name: data.strips[0].effect.name.replace(effectNamePrefix, ""),
+            });
+    }, [data]);
+
+    useEffect(() => {
+        if (
+            data.strips[0].effect !== null &&
+            effect !== null &&
+            data.strips[0].effect.name.includes(effectNamePrefix) &&
+            data.strips[0].effect.name.replace(effectNamePrefix, "") !==
+                effect.name
+        )
+            sync();
+    }, [effect]);
 
     const tap = () => {
         const time = Date.now();
@@ -119,6 +143,7 @@ const MusicSyncControls: React.FC<props> = ({ data }) => {
         testEffect({
             ...effect,
             duration: selectedOption,
+            name: effectNamePrefix + effect.name,
             time: Date.now() - returnTimeDifference(),
         });
     };
