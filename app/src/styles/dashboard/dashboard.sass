@@ -74,7 +74,8 @@
                 align-items: center
                 justify-content: center
                 button
-                    padding: 20px
+                    font-size: 16px
+                    padding: 40px 30px
                     background: #2d2d2d
                     border: none
                     border-radius: 20px
@@ -89,16 +90,16 @@
                     flex-basis: 100
                     cursor: pointer
                     div.arrow
-                        $size: 10px
+                        $size: 8px
                         $borderSize: 2px
                         height: $size
                         width: $size
                         border-top: $borderSize solid white
                         border-left: $borderSize solid white
                         transition: all .3s ease-in-out
-                        transform: translateX(0) translateY(0) rotate(135deg)
+                        transform: translateX(0) translateY( calc($size / 4)) rotate(135deg)
                         &.open
-                            transform: translateX(0) translateY( - calc($size / 3)) rotate(225deg)
+                            transform: translateX(0) translateY( - calc($size / 10)) rotate(225deg)
 
             .presetContainer
                 $padding: 10px
