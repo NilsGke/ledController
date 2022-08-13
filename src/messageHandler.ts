@@ -51,7 +51,7 @@ type messageType = {
 };
 
 const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
-    console.log("\x1b[33mnew message: \x1b[0m" + message);
+    // console.log("\x1b[33mnew message: \x1b[0m" + message);
 
     const m: messageType = JSON.parse(message.toString());
 
