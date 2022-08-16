@@ -6,10 +6,10 @@
   "scripts": {
     "start": "npm run run",
     "kill": "sudo killall pigpiod || echo 'no process stopped' && exit",
-    "run": "tsc && sudo node dist/index.js ",
-    "runLog": "tsc && sudo node dist/index.js > debug.log",
-    "runNoLeds": "tsc && sudo node dist/index.js --noLeds",
-    "runWin": "tsc && node --inspect dist/index.js --noLeds --refreshRate 100"
+    "run": "tsc && bash ./util/copyBuild.sh && sudo node dist/index.js ",
+    "runLog": "tsc && bash ./util/copyBuild.sh && sudo node dist/index.js > debug.log",
+    "runNoLeds": "tsc && bash ./util/copyBuild.sh && sudo node dist/index.js --noLeds",
+    "runWin": "tsc && pwsh ./util/copyBuild.ps1 && node --inspect dist/index.js --noLeds --refreshRate 100"
   },
   "repository": {
     "type": "git",

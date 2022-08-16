@@ -1,0 +1,1 @@
+Copy-Item ./app/build ./dist/app -Recurse
