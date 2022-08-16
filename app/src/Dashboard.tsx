@@ -209,8 +209,8 @@ const Dashboard: React.FC = () => {
                         </div>
                     </ThemeProvider>
                 </div>
-                <Presets data={data} />
                 <MusicSyncControls data={data} />
+                <Presets data={data} />
             </div>
         </div>
     );
