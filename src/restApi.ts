@@ -4,6 +4,8 @@ import checkColor from "./util/checkColor";
 const restApi = Router();
 restApi.use(json());
 
+restApi.get("strips/:stripId", (req, res) => console.log(req, res));
+
 // set color
 restApi.post("/setColor", (req, res) => {
     const { stripId, color } = req.body;
