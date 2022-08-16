@@ -1,9 +1,10 @@
+@import "../theme"
 
 #app.dashboard
     .presetContainer
         .preset
             cursor: pointer
-            background: #2d2d2d
+            background: $card
             border-radius: 20px
             padding: 2rem
             display: flex
@@ -14,7 +15,7 @@
             
             outline: 0px solid transparent
             &.active 
-                outline: 3px solid #00a8b4
+                outline: 3px solid $accent
 
             h2 
                 white-space: nowrap

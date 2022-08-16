@@ -1,3 +1,5 @@
+@import "theme"
+
 #app.effectsOverview
     display: flex
     align-items: center
@@ -11,7 +13,7 @@
             text-decoration: none
         label
             padding: 20px
-            background: #2d2d2d
+            background: $card
             border-radius: 20px
             height: 50px
             margin: 0
@@ -41,7 +43,7 @@
             min-width: 150px
             min-height: 110px
             padding: 20px
-            background: #2d2d2d
+            background: $card
             border-radius: 20px
             animation: none
             .header
@@ -80,7 +82,7 @@
                     opacity: 1
             &.addEffect
                 transition: box-shadow .3s ease-in-out
-                box-shadow: 0px 0px 30px #181818
+                box-shadow: 0px 0px 30px $bg
                 cursor: pointer
                 svg
                     height: 40px

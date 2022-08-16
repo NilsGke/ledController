@@ -1,5 +1,7 @@
+@import "theme"
+
 html, body, #root, #app 
-    background: #202124
+    background: $bg
     margin: 0
     height: 100%
     width: 100%
@@ -22,13 +24,13 @@ html
 body
     &::-webkit-scrollbar 
         width: 10px
-        background: #202124
+        background: $bg
         padding: 2px
     &::-webkit-scrollbar-track
         background-color:lime
     &::-webkit-scrollbar-thumb 
         margin: 2px
-        background: #2d2d2d
+        background: $card
         width: 6px
         border-radius: 100px
     &::-webkit-scrollbar-thumb:hover 

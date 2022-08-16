@@ -1,3 +1,5 @@
+@import "theme"
+
 #app.effects
     div.backButton
         position: absolute
@@ -7,7 +9,7 @@
             text-decoration: none
         label
             padding: 20px
-            background: #2d2d2d
+            background: $card
             border-radius: 20px
             height: 50px
             margin: 0
@@ -42,7 +44,7 @@
                     &.active
                         background: #ffffff
                         box-shadow: 0px 0px 10px white
-                        outline: 2px solid #00e4f5
+                        outline: 2px solid $accent
 
     #controls
         padding: 30px
@@ -71,7 +73,7 @@
 
         #keyframeSettings
             min-width: 200px
-            background: #2d2d2d
+            background: $card
             display: flex
             align-items: center
             justify-content: center
@@ -102,7 +104,7 @@
                     text-decoration: none
                 > label, > div.label
                     padding: 20px
-                    background: #2d2d2d
+                    background: $card
                     border-radius: 20px
                     height: 50px
                     margin: 0
@@ -145,7 +147,7 @@
                 &#group .MuiButtonGroup-root 
                     height: 100%
                     button
-                        border-color: #474747
+                        border-color: $lighter
                         &#centerKeyframe svg
                             transform: rotate(90deg)
 
@@ -169,11 +171,11 @@
                 &.disabled button
                         pointer-events: none
                         svg path
-                            color: grey
+                            color: $lighter
 
 
         #keyframes
-            // background: #2d2d2d
+            // background: $card
             border-radius: 20px
             display: flex
             align-items: center
@@ -185,7 +187,7 @@
                 outline: 3px solid transparent
                 cursor: pointer
                 width: 100%
-                background: #2d2d2d
+                background: $card
                 padding: 10px
                 display: flex
                 align-items: center
@@ -227,6 +229,6 @@
                         color: grey
                         cursor: no-drop
                 &.active 
-                    outline: 2px solid grey
+                    outline: 2px solid $accent
                     .delete
                         width: 30px
