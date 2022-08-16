@@ -3,6 +3,7 @@ import { port } from "./app/src/connectionConfig.json";
 import WebSocket from "ws";
 import messageHandler from "./src/messageHandler";
 import express from "express";
+import restApi from "./src/restApi";
 
 const app = express();
 
@@ -18,11 +19,13 @@ if (process.argv.slice(2).includes("--noLeds"))
     console.log(
         "\x1b[31musing --noLeds flag will log all led chagnes to console instead of applying them to the strips!"
     );
-const server = app.listen(port, "", () =>
+const server = app.listen(port, () =>
     console.log("\x1b[32mserver running!\x1b[0m")
 );
 
 app.use(express.static(__dirname + "/app/build"));
+
+app.use("/api", restApi);
 
 const wsServer = new WebSocket.Server({
     server,
