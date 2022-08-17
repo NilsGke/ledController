@@ -19,7 +19,7 @@ type props = {
     data: infoData;
 };
 
-const effectNamePrefix = "musicSynced";
+export const musicSyncedPrefix = "musicSynced";
 
 /**
  * music controls for led strip effects
@@ -51,11 +51,11 @@ const MusicSyncControls: React.FC<props> = ({ data }) => {
     useEffect(() => {
         if (
             data.strips[0].effect !== null &&
-            data.strips[0].effect.name.includes(effectNamePrefix)
+            data.strips[0].effect.name.includes(musicSyncedPrefix)
         )
             setEffect({
                 ...data.strips[0].effect,
-                name: data.strips[0].effect.name.replace(effectNamePrefix, ""),
+                name: data.strips[0].effect.name.replace(musicSyncedPrefix, ""),
             });
     }, [data]);
 
@@ -63,8 +63,8 @@ const MusicSyncControls: React.FC<props> = ({ data }) => {
         if (
             data.strips[0].effect !== null &&
             effect !== null &&
-            data.strips[0].effect.name.includes(effectNamePrefix) &&
-            data.strips[0].effect.name.replace(effectNamePrefix, "") !==
+            data.strips[0].effect.name.includes(musicSyncedPrefix) &&
+            data.strips[0].effect.name.replace(musicSyncedPrefix, "") !==
                 effect.name
         )
             sync();
@@ -143,7 +143,7 @@ const MusicSyncControls: React.FC<props> = ({ data }) => {
         testEffect({
             ...effect,
             duration: selectedOption,
-            name: effectNamePrefix + effect.name,
+            name: musicSyncedPrefix + effect.name,
             time: Date.now() - returnTimeDifference(),
         });
     };
