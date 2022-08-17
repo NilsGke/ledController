@@ -16,6 +16,7 @@ import Select from "@mui/material/Select";
 import timeDifference, {
     returnTimeDifference,
 } from "../../connection/timeDifference";
+import { musicSyncedPrefix } from "./MusicSyncControls";
 
 type props = {
     data: rgbStripType;
@@ -242,7 +243,12 @@ const DashboardStrip: React.FC<props> = ({
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             value={
-                                strip.effect === null ? "" : strip.effect.name
+                                strip.effect === null
+                                    ? ""
+                                    : strip.effect.name.replace(
+                                          musicSyncedPrefix,
+                                          ""
+                                      )
                             }
                             label="Effect"
                             onChange={(e) =>
