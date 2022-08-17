@@ -640,15 +640,13 @@ const EditEffect = () => {
                                 }
                                 move={(direction: -1 | 1) => {
                                     const newKeyframes = keyframes.slice();
-                                    setActiveKeyframeId(newKeyframes[i].id);
-                                    //FIXME: change does not apply instantly if keyframe is active but only if active is set to other keyframe
                                     const temp =
                                         newKeyframes[i + direction].step;
                                     newKeyframes[i + direction].step =
                                         newKeyframes[i].step;
                                     newKeyframes[i].step = temp;
                                     setKeyframes(
-                                        keyframes.sort(
+                                        newKeyframes.sort(
                                             (a, b) => a.step - b.step
                                         )
                                     );
