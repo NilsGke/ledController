@@ -1,10 +1,11 @@
 import { Router, json } from "express";
 import { strips } from "./controller";
+import sendNotification from "./notifications/notifications";
 import checkColor from "./util/checkColor";
 const restApi = Router();
 restApi.use(json());
 
-restApi.get("strips/:stripId", (req, res) => console.log(req, res));
+restApi.get("/strips/:stripId", (req, res) => console.log(req, res));
 
 // set color
 restApi.post("/setColor", (req, res) => {
@@ -25,5 +26,11 @@ restApi.post("/setColor", (req, res) => {
 
     res.sendStatus(200);
 });
+
+restApi.post("/notification", (req, res) => {
+    sendNotification(req.body.notification, res);
+});
+
+console.log("asdf");
 
 export default restApi;

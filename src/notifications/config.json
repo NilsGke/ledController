@@ -1,0 +1,22 @@
+{
+    "notifications": [
+        {
+            "name": "whatsapp",
+            "color": {
+                "red": 67,
+                "green": 223,
+                "blue": 95
+            },
+            "duration": 1000
+        },
+        {
+            "name": "discord",
+            "color": {
+                "red": 72,
+                "green": 94,
+                "blue": 244
+            },
+            "duration": 1000
+        }
+    ]
+}

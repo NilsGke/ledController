@@ -2,6 +2,7 @@ import gpio from "pigpio";
 import { CONFIG, sendDataUpdate } from "../..";
 import { onOff, setAllOnOff } from "../controller";
 import { effect, effects, keyframe } from "../effects";
+import { notification } from "../notifications/notifications";
 import checkColor from "../util/checkColor";
 import { rgbStripType, rgbStripType as stripType } from "./types";
 const Gpio = gpio.Gpio;
@@ -18,6 +19,7 @@ export default class rgbStrip {
     public effect: effect | null = null;
     public effectRunning: boolean = false;
     private onOff: onOff;
+    private notification: notification | null = null;
 
     constructor(
         name: stripType["name"],
@@ -46,6 +48,31 @@ export default class rgbStrip {
 
     public setOnOff = (onOff: onOff): void => {
         this.onOff === onOff;
+    };
+
+    public setNotification = (notification: notification) => {
+        this.notification = notification;
+        this.effectRunning = false;
+        this.notificationLoop();
+    };
+    private notificationLoop = () => {
+        if (
+            this.notification &&
+            this.notification.timeStamp + this.notification.duration >
+                Date.now()
+        ) {
+            console.log("schedule update");
+            this.updateColors();
+            setTimeout(() => this.notificationLoop(), 100);
+        } else {
+            this.notification = null;
+            if (this.effect !== null) {
+                this.effectRunning = true;
+                this.effectUpdate();
+            } else {
+                this.updateColors();
+            }
+        }
     };
 
     public setColors(color: stripType["color"], notify: boolean = true): void {
@@ -164,19 +191,20 @@ export default class rgbStrip {
     }
 
     public updateColors() {
+        const color = this.notification ? this.notification.color : this.color;
         if (process.argv.slice(2).includes("--noLeds"))
             return console.log(
-                `%c strip "${this.name}" set to color: ${this.color.red} ${this.color.green} ${this.color.blue}`,
-                `background: rgb(${this.color.red}, ${this.color.green}, ${this.color.blue})`
+                `%c strip "${this.name}" set to color: ${color.red} ${color.green} ${color.blue}`,
+                `background: rgb(${color.red}, ${color.green}, ${color.blue})`
             );
         if (this.onOff === "off") {
             this.gpioPorts?.red.pwmWrite(0);
             this.gpioPorts?.green.pwmWrite(0);
             this.gpioPorts?.blue.pwmWrite(0);
         } else {
-            this.gpioPorts?.red.pwmWrite(this.color.red);
-            this.gpioPorts?.green.pwmWrite(this.color.green);
-            this.gpioPorts?.blue.pwmWrite(this.color.blue);
+            this.gpioPorts?.red.pwmWrite(color.red);
+            this.gpioPorts?.green.pwmWrite(color.green);
+            this.gpioPorts?.blue.pwmWrite(color.blue);
         }
     }
 
