@@ -27,6 +27,13 @@ app.use(express.static(__dirname + "/app/build"));
 
 app.use("/api", restApi);
 
+app.get("/effects", (req, res) => {
+    res.sendFile(__dirname + "/app/build/index.html");
+});
+app.get("/effects/*", (req, res) => {
+    res.sendFile(__dirname + "/app/build/index.html");
+});
+
 const wsServer = new WebSocket.Server({
     server,
 });
