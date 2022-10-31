@@ -51,7 +51,7 @@ export const moveEffect = (id: effect["id"], direction: 1 | -1) => {
 
 export const newEffect = (newEffect: effect): Promise<void> => {
     return new Promise((resolve, reject) => {
-        let id = -1;
+        let id = 0;
         while (effects.map((e) => e.id).includes(id)) id++;
         const newEffects: effect[] = effects.slice();
 
