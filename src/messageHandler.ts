@@ -16,7 +16,7 @@ import {
     strips,
     sync,
 } from "./controller";
-import { loadPresets, presets } from "./presets";
+import { deletePreset, loadPresets, newPreset, presets } from "./presets";
 import { effect, effects } from "./effects";
 import { preset } from "./presets/types";
 import fs from "fs";
@@ -39,6 +39,7 @@ type messageType = {
 
     apply?: preset["name"];
     newPreset?: preset;
+    deletePreset?: preset["id"];
 
     moveEffect?: effect["id"];
     direction?: -1 | 1;
@@ -124,16 +125,8 @@ const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
         applyPreset(preset.id);
     }
 
-    if (m.newPreset) {
-        console.log("new Preset");
-
-        const newPresets = [...presets, m.newPreset];
-        fs.writeFileSync(
-            "./src/presets/presets.json",
-            JSON.stringify(newPresets, null, "    ")
-        );
-        loadPresets().then(sendDataUpdate);
-    }
+    if (m.newPreset) newPreset(m.newPreset);
+    if (m.deletePreset) deletePreset(m.deletePreset);
 
     if (m.moveEffect !== undefined) {
         if (m.direction !== undefined) {
