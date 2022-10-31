@@ -15,13 +15,28 @@ export const loadPresets = (): Promise<void> => {
     });
 };
 
-export const newPreset = (preset: preset): Promise<void> => {
+export const newPreset = (newPreset: preset): Promise<void> => {
     return new Promise((resolve, reject) => {
-        console.log("new Preset");
+        let id = 0;
+        while (presets.map((p) => p.id).includes(id)) id++;
+        const newPresets: preset[] = presets.slice();
 
-        const newPresets = [...presets, newPreset];
+        let counter = 0;
+        if (presets.map((p) => p.name).includes(newPreset.name))
+            while (
+                presets
+                    .map((p) => p.name)
+                    .includes(newPreset.name + "#" + counter)
+            )
+                counter++;
+
+        newPreset.name =
+            counter != 0 ? newPreset.name + "#" + counter : newPreset.name;
+
+        newPresets.push({ ...newPreset, id });
+
         fs.writeFile(
-            "./src/presets/presets.json",
+            "src/presets/presets.json",
             JSON.stringify(newPresets, null, "    "),
             (err) => {
                 if (err) reject();
