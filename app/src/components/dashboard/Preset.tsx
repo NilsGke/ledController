@@ -2,24 +2,37 @@ import { rgbStripType } from "../../../../src/ledStrip/types";
 import { preset } from "../../../../src/presets/types";
 import applyPreset from "../../connection/applyPreset";
 import "../../styles/dashboard/preset.sass";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 type props = {
     data: preset;
-    active?: boolean
+    active?: boolean;
+    delete: () => void;
 };
 
-const Preset: React.FC<props> = ({ data: preset, active }) => {
-
-
+const Preset: React.FC<props> = ({
+    data: preset,
+    active,
+    delete: deleteFun,
+}) => {
     return (
         <div className="presetContainer">
             <div
                 className={"preset" + (active ? " active" : "")}
                 onClick={() => {
-                    applyPreset(preset.name)
+                    applyPreset(preset.name);
                 }}
             >
                 <h2>{preset.name}</h2>
+                <button
+                    className="delete"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        deleteFun();
+                    }}
+                >
+                    <DeleteIcon />
+                </button>
                 <div className="previewContainer">
                     <div
                         className="preview"
@@ -43,8 +56,9 @@ const generateGradient = (colors: rgbStripType["color"][]) => {
     const hexColors = colors.map((c) => rgbToHex(c));
 
     for (let i = 0; i < hexColors.length - 1; i++) {
-        background += `, ${hexColors[i]} ${(100 / hexColors.length) * (i + 1)
-            }%, ${hexColors[i + 1]} ${(100 / colors.length) * i + 1}%`;
+        background += `, ${hexColors[i]} ${
+            (100 / hexColors.length) * (i + 1)
+        }%, ${hexColors[i + 1]} ${(100 / colors.length) * i + 1}%`;
     }
 
     return background + ")";

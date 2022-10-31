@@ -9,6 +9,7 @@ import "../styles/confirmDialog.sass";
 type option = {
     name: string;
     function: () => void;
+    default: boolean;
 };
 
 type props = {
@@ -26,13 +27,21 @@ const ConfirmDialog: React.FC<props> = ({ open, text, options, close }) => {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <DialogTitle id="alert-dialog-title">{"Are you sure you want to save?"}</DialogTitle>
+            <DialogTitle id="alert-dialog-title">
+                {"Are you sure you want to save?"}
+            </DialogTitle>
             <DialogContent>
-                <DialogContentText id="alert-dialog-description">{text}</DialogContentText>
+                <DialogContentText id="alert-dialog-description">
+                    {text}
+                </DialogContentText>
             </DialogContent>
             <DialogActions>
                 {options.map((option) => (
-                    <Button key={option.name} onClick={option.function}>
+                    <Button
+                        key={option.name}
+                        onClick={option.function}
+                        variant={option.default ? "contained" : "outlined"}
+                    >
                         {option.name}
                     </Button>
                 ))}

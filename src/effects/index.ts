@@ -51,17 +51,21 @@ export const moveEffect = (id: effect["id"], direction: 1 | -1) => {
 
 export const newEffect = (newEffect: effect): Promise<void> => {
     return new Promise((resolve, reject) => {
-        let id = -1;
+        let id = 0;
         while (effects.map((e) => e.id).includes(id)) id++;
         const newEffects: effect[] = effects.slice();
 
         let counter = 0;
         if (effects.map((e) => e.name).includes(newEffect.name))
-            while (effects.map((e) => e.name).includes(newEffect.name))
+            while (
+                effects
+                    .map((e) => e.name)
+                    .includes(newEffect.name + "#" + counter)
+            )
                 counter++;
 
         newEffect.name =
-            counter != 0 ? newEffect.name + counter : newEffect.name;
+            counter != 0 ? newEffect.name + "#" + counter : newEffect.name;
 
         newEffects.push({ ...newEffect, id });
 
