@@ -57,11 +57,15 @@ export const newEffect = (newEffect: effect): Promise<void> => {
 
         let counter = 0;
         if (effects.map((e) => e.name).includes(newEffect.name))
-            while (effects.map((e) => e.name).includes(newEffect.name))
+            while (
+                effects
+                    .map((e) => e.name)
+                    .includes(newEffect.name + "#" + counter)
+            )
                 counter++;
 
         newEffect.name =
-            counter != 0 ? newEffect.name + counter : newEffect.name;
+            counter != 0 ? newEffect.name + "#" + counter : newEffect.name;
 
         newEffects.push({ ...newEffect, id });
 
