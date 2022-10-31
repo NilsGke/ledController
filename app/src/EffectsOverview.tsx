@@ -166,6 +166,7 @@ const EffectsOverview = () => {
                 options={[
                     {
                         name: "keep",
+                        default: true,
                         function: () => {
                             setDialogOpen(false);
                             setDeleteEffectId(-1);
@@ -173,6 +174,7 @@ const EffectsOverview = () => {
                     },
                     {
                         name: "delete",
+                        default: false,
                         function: () => {
                             setDialogOpen(false);
                             deleteEffect(deleteEffectId);

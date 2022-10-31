@@ -681,12 +681,14 @@ const EditEffect = () => {
                 options={[
                     {
                         name: "cancel",
+                        default: false,
                         function: () => {
                             setDialogOpen(false);
                         },
                     },
                     {
                         name: "create copy",
+                        default: false,
                         function: () => {
                             setDialogOpen(false);
                             createCopy();
@@ -694,6 +696,7 @@ const EditEffect = () => {
                     },
                     {
                         name: "save",
+                        default: true,
                         function: () => {
                             setDialogOpen(false);
                             saveEditedEffect();
