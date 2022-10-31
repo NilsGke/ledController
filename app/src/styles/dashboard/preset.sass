@@ -12,7 +12,7 @@
             justify-content: center
             flex-direction: column
             transition: outline .2s ease-in-out
-            
+            position: relative
             outline: 0px solid transparent
             &.active 
                 outline: 3px solid $accent
@@ -20,6 +20,24 @@
             h2 
                 white-space: nowrap
                 font-size: 1.2rem
+            button.delete 
+                background: none
+                border: none
+                height: 30px
+                width: 30px
+                position: absolute
+                $distance: 10px
+                top: $distance
+                right: $distance
+                cursor: pointer
+                display: flex
+                align-items: center
+                justify-content: center
+                svg 
+                    transition: all .2s ease-in-out
+                    color: $lighter
+                    &:hover 
+                        color: #f44336
             .previewContainer
                     height: 5px
                     width: 100%

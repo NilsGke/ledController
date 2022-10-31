@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import addPreset from "../connection/addPreset";
+import { addPreset, deletePreset } from "../connection/presets";
 import { infoData } from "../connection/newData";
 import Preset from "./dashboard/Preset";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import ConfirmDialog from "./ConfirmDialog";
+import { preset } from "../../../src/presets/types";
 
 type props = {
     data: infoData;
@@ -11,6 +13,9 @@ export const Presets: React.FC<props> = ({ data }) => {
     const [open, setOpen] = useState(false);
 
     const [container] = useAutoAnimate<HTMLDivElement>(/* optional config */);
+
+    const [deletePresetId, setDeletePresetId] = useState<preset["id"]>(-1);
+    const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
     return (
         <div
@@ -33,6 +38,10 @@ export const Presets: React.FC<props> = ({ data }) => {
                             active={preset.name === data.activePreset?.name}
                             key={preset.id}
                             data={preset}
+                            delete={() => {
+                                setDeletePresetId(preset.id);
+                                setDialogOpen(true);
+                            }}
                         />
                     ))}
                     <div className="presetContainer">
@@ -57,6 +66,32 @@ export const Presets: React.FC<props> = ({ data }) => {
                     </div>
                 </>
             ) : null}
+            <ConfirmDialog
+                open={dialogOpen}
+                text={`are you sure you want to delete the preset: "${
+                    data.presets?.find((ps) => ps.id === deletePresetId)
+                        ?.name || ""
+                }"`}
+                close={() => setDialogOpen(false)}
+                options={[
+                    {
+                        name: "keep",
+                        default: true,
+                        function: () => {
+                            setDialogOpen(false);
+                            setDeletePresetId(-1);
+                        },
+                    },
+                    {
+                        name: "delete",
+                        default: false,
+                        function: () => {
+                            setDialogOpen(false);
+                            deletePreset(deletePresetId);
+                        },
+                    },
+                ]}
+            />
         </div>
     );
 };
