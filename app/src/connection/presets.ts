@@ -1,10 +1,9 @@
 import { preset } from "../../../src/presets/types";
-import ws from "./connection";
 
-export const addPreset = (preset: preset) => {
+export const addPreset = (ws: WebSocket, preset: preset) => {
     ws.send(JSON.stringify({ newPreset: preset }));
 };
 
-export const deletePreset = (presetId: preset["id"]) => {
+export const deletePreset = (ws: WebSocket, presetId: preset["id"]) => {
     ws.send(JSON.stringify({ deletePreset: presetId }));
 };

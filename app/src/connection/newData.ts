@@ -1,7 +1,7 @@
 import { effect } from "../../../src/effects";
 import { rgbStripType } from "../../../src/ledStrip/types";
 import { preset } from "../../../src/presets/types";
-import ws, { newMessageEvent, wsEvents } from "./connection";
+import { newMessageEvent, wsEvents } from "./messageEvent";
 import { onOff } from "./onOff";
 
 export type infoData = {
@@ -13,7 +13,7 @@ export type infoData = {
     activePreset: preset | null;
 };
 
-export const requestNewData = (): void =>
+export const requestNewData = (ws: WebSocket): void =>
     ws.send(JSON.stringify({ get: "all" }));
 
 export interface newDataEvent extends Event {

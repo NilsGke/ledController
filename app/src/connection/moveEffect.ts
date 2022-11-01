@@ -1,6 +1,4 @@
-import ws from "./connection";
-
-const moveEffect = (id: number, direction: -1 | 1) => {
+const moveEffect = (ws: WebSocket, id: number, direction: -1 | 1) => {
     ws.send(JSON.stringify({ moveEffect: id, direction }));
 };
 

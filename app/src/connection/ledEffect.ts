@@ -1,8 +1,11 @@
 import { effect } from "../../../src/effects";
 import { rgbStripType } from "../../../src/ledStrip/types";
-import ws from "./connection";
 
-export const setLedEffect = (strip: rgbStripType, effect: effect) => {
+export const setLedEffect = (
+    ws: WebSocket,
+    strip: rgbStripType,
+    effect: effect
+) => {
     ws.send(
         JSON.stringify({
             set: "effect",
@@ -12,14 +15,14 @@ export const setLedEffect = (strip: rgbStripType, effect: effect) => {
     );
 };
 
-export const addLedEffect = (newEffect: effect) => {
+export const addLedEffect = (ws: WebSocket, newEffect: effect) => {
     ws.send(JSON.stringify({ newEffect: newEffect }));
 };
 
-export const editLedEffect = (newEffect: effect) => {
+export const editLedEffect = (ws: WebSocket, newEffect: effect) => {
     ws.send(JSON.stringify({ editEffect: newEffect }));
 };
 
-export const deleteEffect = (id: effect["id"]) => {
+export const deleteEffect = (ws: WebSocket, id: effect["id"]) => {
     ws.send(JSON.stringify({ deleteEffect: id }));
 };
