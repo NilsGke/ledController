@@ -16,6 +16,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import testEffect from "../../connection/testEffect";
 
 type props = {
+    ws: WebSocket;
     data: infoData;
 };
 
@@ -25,7 +26,7 @@ export const musicSyncedPrefix = "musicSynced";
  * music controls for led strip effects
  * pbm calculating functions from: https://codepen.io/Theavon/pen/dyYeVLY
  */
-const MusicSyncControls: React.FC<props> = ({ data }) => {
+const MusicSyncControls: React.FC<props> = ({ ws, data }) => {
     const { effects } = data;
 
     const [effect, setEffect] = useState<effect | null>(null);
@@ -140,7 +141,7 @@ const MusicSyncControls: React.FC<props> = ({ data }) => {
         if (effect === undefined || data.strips.length === 0 || effect === null)
             return;
 
-        testEffect({
+        testEffect(ws, {
             ...effect,
             duration: selectedOption,
             name: musicSyncedPrefix + effect.name,

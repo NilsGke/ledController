@@ -5,12 +5,14 @@ import "../../styles/dashboard/preset.sass";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 type props = {
+    ws: WebSocket;
     data: preset;
     active?: boolean;
     delete: () => void;
 };
 
 const Preset: React.FC<props> = ({
+    ws,
     data: preset,
     active,
     delete: deleteFun,
@@ -20,7 +22,7 @@ const Preset: React.FC<props> = ({
             <div
                 className={"preset" + (active ? " active" : "")}
                 onClick={() => {
-                    applyPreset(preset.name);
+                    applyPreset(ws, preset.name);
                 }}
             >
                 <h2>{preset.name}</h2>
