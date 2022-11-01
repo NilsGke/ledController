@@ -1,6 +1,6 @@
 import "./styles/editEffect.sass";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import ws, { wsConnected, wsEvents } from "./connection/connection";
+import { wsEvents } from "./connection/messageEvent";
 import { useEffect, useRef, useState } from "react";
 import { infoData, newDataEvent, requestNewData } from "./connection/newData";
 import CustomSlider from "./components/Slider";
@@ -40,7 +40,11 @@ export interface indexedKeyframe extends keyframe {
     id: number;
 }
 
-const EditEffect = () => {
+type props = {
+    ws: WebSocket;
+};
+
+const EditEffect: React.FC<props> = ({ ws }) => {
     let navigate = useNavigate();
 
     const [data, setData] = useState<null | infoData>(null);
@@ -105,12 +109,12 @@ const EditEffect = () => {
 
     // sync the strips to all show the effect and set default color
     useEffect(() => {
-        if (!requestData || !wsConnected) {
+        if (!requestData) {
             setRequestData(false);
             setTimeout(() => setRequestData(true), 100);
             return;
         }
-        requestNewData();
+        requestNewData(ws);
     }, [requestData]);
     // receive new data
     useEffect(() => {
@@ -218,7 +222,7 @@ const EditEffect = () => {
     };
 
     const saveEffect = () => {
-        addLedEffect({
+        addLedEffect(ws, {
             keyframes: keyframes.slice().sort((a, b) => a.step - b.step),
             duration,
             id: -1,
@@ -231,7 +235,7 @@ const EditEffect = () => {
 
     const saveEditedEffect = () => {
         if (editEffect === null) return;
-        editLedEffect({
+        editLedEffect(ws, {
             keyframes: keyframes.slice().sort((a, b) => a.step - b.step),
             duration,
             id: editEffect.id,
@@ -248,7 +252,7 @@ const EditEffect = () => {
         if (data?.effects.map((e) => e.name).includes(effName))
             effName = 'copy of "' + effName + '"';
 
-        addLedEffect({
+        addLedEffect(ws, {
             keyframes: keyframes.slice().sort((a, b) => a.step - b.step),
             duration,
             id: -1,
@@ -390,7 +394,7 @@ const EditEffect = () => {
                                     <Button
                                         variant="text"
                                         onClick={() =>
-                                            testEffect({
+                                            testEffect(ws, {
                                                 keyframes: keyframes
                                                     .slice()
                                                     .sort(

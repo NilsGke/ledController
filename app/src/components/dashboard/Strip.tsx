@@ -19,6 +19,7 @@ import timeDifference, {
 import { musicSyncedPrefix } from "./MusicSyncControls";
 
 type props = {
+    ws: WebSocket;
     data: rgbStripType;
     effects: effect[];
     refresh: () => void;
@@ -28,6 +29,7 @@ type props = {
 export type sliderTypes = "hue" | "rgb" | "fancyRgb";
 
 const DashboardStrip: React.FC<props> = ({
+    ws,
     data: strip,
     effects,
     refresh,
@@ -63,7 +65,7 @@ const DashboardStrip: React.FC<props> = ({
     useEffect(() => {
         if (newColor === null) return;
         if (newColor !== currentColor) {
-            sendColorToServer(strip.name, newColor);
+            sendColorToServer(ws, strip.name, newColor);
             setCurrentColor(color);
             setNewColor(null);
         }
@@ -76,8 +78,8 @@ const DashboardStrip: React.FC<props> = ({
 
     const changeEffect = (effectName: effect["name"]) => {
         const effect = effects.find((e) => e.name === effectName);
-        if (effect === undefined) sendColorToServer(strip.name, color);
-        else setLedEffect(strip, effect);
+        if (effect === undefined) sendColorToServer(ws, strip.name, color);
+        else setLedEffect(ws, strip, effect);
     };
 
     useLayoutEffect(() => {

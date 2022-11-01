@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import "./styles/effectsOverview.sass";
 import { useEffect, useRef, useState } from "react";
 import { infoData, newDataEvent, requestNewData } from "./connection/newData";
-import ws, { wsEvents } from "./connection/connection";
+import { wsEvents } from "./connection/messageEvent";
 import CircularProgress from "@mui/material/CircularProgress/CircularProgress";
 import { effect, keyframe } from "../../src/effects";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
@@ -22,7 +22,11 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import { deleteEffect } from "./connection/ledEffect";
 import ConfirmDialog from "./components/ConfirmDialog";
 
-const EffectsOverview = () => {
+type props = {
+    ws: WebSocket;
+};
+
+const EffectsOverview: React.FC<props> = ({ ws }) => {
     const [data, setData] = useState<null | infoData>(null);
     const [effects, setEffects] = useState<effect[]>([]);
 
@@ -32,7 +36,7 @@ const EffectsOverview = () => {
     const effectsRef = useRef<null | HTMLInputElement>(null);
 
     // request new data
-    useEffect(() => requestNewData(), []);
+    useEffect(() => requestNewData(ws), []);
     // receive new data
     useEffect(() => {
         const newDataHandler = (e: Event) => {
@@ -107,14 +111,16 @@ const EffectsOverview = () => {
                             <div className="header">
                                 <IconButton
                                     className="left"
-                                    onClick={() => moveEffect(effect.id, -1)}
+                                    onClick={() =>
+                                        moveEffect(ws, effect.id, -1)
+                                    }
                                 >
                                     <ArrowLeftRoundedIcon />
                                 </IconButton>
                                 <h2>{effect.name}</h2>
                                 <IconButton
                                     className="right"
-                                    onClick={() => moveEffect(effect.id, 1)}
+                                    onClick={() => moveEffect(ws, effect.id, 1)}
                                 >
                                     <ArrowRightRoundedIcon />
                                 </IconButton>
@@ -123,7 +129,7 @@ const EffectsOverview = () => {
                                 <Stack direction="row" spacing={1}>
                                     <IconButton
                                         color="success"
-                                        onClick={() => testEffect(effect)}
+                                        onClick={() => testEffect(ws, effect)}
                                     >
                                         <PlayArrowRoundedIcon color="success" />
                                     </IconButton>
@@ -177,7 +183,7 @@ const EffectsOverview = () => {
                         default: false,
                         function: () => {
                             setDialogOpen(false);
-                            deleteEffect(deleteEffectId);
+                            deleteEffect(ws, deleteEffectId);
                         },
                     },
                 ]}

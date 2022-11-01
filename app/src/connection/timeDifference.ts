@@ -1,8 +1,8 @@
-import ws, { newMessageEvent, wsEvents } from "./connection";
+import { newMessageEvent, wsEvents } from "./messageEvent";
 
 type timeDifferenceObj = { timeDifference: number };
 
-export const getTimeDifference = () => {
+export const getTimeDifference = (ws: WebSocket) => {
     console.log("requesting time");
     wsEvents.addEventListener("message", timeMessageHandler);
     ws.send(JSON.stringify({ time: Date.now() }));

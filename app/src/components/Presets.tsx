@@ -8,8 +8,9 @@ import { preset } from "../../../src/presets/types";
 
 type props = {
     data: infoData;
+    ws: WebSocket;
 };
-export const Presets: React.FC<props> = ({ data }) => {
+export const Presets: React.FC<props> = ({ data, ws }) => {
     const [open, setOpen] = useState(false);
 
     const [container] = useAutoAnimate<HTMLDivElement>(/* optional config */);
@@ -35,6 +36,7 @@ export const Presets: React.FC<props> = ({ data }) => {
                 <>
                     {data.presets?.map((preset) => (
                         <Preset
+                            ws={ws}
                             active={preset.name === data.activePreset?.name}
                             key={preset.id}
                             data={preset}
@@ -58,7 +60,11 @@ export const Presets: React.FC<props> = ({ data }) => {
                                     data.presets.map((p) => p.id).includes(id)
                                 )
                                     id++;
-                                addPreset({ name, id, strips: data.strips });
+                                addPreset(ws, {
+                                    name,
+                                    id,
+                                    strips: data.strips,
+                                });
                             }}
                         >
                             <h2>+</h2>
@@ -87,7 +93,7 @@ export const Presets: React.FC<props> = ({ data }) => {
                         default: false,
                         function: () => {
                             setDialogOpen(false);
-                            deletePreset(deletePresetId);
+                            deletePreset(ws, deletePresetId);
                         },
                     },
                 ]}

@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import DashboardStrip, { sliderTypes } from "./components/dashboard/Strip";
 import { Presets } from "./components/Presets";
-import ws, { wsEvents } from "./connection/connection";
+import { wsEvents } from "./connection/messageEvent";
 import { infoData, newDataEvent, requestNewData } from "./connection/newData";
 import setOnOff from "./connection/onOff";
 import setStripSync from "./connection/sync";
@@ -19,7 +19,11 @@ import { Link } from "react-router-dom";
 import EastRoundedIcon from "@mui/icons-material/EastRounded";
 import MusicSyncControls from "./components/dashboard/MusicSyncControls";
 
-const Dashboard: React.FC = () => {
+type props = {
+    ws: WebSocket;
+};
+
+const Dashboard: React.FC<props> = ({ ws }) => {
     const [on, setOn] = useState(true);
     const [data, setData] = useState<null | infoData>(null);
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -34,7 +38,7 @@ const Dashboard: React.FC = () => {
 
     // request new data
     useEffect(() => {
-        if (data === null || refresh) requestNewData();
+        if (data === null || refresh) requestNewData(ws);
     }, [data, refresh]);
 
     // receive new data
@@ -75,20 +79,20 @@ const Dashboard: React.FC = () => {
 
     // on off change
     useEffect(() => {
-        if ((data?.onOff === "on") !== on) setOnOff(on ? "on" : "off");
+        if ((data?.onOff === "on") !== on) setOnOff(ws, on ? "on" : "off");
     }, [on]);
 
     // sync change
     useEffect(() => {
         if (data?.sync !== undefined)
-            if (data?.sync !== sync) setStripSync(sync);
+            if (data?.sync !== sync) setStripSync(ws, sync);
     }, [sync]);
 
     // render loading if no data there
     if (data === null)
         return (
             <div className="dashboard loading">
-                <CircularProgress />
+                <CircularProgress /> Loading Data...
             </div>
         );
 
@@ -98,6 +102,7 @@ const Dashboard: React.FC = () => {
                 <div id="stripsContainer" className={on ? "on" : "off"}>
                     {data.strips.map((strip) => (
                         <DashboardStrip
+                            ws={ws}
                             key={strip.name}
                             data={strip}
                             effects={data.effects}
@@ -209,8 +214,8 @@ const Dashboard: React.FC = () => {
                         </div>
                     </ThemeProvider>
                 </div>
-                <MusicSyncControls data={data} />
-                <Presets data={data} />
+                <MusicSyncControls ws={ws} data={data} />
+                <Presets data={data} ws={ws} />
             </div>
         </div>
     );
