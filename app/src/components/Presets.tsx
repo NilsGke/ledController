@@ -61,9 +61,19 @@ export const Presets: React.FC<props> = ({ data, ws }) => {
                                 )
                                     id++;
                                 addPreset(ws, {
-                                    name,
                                     id,
-                                    strips: data.strips,
+                                    name,
+                                    strips: data.strips.map((s) => ({
+                                        ...s,
+                                        effectId:
+                                            s.effect === null
+                                                ? undefined
+                                                : s.effect.id,
+                                        effectTime:
+                                            s.effect === null
+                                                ? undefined
+                                                : s.effect.time,
+                                    })),
                                 });
                             }}
                         >
