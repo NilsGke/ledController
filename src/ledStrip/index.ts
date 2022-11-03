@@ -210,5 +210,6 @@ export default class rgbStrip {
 
     public stopEffect(): void {
         this.effectRunning = false;
+        this.effect = null;
     }
 }
