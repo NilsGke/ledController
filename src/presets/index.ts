@@ -45,8 +45,6 @@ export const newPreset = (newPreset: preset): Promise<void> => {
             })),
         });
 
-        console.log(newPresets.at(-1));
-
         fs.writeFile(
             "src/presets/presets.json",
             JSON.stringify(newPresets, null, "    "),

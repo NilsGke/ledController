@@ -82,8 +82,6 @@ export const applyPreset = (presetId?: preset["id"]): void => {
                     (e) => e.id === stripPreset.effectId
                 );
 
-                console.log(effects, effects[0].id, stripPreset.effectId);
-
                 if (effect === undefined)
                     throw new Error(
                         `Effect with id: ${presetId} not found in effects!`
