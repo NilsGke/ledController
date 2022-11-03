@@ -22,7 +22,7 @@ const Preset: React.FC<props> = ({
             <div
                 className={"preset" + (active ? " active" : "")}
                 onClick={() => {
-                    applyPreset(ws, preset.name);
+                    applyPreset(ws, preset.id);
                 }}
             >
                 <h2>{preset.name}</h2>

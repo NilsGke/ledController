@@ -37,7 +37,7 @@ export const Presets: React.FC<props> = ({ data, ws }) => {
                     {data.presets?.map((preset) => (
                         <Preset
                             ws={ws}
-                            active={preset.name === data.activePreset?.name}
+                            active={preset.id === data.activePreset?.id}
                             key={preset.id}
                             data={preset}
                             delete={() => {
