@@ -12,7 +12,7 @@ type colorInformation = {
 
 const useLedEffect = (
     effect: effect | null,
-    stripRef?: React.MutableRefObject<HTMLInputElement | null>
+    stripRef?: React.MutableRefObject<HTMLDivElement | null>
 ) => {
     const [color, setColor] = useState<colorInformation>(null);
 
