@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run run",
+    "setup": "npm run i && cd app && npm run i --legacy-peer-deps && npm run build && cd .. && npm run kill",
     "kill": "sudo killall pigpiod || echo 'no process stopped' && exit",
     "run": "tsc && bash ./util/copyBuild.sh && sudo node dist/index.js ",
     "runLog": "tsc && bash ./util/copyBuild.sh && sudo node dist/index.js > debug.log",
