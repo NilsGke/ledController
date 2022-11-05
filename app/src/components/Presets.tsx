@@ -40,6 +40,7 @@ export const Presets: React.FC<props> = ({ data, ws }) => {
                             active={preset.id === data.activePreset?.id}
                             key={preset.id}
                             data={preset}
+                            effects={data.effects}
                             delete={() => {
                                 setDeletePresetId(preset.id);
                                 setDialogOpen(true);
