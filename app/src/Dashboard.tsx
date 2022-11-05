@@ -18,6 +18,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup/ToggleButtonGroup
 import { Link } from "react-router-dom";
 import EastRoundedIcon from "@mui/icons-material/EastRounded";
 import MusicSyncControls from "./components/dashboard/MusicSyncControls";
+import { returnTimeDifference } from "./connection/timeDifference";
 
 type props = {
     ws: WebSocket;
