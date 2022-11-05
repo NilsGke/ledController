@@ -33,7 +33,17 @@ export const newPreset = (newPreset: preset): Promise<void> => {
         newPreset.name =
             counter != 0 ? newPreset.name + "#" + counter : newPreset.name;
 
-        newPresets.push({ ...newPreset, id });
+        newPresets.push({
+            id,
+            name: newPreset.name,
+            strips: newPreset.strips.map((s) => ({
+                // use this map function to get rid of any unwanted properties like ports and stuff, that might get sent from the frontend but are not needed here
+                color: s.color,
+                id: s.id,
+                effectId: s.effectId,
+                effectTime: s.effectTime,
+            })),
+        });
 
         fs.writeFile(
             "src/presets/presets.json",

@@ -37,9 +37,10 @@ export const Presets: React.FC<props> = ({ data, ws }) => {
                     {data.presets?.map((preset) => (
                         <Preset
                             ws={ws}
-                            active={preset.name === data.activePreset?.name}
+                            active={preset.id === data.activePreset?.id}
                             key={preset.id}
                             data={preset}
+                            effects={data.effects}
                             delete={() => {
                                 setDeletePresetId(preset.id);
                                 setDialogOpen(true);
@@ -61,9 +62,19 @@ export const Presets: React.FC<props> = ({ data, ws }) => {
                                 )
                                     id++;
                                 addPreset(ws, {
-                                    name,
                                     id,
-                                    strips: data.strips,
+                                    name,
+                                    strips: data.strips.map((s) => ({
+                                        ...s,
+                                        effectId:
+                                            s.effect === null
+                                                ? undefined
+                                                : s.effect.id,
+                                        effectTime:
+                                            s.effect === null
+                                                ? undefined
+                                                : s.effect.time,
+                                    })),
                                 });
                             }}
                         >

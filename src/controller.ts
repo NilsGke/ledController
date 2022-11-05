@@ -57,32 +57,40 @@ export const setSync = (state: sync, notify?: boolean) => {
 
 // preset
 export let activePreset: preset | null = null;
+
 export const setActivePreset = (preset: typeof activePreset) =>
     (activePreset = preset);
-export const applyPreset = (
-    presetId?: preset["id"],
-    presetName?: preset["name"]
-): void => {
-    const preset = presets.find(
-        (preset) => preset.name === presetName || preset.id === presetId
-    );
+
+export const applyPreset = (presetId?: preset["id"]): void => {
+    const preset = presets.find((preset) => preset.id === presetId);
     if (preset === undefined)
-        throw new Error(
-            `Preset: "${presetName}" not found in presets. Check the json files!`
-        );
+        throw new Error(`Preset with id: ${presetId} not found in presets!`);
 
     activePreset = preset;
 
-    preset.strips.map((presetStrip) => {
-        const strip = strips.find((strip) => strip.id === presetStrip.id);
+    preset.strips.map((stripPreset) => {
+        const strip = strips.find((strip) => strip.id === stripPreset.id);
 
         if (strip === undefined)
             console.warn(
-                `Strip (id: ${presetStrip.id}) not found, check json files (strips and presets)`
+                `Strip (id: ${stripPreset.id}) not found, check json files (strips and presets)`
             );
         else {
             strip.stopEffect();
-            strip.setColors(presetStrip.color);
+            if (stripPreset.effectId !== undefined) {
+                const effect = effects.find(
+                    (e) => e.id === stripPreset.effectId
+                );
+
+                if (effect === undefined)
+                    throw new Error(
+                        `Effect with id: ${presetId} not found in effects!`
+                    );
+
+                strip.setEffect({ ...effect, time: stripPreset.effectTime });
+            } else {
+                strip.setColors(stripPreset.color);
+            }
         }
     });
 

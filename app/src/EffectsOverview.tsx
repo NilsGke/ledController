@@ -6,21 +6,13 @@ import { useEffect, useRef, useState } from "react";
 import { infoData, newDataEvent, requestNewData } from "./connection/newData";
 import { wsEvents } from "./connection/messageEvent";
 import CircularProgress from "@mui/material/CircularProgress/CircularProgress";
-import { effect, keyframe } from "../../src/effects";
-import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
-import IconButton from "@mui/material/IconButton/IconButton";
-import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
-import EditRoundedIcon from "@mui/icons-material/EditRounded";
-import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
-import Stack from "@mui/material/Stack/Stack";
-import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
-import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
-import moveEffect from "./connection/moveEffect";
+import { effect } from "../../src/effects";
+
 import autoAnimate from "@formkit/auto-animate";
-import testEffect from "./connection/testEffect";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import { deleteEffect } from "./connection/ledEffect";
 import ConfirmDialog from "./components/ConfirmDialog";
+import EffectPreview from "./components/EffectPreview";
 
 type props = {
     ws: WebSocket;
@@ -51,37 +43,6 @@ const EffectsOverview: React.FC<props> = ({ ws }) => {
         if (data === null) return;
         setEffects(data.effects);
     }, [data]);
-    // apply animations on effects change
-    useEffect(() => {
-        if (effectsRef === null || effectsRef.current === null) return;
-
-        const elements = Array.from(
-            effectsRef.current.getElementsByClassName("effect")
-        );
-
-        elements.forEach((element, i) => {
-            console.log(element);
-            if (effects[i] !== undefined) {
-                const animationKeyframes = effects[i].keyframes.map(
-                    (frame) => ({
-                        boxShadow: `0px 0px 40px 0px rgb(${frame.color.red}, ${frame.color.green}, ${frame.color.blue})`,
-                        offset: frame.step / 100,
-                    })
-                );
-                const animationTiming = {
-                    duration: effects[i].duration,
-                    iterations: Infinity,
-                };
-                element.animate(animationKeyframes, animationTiming);
-            }
-        });
-    }, [effects]);
-
-    useEffect(() => {
-        if (effectsRef === null || effectsRef.current === undefined) return;
-
-        return () => {};
-    }, []);
 
     useEffect(() => {
         effectsRef.current && autoAnimate(effectsRef.current);
@@ -107,53 +68,14 @@ const EffectsOverview: React.FC<props> = ({ ws }) => {
                     <CircularProgress />
                 ) : (
                     effects.map((effect) => (
-                        <div className="effect" key={effect.id}>
-                            <div className="header">
-                                <IconButton
-                                    className="left"
-                                    onClick={() =>
-                                        moveEffect(ws, effect.id, -1)
-                                    }
-                                >
-                                    <ArrowLeftRoundedIcon />
-                                </IconButton>
-                                <h2>{effect.name}</h2>
-                                <IconButton
-                                    className="right"
-                                    onClick={() => moveEffect(ws, effect.id, 1)}
-                                >
-                                    <ArrowRightRoundedIcon />
-                                </IconButton>
-                            </div>
-                            <div className="buttons">
-                                <Stack direction="row" spacing={1}>
-                                    <IconButton
-                                        color="success"
-                                        onClick={() => testEffect(ws, effect)}
-                                    >
-                                        <PlayArrowRoundedIcon color="success" />
-                                    </IconButton>
-                                    <IconButton>
-                                        <ContentCopyRoundedIcon />
-                                    </IconButton>
-                                    <IconButton
-                                        color="warning"
-                                        href={"/effects/" + effect.name}
-                                    >
-                                        <EditRoundedIcon color="warning" />
-                                    </IconButton>
-                                    <IconButton
-                                        color="error"
-                                        onClick={() => {
-                                            setDeleteEffectId(effect.id);
-                                            setDialogOpen(true);
-                                        }}
-                                    >
-                                        <DeleteRoundedIcon color="error" />
-                                    </IconButton>
-                                </Stack>
-                            </div>
-                        </div>
+                        <EffectPreview
+                            effect={effect}
+                            ws={ws}
+                            deleteEffect={() => {
+                                setDeleteEffectId(effect.id);
+                                setDialogOpen(true);
+                            }}
+                        />
                     ))
                 )}
                 <div className="effect addEffect">

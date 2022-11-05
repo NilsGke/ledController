@@ -1,14 +1,16 @@
-import { rgbStripType } from "../../../../src/ledStrip/types";
 import { preset } from "../../../../src/presets/types";
 import applyPreset from "../../connection/applyPreset";
 import "../../styles/dashboard/preset.sass";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ColorPresetChip from "../ColorPresetChip";
+import { infoData } from "../../connection/newData";
 
 type props = {
     ws: WebSocket;
     data: preset;
     active?: boolean;
     delete: () => void;
+    effects: infoData["effects"];
 };
 
 const Preset: React.FC<props> = ({
@@ -16,13 +18,14 @@ const Preset: React.FC<props> = ({
     data: preset,
     active,
     delete: deleteFun,
+    effects,
 }) => {
     return (
         <div className="presetContainer">
             <div
                 className={"preset" + (active ? " active" : "")}
                 onClick={() => {
-                    applyPreset(ws, preset.name);
+                    applyPreset(ws, preset.id);
                 }}
             >
                 <h2>{preset.name}</h2>
@@ -36,14 +39,13 @@ const Preset: React.FC<props> = ({
                     <DeleteIcon />
                 </button>
                 <div className="previewContainer">
-                    <div
-                        className="preview"
-                        style={{
-                            background: generateGradient(
-                                preset.strips.map((s) => s.color)
-                            ),
-                        }}
-                    ></div>
+                    {preset.strips.map((s) => (
+                        <ColorPresetChip
+                            key={s.id}
+                            color={s.color}
+                            effect={effects.find((e) => e.id === s.effectId)}
+                        />
+                    ))}
                 </div>
             </div>
         </div>
@@ -51,26 +53,3 @@ const Preset: React.FC<props> = ({
 };
 
 export default Preset;
-
-const generateGradient = (colors: rgbStripType["color"][]) => {
-    var background = "linear-gradient(to right";
-
-    const hexColors = colors.map((c) => rgbToHex(c));
-
-    for (let i = 0; i < hexColors.length - 1; i++) {
-        background += `, ${hexColors[i]} ${
-            (100 / hexColors.length) * (i + 1)
-        }%, ${hexColors[i + 1]} ${(100 / colors.length) * i + 1}%`;
-    }
-
-    return background + ")";
-};
-
-const rgbToHex = (c: rgbStripType["color"]): string => {
-    return (
-        "#" +
-        ((1 << 24) + (c.red << 16) + (c.green << 8) + c.blue)
-            .toString(16)
-            .slice(1)
-    );
-};

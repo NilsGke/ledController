@@ -37,7 +37,7 @@ type messageType = {
     on?: onOff;
     sync?: sync;
 
-    apply?: preset["name"];
+    apply?: preset["id"];
     newPreset?: preset;
     deletePreset?: preset["id"];
 
@@ -118,13 +118,13 @@ const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
         strips.forEach((strip) => strip.setEffect(effect));
     }
 
+    // presets
     if (m.apply) {
-        const preset = presets.find((ps) => ps.name === m.apply);
+        const preset = presets.find((ps) => ps.id === m.apply);
         if (preset === undefined) return console.error(`preset: ${m.apply}`);
         if (sync) setSync(false, false);
         applyPreset(preset.id);
     }
-
     if (m.newPreset) newPreset(m.newPreset);
     if (m.deletePreset) deletePreset(m.deletePreset);
 
@@ -134,6 +134,7 @@ const messageHandler = (message: WebSocket.Data, connection: WebSocket) => {
         }
     }
 
+    // effects
     if (m.newEffect) newEffect(m.newEffect);
     if (m.editEffect) editEffect(m.editEffect);
     if (m.deleteEffect) deleteEffect(m.deleteEffect);
