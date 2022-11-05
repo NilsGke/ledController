@@ -64,6 +64,7 @@ const DashboardStrip: React.FC<props> = ({
             setCurrentColor(color);
             setNewColor(null);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [newColor]);
 
     const stripRef = useRef<HTMLInputElement | null>(null);
@@ -77,7 +78,7 @@ const DashboardStrip: React.FC<props> = ({
         else setLedEffect(ws, strip, effect);
     };
 
-    const effectColor = useLedEffect(strip.effect, stripRef);
+    useLedEffect(strip.effect, stripRef);
 
     return (
         <div className="stripContainer">
