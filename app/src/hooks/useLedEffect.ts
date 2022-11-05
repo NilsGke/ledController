@@ -1,11 +1,25 @@
+import { useEffect, useState } from "react";
 import { effect, keyframe } from "../../../src/effects";
+import { ledValue, rgbStripType } from "../../../src/ledStrip/types";
+import { returnTimeDifference } from "../connection/timeDifference";
 
-const useLedEffect = (effet: effect) => {
-    const [color, setColor] = useState();
+const refreshTime = 10; // interval in ms
+
+type colorInformation = {
+    color: rgbStripType["color"];
+    colorString: string;
+} | null;
+
+const useLedEffect = (
+    effect: effect | null,
+    stripRef?: React.MutableRefObject<HTMLInputElement | null>
+) => {
+    const [color, setColor] = useState<colorInformation>(null);
 
     useEffect(() => {
         const update = () => {
-            if (strip.effect.time === undefined) strip.effect.time = Date.now(); // this should never happen but just in case and for the compiler its there
+            if (effect === null) return;
+            if (effect.time === undefined) effect.time = Date.now(); // this should never happen but just in case and for the compiler its there
 
             const { duration, time, keyframes, transition } = effect;
 
@@ -73,12 +87,12 @@ const useLedEffect = (effet: effect) => {
                 newColor.green = newColor.green > 255 ? 255 : newColor.green;
                 newColor.blue = newColor.blue > 255 ? 255 : newColor.blue;
 
-                console.log(
-                    `%c ${newColor.red} ${newColor.green} ${
-                        newColor.blue
-                    } ${Date.now()}`,
-                    `background: rgb(${newColor.red}, ${newColor.green}, ${newColor.blue})`
-                );
+                // console.log(
+                //     `%c ${newColor.red} ${newColor.green} ${
+                //         newColor.blue
+                //     } ${Date.now()}`,
+                //     `background: rgb(${newColor.red}, ${newColor.green}, ${newColor.blue})`
+                // );
 
                 // IDEA: add cubic function to make transitions more interesting
                 // https://blog.maximeheckel.com/posts/cubic-bezier-from-math-to-motion/
@@ -86,14 +100,19 @@ const useLedEffect = (effet: effect) => {
 
                 const colorString: string = `rgb(${newColor.red}, ${newColor.green}, ${newColor.blue})`;
 
-                setColor(newColor);
+                if (stripRef)
+                    (
+                        stripRef.current as HTMLDivElement
+                    ).style.boxShadow = `0px 0px 40px 0px ${colorString}`;
 
-                // TODO: fix this hook (cannot see errors on ipad) and implement it on strip, test effect and now also on the presets
+                setColor({ color: newColor, colorString });
             }
         };
-        const interval = setInterval(update, refreshTime);
-        return () => clearInterval(interval);
-    }, []);
+        if (effect !== null) {
+            const interval = setInterval(update, refreshTime);
+            return () => clearInterval(interval);
+        }
+    }, [effect]);
 
     return color;
 };
