@@ -26,11 +26,11 @@ const Router = () => {
         ws.onopen = () => {
             setConnected(true);
             console.log("connected");
+            getTimeDifference(ws);
         };
 
         ws.onclose = (e) => {
             setConnected(true);
-            getTimeDifference(ws);
             console.log("disconnected");
         };
 
