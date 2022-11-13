@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { effect, keyframe } from "../../../src/effects";
 import { ledValue, rgbStripType } from "../../../src/ledStrip/types";
 import { returnTimeDifference } from "../connection/timeDifference";
+import { getClosestPointX, getPointsOnCurve } from "../helpers/cubicBezier";
 
 const refreshTime = 10; // interval in ms
 
@@ -58,7 +59,21 @@ const useLedEffect = (
                     percentTransPassed = Math.round(
                         (100 / transTime) * timeInTransition
                     );
-                else if (transition === "none") percentTransPassed = 0;
+                else if (
+                    transition === "cubic-bezier" &&
+                    effect.timingFunction !== undefined
+                ) {
+                    if (effect.curvePoints === undefined)
+                        effect.curvePoints = getPointsOnCurve(
+                            effect.timingFunction.P1,
+                            effect.timingFunction.P2
+                        );
+                    percentTransPassed =
+                        getClosestPointX(
+                            effect.curvePoints,
+                            (1 / transTime) * timeInTransition
+                        ) * 100;
+                } else if (transition === "none") percentTransPassed = 0;
 
                 const colorDiff = {
                     red: Math.round(prev.color.red - next.color.red),
