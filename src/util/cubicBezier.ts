@@ -31,11 +31,11 @@ const getCubic = (P1: point, P2: point, t: number) => {
     return { x: x(t), y: y(t) };
 };
 
-export const getPointsOnCurve = (): point[] => {
+export const getPointsOnCurve = (P1: point, P2: point): point[] => {
     const precision = 10000;
 
     return Array.from({ length: precision }).map((s, i) =>
-        getCubic(PStart, PEnd, (1 / precision) * i)
+        getCubic(P1, P2, (1 / precision) * i)
     );
 };
 
