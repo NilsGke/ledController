@@ -1,6 +1,7 @@
-import { effect } from "../../../src/effects";
+import { effect, effects } from "../../../src/effects";
 import { rgbStripType } from "../../../src/ledStrip/types";
 import { preset } from "../../../src/presets/types";
+import { getPointsOnCurve } from "../helpers/cubicBezier";
 import { newMessageEvent, wsEvents } from "./messageEvent";
 import { onOff } from "./onOff";
 
@@ -25,6 +26,18 @@ export interface newDataEvent extends Event {
 const messageHandler = (ev: Event) => {
     const event = ev as newMessageEvent;
     const data = JSON.parse(event.detail.message) as infoData;
+    // calculate the points for the effects if they have a cubic-bezier-transition
+    data.effects = data.effects.map((effect) =>
+        effect.timingFunction !== undefined
+            ? {
+                  ...effect,
+                  curvePoints: getPointsOnCurve(
+                      effect.timingFunction.P1,
+                      effect.timingFunction.P2
+                  ),
+              }
+            : effect
+    );
     console.log(data);
     if (
         data.activePreset !== undefined &&
