@@ -4,6 +4,7 @@ import { onOff, setAllOnOff } from "../controller";
 import { effect, effects, keyframe } from "../effects";
 import { notification } from "../notifications/notifications";
 import checkColor from "../util/checkColor";
+import { getClosestPointX, getPointsOnCurve } from "../util/cubicBezier";
 import { rgbStripType, rgbStripType as stripType } from "./types";
 const Gpio = gpio.Gpio;
 
@@ -144,7 +145,22 @@ export default class rgbStrip {
                 percentTransPassed = Math.round(
                     (100 / transTime) * timeInTransition
                 );
-            else if (this.effect.transition === "none") percentTransPassed = 0;
+            else if (
+                this.effect.transition === "cubic-bezier" &&
+                this.effect.timingFunction !== undefined
+            ) {
+                if (this.effect.curvePoints === undefined)
+                    this.effect.curvePoints = getPointsOnCurve(
+                        this.effect.timingFunction.P1,
+                        this.effect.timingFunction.P2
+                    );
+                percentTransPassed =
+                    getClosestPointX(
+                        this.effect.curvePoints,
+                        (1 / transTime) * timeInTransition
+                    ) * 100;
+            } else if (this.effect.transition === "none")
+                percentTransPassed = 0;
 
             const colorDiff = {
                 red: Math.round(prev.color.red - next.color.red),
