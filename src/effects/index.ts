@@ -7,13 +7,24 @@ export type keyframe = {
     color: rgbStripType["color"];
 };
 
+export type point = {
+    x: number;
+    y: number;
+};
+export type cubic_bezier = {
+    P1: point;
+    P2: point;
+};
+
 export type effect = {
     name: string;
     id: number;
     duration: number;
-    transition: "linear" | "none";
+    transition: "linear" | "none" | "cubic-bezier";
     keyframes: keyframe[];
     time?: number;
+    timingFunction?: cubic_bezier;
+    curvePoints?: point[];
 };
 
 export const effects: effect[] = [];
