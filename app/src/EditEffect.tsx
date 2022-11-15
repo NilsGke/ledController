@@ -35,6 +35,7 @@ import { FormLabel } from "@mui/material";
 import ConfirmDialog from "./components/ConfirmDialog";
 import { addLedEffect, editLedEffect } from "./connection/ledEffect";
 import PointerSlider from "./components/PointerSlider";
+import CubicBezierEditor from "./components/CubicBezierEditor";
 
 export interface indexedKeyframe extends keyframe {
     id: number;
@@ -69,6 +70,18 @@ const EditEffect: React.FC<props> = ({ ws }) => {
     const [duration, setDuration] = useState(5000);
     const [transition, setTransition] =
         useState<effect["transition"]>("linear");
+    const [timingFunction, setTimingFunction] = useState<
+        effect["timingFunction"]
+    >({
+        P1: {
+            x: 0.5,
+            y: 1,
+        },
+        P2: {
+            x: 0.5,
+            y: 0,
+        },
+    });
 
     const [testingEffect, setTestingEffect] = useState<effect | null>(null);
 
@@ -101,11 +114,8 @@ const EditEffect: React.FC<props> = ({ ws }) => {
         rgbStripType["color"] | null
     >(null);
 
-    const sliderRef = useRef<null | HTMLElement>(null);
-
-    // const keyframeList = useRef<HTMLElement | null>(null)
-    const [keyframeList] =
-        useAutoAnimate<HTMLDivElement>(/* optional config */);
+    const [keyframeList] = useAutoAnimate<HTMLDivElement>();
+    const [controlsRef] = useAutoAnimate<HTMLDivElement>();
 
     // sync the strips to all show the effect and set default color
     useEffect(() => {
@@ -154,6 +164,7 @@ const EditEffect: React.FC<props> = ({ ws }) => {
         if (editEffect === null) return setSetEditEffect(true); // no effect found
         setDuration(editEffect.duration);
         setName(editEffect.name);
+        setTransition(editEffect.transition);
         const newKeyframes: indexedKeyframe[] = editEffect.keyframes.map(
             (frame, i) => ({
                 ...frame,
@@ -229,6 +240,7 @@ const EditEffect: React.FC<props> = ({ ws }) => {
             name: name.trim(),
             transition,
             time: undefined,
+            ...(transition === "cubic-bezier" && { timingFunction }),
         } as effect);
         navigate("/effects");
     };
@@ -291,6 +303,7 @@ const EditEffect: React.FC<props> = ({ ws }) => {
                     {setEditEffect ? (
                         <CustomSlider
                             transition={transition}
+                            timingFunction={timingFunction}
                             keyframes={keyframes}
                             activeKeyframeId={activeKeyframeId}
                             changeActiveKeyframe={(id: indexedKeyframe["id"]) =>
@@ -324,7 +337,7 @@ const EditEffect: React.FC<props> = ({ ws }) => {
                 </div>
             </div>
             <div id="controls">
-                <div id="keyframeSettings">
+                <div id="keyframeSettings" ref={controlsRef}>
                     <h2>Keyframe:</h2>
                     <div className="colorInput">
                         {sliders === "hue" ? (
@@ -379,6 +392,31 @@ const EditEffect: React.FC<props> = ({ ws }) => {
                             />
                         )}
                     </div>
+                    {transition === "cubic-bezier" && (
+                        <CubicBezierEditor
+                            timingFunction={timingFunction}
+                            change={setTimingFunction}
+                            from={
+                                activeKeyframe?.color || {
+                                    red: 255,
+                                    green: 255,
+                                    blue: 255,
+                                }
+                            }
+                            to={
+                                keyframes.at(
+                                    keyframes.findIndex(
+                                        (kf) => kf.id === activeKeyframeId
+                                    ) + 1 || 0
+                                )?.color ||
+                                keyframes.at(0)?.color || {
+                                    red: 255,
+                                    green: 255,
+                                    blue: 255,
+                                }
+                            }
+                        />
+                    )}
                 </div>
                 <div id="settings">
                     <ThemeProvider
@@ -405,6 +443,7 @@ const EditEffect: React.FC<props> = ({ ws }) => {
                                                 id: -1,
                                                 name: "test",
                                                 transition,
+                                                timingFunction,
                                                 time: undefined,
                                             })
                                         }
@@ -538,8 +577,7 @@ const EditEffect: React.FC<props> = ({ ws }) => {
                                     value={transition}
                                     exclusive
                                     onChange={(e, v: effect["transition"]) =>
-                                        v != null &&
-                                        setTransition(v || transition)
+                                        v != null && setTransition(v)
                                     }
                                     aria-label="text alignment"
                                 >
@@ -556,11 +594,10 @@ const EditEffect: React.FC<props> = ({ ws }) => {
                                         linear
                                     </ToggleButton>
                                     <ToggleButton
-                                        value="function"
-                                        disabled
-                                        aria-label="function transition"
+                                        value="cubic-bezier"
+                                        aria-label="cubic bezier transition"
                                     >
-                                        function
+                                        cubic-bezier
                                     </ToggleButton>
                                 </ToggleButtonGroup>
                             </div>

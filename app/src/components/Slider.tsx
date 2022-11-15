@@ -3,11 +3,13 @@ import { effect, keyframe } from "../../../src/effects";
 import Slider, { SliderThumb } from "@mui/material/Slider/Slider";
 import { indexedKeyframe } from "../EditEffect";
 import "../styles/slider.sass";
+import generateCubicGradient from "../helpers/cubicGradient";
 
 type props = {
     keyframes: indexedKeyframe[];
     activeKeyframeId: indexedKeyframe["id"];
     transition: effect["transition"];
+    timingFunction: effect["timingFunction"];
     changeActiveKeyframe: (id: indexedKeyframe["id"]) => void;
     onChange: (keyframes: indexedKeyframe[]) => void;
     onChangeCommit: (keyframes: indexedKeyframe[]) => void;
@@ -21,6 +23,7 @@ const CustomSlider: React.FC<props> = ({
     keyframes,
     activeKeyframeId,
     transition,
+    timingFunction,
     changeActiveKeyframe,
     onChange,
     onChangeCommit,
@@ -66,22 +69,30 @@ const CustomSlider: React.FC<props> = ({
             .slice()
             .sort((a, b) => a.step - b.step);
 
-        const gradient = `linear-gradient(to right, ${sortedKeyframe
-            .slice()
-            .sort((a, b) => a.step - b.step)
-            .map((frame, i) => {
-                if (transition === "none" && i > 0)
-                    return ` rgb(${sortedKeyframe[i - 1].color.red}, ${
-                        sortedKeyframe[i - 1].color.green
-                    }, ${sortedKeyframe[i - 1].color.blue}) ${
-                        sortedKeyframe[i].step
-                    }%, rgb(${frame.color.red}, ${frame.color.green}, ${
-                        frame.color.blue
-                    }) ${frame.step}%`;
-                else
-                    return `rgb(${frame.color.red}, ${frame.color.green}, ${frame.color.blue}) ${frame.step}%`;
-            })
-            .join(", ")})`;
+        let gradient: string = "";
+        if (transition === "linear" || transition === "none") {
+            gradient = `linear-gradient(to right, ${sortedKeyframe
+                .slice()
+                .sort((a, b) => a.step - b.step)
+                .map((frame, i) => {
+                    if (transition === "none" && i > 0)
+                        return ` rgb(${sortedKeyframe[i - 1].color.red}, ${
+                            sortedKeyframe[i - 1].color.green
+                        }, ${sortedKeyframe[i - 1].color.blue}) ${
+                            sortedKeyframe[i].step
+                        }%, rgb(${frame.color.red}, ${frame.color.green}, ${
+                            frame.color.blue
+                        }) ${frame.step}%`;
+                    else
+                        return `rgb(${frame.color.red}, ${frame.color.green}, ${frame.color.blue}) ${frame.step}%`;
+                })
+                .join(", ")})`;
+        } else if (
+            transition === "cubic-bezier" &&
+            timingFunction !== undefined
+        ) {
+            gradient = generateCubicGradient(keyframes, timingFunction);
+        }
 
         elements[
             elements.length - 1 // get the last track slider since its on top
