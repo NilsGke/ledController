@@ -244,8 +244,8 @@ const CubicBezierEditor: React.FC<props> = ({
 
         return () => {
             canvas.removeEventListener("mousedown", start);
-            canvas.removeEventListener("mousemove", move);
-            canvas.removeEventListener("mouseup", clear);
+            document.removeEventListener("mousemove", move);
+            document.removeEventListener("mouseup", clear);
         };
     }, [move]);
 
