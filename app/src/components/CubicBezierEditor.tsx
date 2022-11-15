@@ -258,6 +258,134 @@ const CubicBezierEditor: React.FC<props> = ({
                 width="534"
                 id="canvas"
             ></canvas>
+            <div className="inputs">
+                <table>
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td>X</td>
+                            <td>Y</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {/* this is switched somewhere but its more convenient for the user if its like this*/}
+                            <td>P1</td>
+                            <td>
+                                <input
+                                    type="number"
+                                    name="p2x"
+                                    id="p2x"
+                                    max={100}
+                                    step={1}
+                                    value={Math.round(
+                                        (timingFunction?.P2.x || 0) * 100
+                                    )}
+                                    onChange={(e) =>
+                                        timingFunction &&
+                                        change({
+                                            ...timingFunction,
+                                            P2: {
+                                                ...timingFunction.P2,
+                                                x:
+                                                    validateInputNumber(
+                                                        parseInt(
+                                                            e.target.value
+                                                        ) || 0
+                                                    ) / 100,
+                                            },
+                                        })
+                                    }
+                                />
+                            </td>
+                            <td>
+                                <input
+                                    type="number"
+                                    name="p2y"
+                                    id="p2y"
+                                    max={100}
+                                    step={1}
+                                    value={Math.round(
+                                        (timingFunction?.P2.y || 0) * 100
+                                    )}
+                                    onChange={(e) =>
+                                        timingFunction &&
+                                        change({
+                                            ...timingFunction,
+                                            P2: {
+                                                ...timingFunction.P2,
+                                                y:
+                                                    validateInputNumber(
+                                                        parseInt(
+                                                            e.target.value
+                                                        ) || 0
+                                                    ) / 100,
+                                            },
+                                        })
+                                    }
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>P2</td>
+                            <td>
+                                <input
+                                    type="number"
+                                    name="p1x"
+                                    id="p1x"
+                                    max={100}
+                                    step={1}
+                                    value={Math.round(
+                                        (timingFunction?.P1.x || 0) * 100
+                                    )}
+                                    onChange={(e) =>
+                                        timingFunction &&
+                                        change({
+                                            ...timingFunction,
+                                            P1: {
+                                                ...timingFunction.P1,
+                                                x:
+                                                    validateInputNumber(
+                                                        parseInt(
+                                                            e.target.value
+                                                        ) || 0
+                                                    ) / 100,
+                                            },
+                                        })
+                                    }
+                                />
+                            </td>
+                            <td>
+                                <input
+                                    type="number"
+                                    name="p1y"
+                                    id="p1y"
+                                    max={100}
+                                    step={1}
+                                    value={Math.round(
+                                        (timingFunction?.P1.y || 0) * 100
+                                    )}
+                                    onChange={(e) =>
+                                        timingFunction &&
+                                        change({
+                                            ...timingFunction,
+                                            P1: {
+                                                ...timingFunction.P1,
+                                                y:
+                                                    validateInputNumber(
+                                                        parseInt(
+                                                            e.target.value
+                                                        ) || 0
+                                                    ) / 100,
+                                            },
+                                        })
+                                    }
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };
@@ -277,3 +405,6 @@ function getMousePos(canvas: HTMLCanvasElement, evt: MouseEvent) {
         y: Math.floor((evt.clientY - rect.top) * scaleY), // been adjusted to be relative to element
     };
 }
+
+const validateInputNumber = (num: number): number =>
+    num < 0 ? 0 : num > 100 ? 100 : num;
