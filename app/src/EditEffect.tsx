@@ -397,14 +397,19 @@ const EditEffect: React.FC<props> = ({ ws }) => {
                             timingFunction={timingFunction}
                             change={setTimingFunction}
                             from={
+                                activeKeyframe?.color || {
+                                    red: 255,
+                                    green: 255,
+                                    blue: 255,
+                                }
+                            }
+                            to={
                                 keyframes.at(
                                     keyframes.findIndex(
                                         (kf) => kf.id === activeKeyframeId
-                                    ) - 1 || -1
-                                )?.color || { red: 255, green: 255, blue: 255 }
-                            }
-                            to={
-                                activeKeyframe?.color || {
+                                    ) + 1 || 0
+                                )?.color ||
+                                keyframes.at(0)?.color || {
                                     red: 255,
                                     green: 255,
                                     blue: 255,
