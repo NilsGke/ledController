@@ -80,7 +80,8 @@ const Dashboard: React.FC<props> = ({ ws }) => {
 
     // on off change
     useEffect(() => {
-        if ((data?.onOff === "on") !== on) setOnOff(ws, on ? "on" : "off");
+        if (data?.onOff !== undefined)
+            if ((data?.onOff === "on") !== on) setOnOff(ws, on ? "on" : "off");
     }, [on]);
 
     // sync change
