@@ -25,3 +25,7 @@ The Frontend is a React app hosted by the backend. On the Dashboard you can cont
 
 ### Future plans
 Idealy this app recieves a high google lighthouse scores and i can install it as a PWA. But its probably impossible because it's served from a local raspberry pi.
+
+### Impressions
+![image](https://github.com/user-attachments/assets/804d4864-9f28-40f8-a94d-0a4234ca46a2)
+![image](https://github.com/user-attachments/assets/0c8e05c3-1d2c-4558-9622-50ce74e8094b)
